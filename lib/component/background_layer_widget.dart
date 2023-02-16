@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/constant/canva_id.dart';
+import 'package:flutter_application_2/constants/canvas_id.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:get/get.dart';
 
