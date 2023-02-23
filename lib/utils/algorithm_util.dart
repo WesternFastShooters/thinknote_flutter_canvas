@@ -27,50 +27,5 @@ class AlgorithmUtil {
         Offset(thisTimeCanvasOffsetX, thisTimeCanvasOffsetY);
     return thisTimeCanvasOffset;
   }
-
-  /// 把屏幕上点的坐标转换成画布上点的坐标（坐标都是以画布一倍时为参照的，画布总是一倍）
-  ///
-  /// 一般就是创建元素时给元素赋值坐标的时候用
-  static Offset transformScreenPointToCanvasPoint({
-    required Offset screenPoint,
-    required Offset curCanvasOffset,
-    required double curCanvasScale,
-  }) {
-    Offset canvasPoint = (screenPoint - curCanvasOffset) / curCanvasScale;
-    return canvasPoint;
-  }
-
-  /// 当前元素因为缩放、平移后真正显示在屏幕上的区域
-  ///
-  /// 用途：
-  /// 1、判断触摸的点是否在这个元素内，以便选中元素
-  /// 2、判断这个元素在不在屏幕可是范围内
-  /// ...
-  static Rect visibleRectOfElement({
-    required BaseElementModel baseElementModel,
-    required Offset curCanvasOffset,
-    required double curCanvasScale,
-  }) {
-    Rect visibleRect = Rect.fromPoints(
-      baseElementModel.p1 * curCanvasScale + curCanvasOffset,
-      baseElementModel.p2 * curCanvasScale + curCanvasOffset,
-    );
-    return visibleRect;
-  }
-
-  /// 触摸的点是否在某个矩形中
-  static bool pointInRect({
-    required Offset screenPoint,
-    required Rect rect,
-  }) {
-    return rect.contains(screenPoint);
-  }
 }
 
-abstract class BaseElementModel {
-  /// 该元素所在矩形框的左上角点坐标
-  Offset p1 = Offset.zero;
-
-  /// 该元素所在矩形框的右下角点坐标
-  Offset p2 = Offset.zero;
-}

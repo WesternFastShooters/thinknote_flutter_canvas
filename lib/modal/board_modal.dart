@@ -41,21 +41,11 @@ class BoardModal extends GetxController {
 
 extension GestureDetectorLogic on BoardModal {
   void onPointerMove(PointerMoveEvent event) {
-    Offset point = AlgorithmUtil.transformScreenPointToCanvasPoint(
-      screenPoint: event.localPosition,
-      curCanvasOffset: curCanvasOffset,
-      curCanvasScale: curCanvasScale,
-    );
     curCanvasOffset += event.localDelta;
     update([CanvasID.backgroundLayerWidgetId, CanvasID.rectLayerWidgetID]);
   }
 
   void onPointerUp(PointerUpEvent event) {
-    Offset point = AlgorithmUtil.transformScreenPointToCanvasPoint(
-      screenPoint: event.localPosition,
-      curCanvasOffset: curCanvasOffset,
-      curCanvasScale: curCanvasScale,
-    );
     curCanvasOffset += event.localDelta;
     update([CanvasID.backgroundLayerWidgetId, CanvasID.rectLayerWidgetID]);
   }
