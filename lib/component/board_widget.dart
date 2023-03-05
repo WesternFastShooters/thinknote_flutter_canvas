@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/component/background_layer_widget.dart';
 import 'package:flutter_application_2/component/test_rect.dart';
+import 'package:flutter_application_2/component/toolbar.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:get/get.dart';
-
-import 'gesture_layer_widget.dart';
 
 class BoardWidget extends StatelessWidget {
   BoardWidget({Key? key}) : super(key: key);
@@ -26,7 +25,11 @@ class BoardWidget extends StatelessWidget {
         children: [
           const BackgroundLayerWidget(),
           const TestRect(),
-          GestureLayerWidget(),
+          const Positioned(
+            top: 20,
+            right: 20,
+            child: ToolBar(),
+          ),
         ],
       ),
     );

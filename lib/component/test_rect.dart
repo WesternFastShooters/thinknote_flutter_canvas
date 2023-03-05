@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/constants/canvas_id.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:get/get.dart';
 
 class TestRect extends StatelessWidget {
   const TestRect({super.key});
-
+  
   @override
   Widget build(BuildContext context) {
     return GetBuilder<BoardModal>(
-      id: CanvasID.rectLayerWidgetID,
       builder: (BoardModal boardModal) {
         return Transform(
           transform: Matrix4.identity()

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/constants/canvas_id.dart';
+import 'package:flutter_application_2/modal/logic/area_logic.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:get/get.dart';
 
@@ -9,16 +9,43 @@ class BackgroundLayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<BoardModal>(
-      id: CanvasID.backgroundLayerWidgetId,
       builder: (BoardModal boardModal) {
-        return Transform(
-          transform: Matrix4.identity()
-            ..translate(
-                boardModal.curCanvasOffset.dx, boardModal.curCanvasOffset.dy),
-          child: RepaintBoundary(
-            child: CustomPaint(
-              isComplex: true,
-              painter: _BackgroundLayerWidget(),
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onScaleStart: (ScaleStartDetails details) {
+              boardModal.onScaleStart(details);
+            },
+            onScaleUpdate: (ScaleUpdateDetails details) {
+              boardModal.onScaleUpdate(details);
+            },
+            onScaleEnd: (ScaleEndDetails details) {
+              boardModal.onScaleEnd(details);
+            },
+            child: Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerMove: (PointerMoveEvent event) {
+                boardModal.execPointerMoveForTranslate(event);
+              },
+              onPointerUp: (PointerUpEvent e) {
+                boardModal.execPointerUpForTranslate(e);
+              },
+              child: Transform(
+                transform: Matrix4.identity()
+                  ..translate(
+                    boardModal.curCanvasOffset.dx,
+                    boardModal.curCanvasOffset.dy,
+                  )
+                  ..scale(boardModal.curCanvasScale),
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    isComplex: true,
+                    painter: _BackgroundLayerWidget(),
+                  ),
+                ),
+              ),
             ),
           ),
         );
@@ -28,14 +55,8 @@ class BackgroundLayerWidget extends StatelessWidget {
 }
 
 class _BackgroundLayerWidget extends CustomPainter {
-  final BoardModal boardModal = Get.find<BoardModal>();
-
-  var rect = const Rect.fromLTWH(100, 100, 300, 300);
-  var painter = Paint()..color = Colors.yellow;
   @override
-  void paint(Canvas canvas, Size size) {
-    debugPrint("BackgroundLayerWidget===repaint");
-  }
+  void paint(Canvas canvas, Size size) {}
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
