@@ -1,4 +1,6 @@
 import 'package:flutter_application_2/constants/tool_type.dart';
+import 'package:flutter_application_2/modal/logic/area_logic.dart';
+import 'package:flutter_application_2/modal/logic/freedraw_logic.dart';
 import 'package:flutter_application_2/modal/type/base_element_model.dart';
 import 'package:flutter_application_2/modal/type/pencil_element_model.dart';
 import 'package:get/get.dart';
@@ -40,4 +42,78 @@ class BoardModal extends GetxController {
 
   /// 当前笔画
   Stroke? currentStroke;
+
+  /// 是否多指
+  bool isMultiplePointer = false;
+}
+
+extension BaseAction on BoardModal {
+  /// 手势按下触发逻辑
+  onPointerDown(PointerDownEvent event) {
+    switch (currentToolType) {
+      case ToolType.translateAndScaleCanvas:
+        break;
+      case ToolType.freeDraw:
+        execPointerDownForFreeDraw(event);
+        break;
+    }
+  }
+
+  /// 手势平移触发逻辑
+  onPointerMove(PointerMoveEvent event) {
+    switch (currentToolType) {
+      case ToolType.translateAndScaleCanvas:
+        execPointerMoveForTranslate(event);
+        break;
+      case ToolType.freeDraw:
+        execPointerMoveForFreeDraw(event);
+        break;
+    }
+  }
+
+  /// 手势提起触发逻辑
+  onPointerUp(PointerUpEvent event) {
+    switch (currentToolType) {
+      case ToolType.translateAndScaleCanvas:
+        execPointerUpForTranslate(event);
+        break;
+      case ToolType.freeDraw:
+        execPointerUpForFreeDraw(event);
+        break;
+    }
+  }
+
+  /// 缩放开始触发逻辑
+  onScaleStart(ScaleStartDetails details) {
+    isMultiplePointer = details.pointerCount > 1;
+    switch (currentToolType) {
+      case ToolType.translateAndScaleCanvas:
+        onScaleStartForArea(details);
+        break;
+      case ToolType.freeDraw:
+        break;
+    }
+  }
+
+  /// 缩放中触发逻辑
+  onScaleUpdate(ScaleUpdateDetails details) {
+    switch (currentToolType) {
+      case ToolType.translateAndScaleCanvas:
+        onScaleUpdateForArea(details);
+        break;
+      case ToolType.freeDraw:
+        break;
+    }
+  }
+
+  /// 缩放结束触发逻辑
+  onScaleEnd(ScaleEndDetails details) {
+    switch (currentToolType) {
+      case ToolType.translateAndScaleCanvas:
+        onScaleEndForArea(details);
+        break;
+      case ToolType.freeDraw:
+        break;
+    }
+  }
 }

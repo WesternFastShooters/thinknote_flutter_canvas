@@ -20,72 +20,54 @@ class FreeDrawLayer extends StatelessWidget {
 /// 绘制当前笔画
 Widget buildCurrentPath(BuildContext context) {
   final BoardModal boardModal = Get.find<BoardModal>();
-  return Listener(
-    onPointerDown: boardModal.execPointerDownForFreeDraw,
-    onPointerMove: boardModal.execPointerMoveForFreeDraw,
-    onPointerUp: boardModal.execPointerUpForFreeDraw,
-    child: RepaintBoundary(
-      child: Container(
-        color: Colors.transparent,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: GetBuilder<BoardModal>(
-          builder: (BoardModal boardModal) {
-            return Transform(
-              transform: Matrix4.identity()
-                ..translate(
-                  boardModal.curCanvasOffset.dx,
-                  boardModal.curCanvasOffset.dy,
-                )
-                ..scale(boardModal.curCanvasScale),
-              child: RepaintBoundary(
-                child: CustomPaint(
-                  isComplex: true,
-                  painter: Sketcher(
-                    strokes: boardModal.currentStroke == null
-                        ? []
-                        : [boardModal.currentStroke!],
-                    options: boardModal.currentStrokeOptions,
-                  ),
-                ),
-              ),
-            );
-          },
+  return GetBuilder<BoardModal>(
+    builder: (BoardModal boardModal) {
+      return Transform(
+        transform: Matrix4.identity()
+          ..translate(
+            boardModal.curCanvasOffset.dx,
+            boardModal.curCanvasOffset.dy,
+          )
+          ..scale(boardModal.curCanvasScale),
+        child: RepaintBoundary(
+          child: CustomPaint(
+            isComplex: true,
+            painter: Sketcher(
+              strokes: boardModal.currentStroke == null
+                  ? []
+                  : [boardModal.currentStroke!],
+              options: boardModal.currentStrokeOptions,
+            ),
+          ),
         ),
-      ),
-    ),
+      );
+    },
   );
 }
 
 /// 绘制所有笔画
 Widget buildAllPaths(BuildContext context) {
   final BoardModal boardModal = Get.find<BoardModal>();
-  return RepaintBoundary(
-    child: SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: GetBuilder<BoardModal>(
-        builder: (BoardModal boardModal) {
-          return Transform(
-            transform: Matrix4.identity()
-              ..translate(
-                boardModal.curCanvasOffset.dx,
-                boardModal.curCanvasOffset.dy,
-              )
-              ..scale(boardModal.curCanvasScale),
-            child: RepaintBoundary(
-              child: CustomPaint(
-                isComplex: true,
-                painter: Sketcher(
-                  strokes: boardModal.strokes,
-                  options: boardModal.currentStrokeOptions,
-                ),
-              ),
+  return GetBuilder<BoardModal>(
+    builder: (BoardModal boardModal) {
+      return Transform(
+        transform: Matrix4.identity()
+          ..translate(
+            boardModal.curCanvasOffset.dx,
+            boardModal.curCanvasOffset.dy,
+          )
+          ..scale(boardModal.curCanvasScale),
+        child: RepaintBoundary(
+          child: CustomPaint(
+            isComplex: true,
+            painter: Sketcher(
+              strokes: boardModal.strokes,
+              options: boardModal.currentStrokeOptions,
             ),
-          );
-        },
-      ),
-    ),
+          ),
+        ),
+      );
+    },
   );
 }
 

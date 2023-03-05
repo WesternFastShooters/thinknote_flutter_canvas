@@ -4,7 +4,7 @@ import 'package:flutter_application_2/constants/tool_type.dart';
 import 'package:flutter_application_2/modal/utils/getOffsetByScaleChange.dart';
 
 extension ScaleLogic on BoardModal {
-  void onScaleStart(ScaleStartDetails details) {
+  void onScaleStartForArea(ScaleStartDetails details) {
     if (currentToolType != ToolType.translateAndScaleCanvas) {
       return;
     }
@@ -13,7 +13,7 @@ extension ScaleLogic on BoardModal {
     }
   }
 
-  void onScaleUpdate(ScaleUpdateDetails details) {
+  void onScaleUpdateForArea(ScaleUpdateDetails details) {
     if (currentToolType != ToolType.translateAndScaleCanvas) {
       return;
     }
@@ -23,7 +23,7 @@ extension ScaleLogic on BoardModal {
     }
   }
 
-  void onScaleEnd(ScaleEndDetails details) {
+  void onScaleEndForArea(ScaleEndDetails details) {
     if (currentToolType != ToolType.translateAndScaleCanvas) {
       return;
     }
@@ -139,7 +139,6 @@ extension ScaleLogic on BoardModal {
 
 extension TranslateLogic on BoardModal {
   void execPointerMoveForTranslate(PointerMoveEvent event) {
-    print(111);
     if (currentToolType != ToolType.translateAndScaleCanvas) {
       return;
     }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/component/background_layer_widget.dart';
 import 'package:flutter_application_2/component/freedraw_layer.dart';
+import 'package:flutter_application_2/component/gesture_layer.dart';
 import 'package:flutter_application_2/component/test_rect.dart';
 import 'package:flutter_application_2/component/toolbar.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
@@ -24,8 +24,9 @@ class BoardWidget extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          BackgroundLayerWidget(),
-          TestRect(),
+          FreeDrawLayer(),
+          GestureLayer(),
+          // TestRect(),
           Positioned(
             top: 20,
             right: 20,

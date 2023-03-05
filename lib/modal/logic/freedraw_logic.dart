@@ -28,6 +28,9 @@ extension FreeDrawLogic on BoardModal {
     if (currentToolType != ToolType.freeDraw) {
       return;
     }
+    if (isMultiplePointer) {
+      return;
+    }
     final StrokePoint strokePoint = getStrokePoint(details);
     currentStroke = Stroke([...currentStroke!.strokePoints, strokePoint]);
     update();
