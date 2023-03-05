@@ -139,6 +139,7 @@ extension ScaleLogic on BoardModal {
 
 extension TranslateLogic on BoardModal {
   void execPointerMoveForTranslate(PointerMoveEvent event) {
+    print(111);
     if (currentToolType != ToolType.translateAndScaleCanvas) {
       return;
     }

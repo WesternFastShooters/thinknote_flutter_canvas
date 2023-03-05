@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class BoardModal extends GetxController {
-  /// 当前选用工具类型
+  /// 当前选用工具类型（默认为平移缩放）
   ToolType currentToolType = ToolType.translateAndScaleCanvas;
 
   /// 画布当前的偏移量
@@ -32,13 +32,12 @@ class BoardModal extends GetxController {
   /// 最大缩放
   final double maxCanvasScale = 3.0;
 
-  /// 正在绘制的元素
-  List<BaseElementModel> drawingElementModelList = [];
-
   /// 当前笔画的配置属性
   StrokeOptions currentStrokeOptions = StrokeOptions();
 
   /// 所有笔画
-  List<PencilElementModel> pencilElementModelList = [];
-  
+  List<Stroke> strokes = <Stroke>[];
+
+  /// 当前笔画
+  Stroke? currentStroke;
 }

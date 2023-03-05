@@ -10,53 +10,84 @@ class FreeDrawLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 
+    return Stack(children: [
+      buildAllPaths(context),
+      buildCurrentPath(context),
+    ]);
   }
 }
 
-
 /// 绘制当前笔画
-Widget buildCurrentPath(BuildContext context){
-    final BoardModal boardModal = Get.find<BoardModal>();
+Widget buildCurrentPath(BuildContext context) {
+  final BoardModal boardModal = Get.find<BoardModal>();
   return Listener(
     onPointerDown: boardModal.execPointerDownForFreeDraw,
     onPointerMove: boardModal.execPointerMoveForFreeDraw,
     onPointerUp: boardModal.execPointerUpForFreeDraw,
     child: RepaintBoundary(
       child: Container(
-            color: Colors.transparent,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child:  CustomPaint(
-              isComplex: true,
-              painter: Sketcher(
-                strokes: [Stroke((boardModal.drawingElementModelList.last as PencilElementModel).strokePoints)], 
-                options: boardModal.currentStrokeOptions,
+        color: Colors.transparent,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: GetBuilder<BoardModal>(
+          builder: (BoardModal boardModal) {
+            return Transform(
+              transform: Matrix4.identity()
+                ..translate(
+                  boardModal.curCanvasOffset.dx,
+                  boardModal.curCanvasOffset.dy,
+                )
+                ..scale(boardModal.curCanvasScale),
+              child: RepaintBoundary(
+                child: CustomPaint(
+                  isComplex: true,
+                  painter: Sketcher(
+                    strokes: boardModal.currentStroke == null
+                        ? []
+                        : [boardModal.currentStroke!],
+                    options: boardModal.currentStrokeOptions,
+                  ),
+                ),
               ),
-            ),
+            );
+          },
+        ),
       ),
     ),
   );
 }
 
 /// 绘制所有笔画
- Widget buildAllPaths(BuildContext context){
-    final BoardModal boardModal = Get.find<BoardModal>();
-   return RepaintBoundary(
+Widget buildAllPaths(BuildContext context) {
+  final BoardModal boardModal = Get.find<BoardModal>();
+  return RepaintBoundary(
     child: SizedBox(
-           width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: CustomPaint(
-          isComplex: true,
-          painter: Sketcher(
-            strokes: [],
-            options: boardModal.currentStrokeOptions,
-          ),
-        ),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: GetBuilder<BoardModal>(
+        builder: (BoardModal boardModal) {
+          return Transform(
+            transform: Matrix4.identity()
+              ..translate(
+                boardModal.curCanvasOffset.dx,
+                boardModal.curCanvasOffset.dy,
+              )
+              ..scale(boardModal.curCanvasScale),
+            child: RepaintBoundary(
+              child: CustomPaint(
+                isComplex: true,
+                painter: Sketcher(
+                  strokes: boardModal.strokes,
+                  options: boardModal.currentStrokeOptions,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     ),
-   );
- }
-
+  );
+}
 
 class Sketcher extends CustomPainter {
   final List<Stroke> strokes;
@@ -66,11 +97,11 @@ class Sketcher extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = Colors.black;
+    Paint paint = Paint()..color = Colors.green;
 
     for (int i = 0; i < strokes.length; ++i) {
       final outlinePoints = getStroke(
-        strokes[i].points,
+        strokes[i].strokePoints,
         size: 3,
         thinning: 0.1,
         smoothing: options.smoothing,

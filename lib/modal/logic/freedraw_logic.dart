@@ -19,9 +19,7 @@ extension FreeDrawLogic on BoardModal {
       simulatePressure: details.kind != PointerDeviceKind.stylus,
     );
     final StrokePoint strokePoint = getStrokePoint(details);
-    PencilElementModel pencilElementModel = PencilElementModel()
-      ..strokePoints.add(strokePoint);
-    drawingElementModelList.add(pencilElementModel);
+    currentStroke = Stroke([strokePoint]);
     update();
   }
 
@@ -31,10 +29,7 @@ extension FreeDrawLogic on BoardModal {
       return;
     }
     final StrokePoint strokePoint = getStrokePoint(details);
-
-    PencilElementModel pencilElementModel = drawingElementModelList.last
-        as PencilElementModel
-      ..strokePoints.add(strokePoint);
+    currentStroke = Stroke([...currentStroke!.strokePoints, strokePoint]);
     update();
   }
 
@@ -43,15 +38,7 @@ extension FreeDrawLogic on BoardModal {
     if (currentToolType != ToolType.freeDraw) {
       return;
     }
-
-    final StrokePoint strokePoint = getStrokePoint(details);
-
-    PencilElementModel pencilElementModel = drawingElementModelList.last
-        as PencilElementModel
-      ..strokePoints.add(strokePoint);
-
-    pencilElementModelList.add(pencilElementModel);
-    drawingElementModelList.removeLast();
+    strokes = List.from(strokes)..add(currentStroke!);
     update();
   }
 
