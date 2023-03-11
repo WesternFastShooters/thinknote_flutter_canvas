@@ -1,7 +1,7 @@
 import 'package:flutter_application_2/constants/tool_type.dart';
 import 'package:flutter_application_2/modal/logic/area_logic.dart';
+import 'package:flutter_application_2/modal/logic/eraser_logic.dart';
 import 'package:flutter_application_2/modal/logic/freedraw_logic.dart';
-import 'package:flutter_application_2/modal/type/base_element_model.dart';
 import 'package:flutter_application_2/modal/type/pencil_element_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +45,12 @@ class BoardModal extends GetxController {
 
   /// 是否多指
   bool isMultiplePointer = false;
+
+  /// 当前橡皮擦的位置
+  Offset? currentEraserPosition;
+
+  /// 橡皮擦半径
+  double eraserRadius = 10.0;
 }
 
 extension BaseAction on BoardModal {
@@ -55,6 +61,9 @@ extension BaseAction on BoardModal {
         break;
       case ToolType.freeDraw:
         execPointerDownForFreeDraw(event);
+        break;
+      case ToolType.eraser:
+        execPointerDownForEraser(event);
         break;
     }
   }
@@ -68,6 +77,9 @@ extension BaseAction on BoardModal {
       case ToolType.freeDraw:
         execPointerMoveForFreeDraw(event);
         break;
+      case ToolType.eraser:
+        execPointerMoveForEraser(event);
+        break;
     }
   }
 
@@ -79,6 +91,9 @@ extension BaseAction on BoardModal {
         break;
       case ToolType.freeDraw:
         execPointerUpForFreeDraw(event);
+        break;
+      case ToolType.eraser:
+        execPointerUpForEraser(event);
         break;
     }
   }

@@ -27,6 +27,7 @@ class _ToolBarWidgetState extends State<ToolBar>
         return Row(
           children: [
             _drawPencilWidget(),
+            _eraseWidget(),
             _translateCanvasWidget(),
           ],
         );
@@ -36,7 +37,7 @@ class _ToolBarWidgetState extends State<ToolBar>
 
   Widget _drawPencilWidget() {
     return IconButton(
-      icon: const Icon(Icons.horizontal_rule),
+      icon: const Icon(Icons.brush),
       onPressed: () {
         boardModal.currentToolType = ToolType.freeDraw;
       },
@@ -48,6 +49,16 @@ class _ToolBarWidgetState extends State<ToolBar>
       icon: const Icon(Icons.pan_tool),
       onPressed: () {
         boardModal.currentToolType = ToolType.translateAndScaleCanvas;
+      },
+    );
+  }
+
+  // 添加一个橡皮擦工具，按压时切换属性，属性为枚举值ToolType.erase
+  Widget _eraseWidget() {
+    return IconButton(
+      icon: const Icon(Icons.phonelink_erase),
+      onPressed: () {
+        boardModal.currentToolType = ToolType.eraser;
       },
     );
   }

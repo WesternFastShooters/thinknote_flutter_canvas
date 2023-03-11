@@ -42,6 +42,8 @@ extension FreeDrawLogic on BoardModal {
       return;
     }
     strokes = List.from(strokes)..add(currentStroke!);
+    currentStroke = null;
+    currentStrokeOptions = StrokeOptions();
     update();
   }
 

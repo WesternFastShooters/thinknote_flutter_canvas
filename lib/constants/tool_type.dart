@@ -1,9 +1,12 @@
 enum ToolType {
-  /// 自由绘画
+  /// 自由绘画模式
   freeDraw,
 
-  /// 平移且缩放画布
+  /// 平移且缩放画布模式
   translateAndScaleCanvas,
+
+  /// 橡皮擦模式
+  eraser,
 }
 
 enum ScaleLayerWidgetType {

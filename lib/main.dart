@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'component/board_widget.dart';
+import 'page/board_widget.dart';
 
 void main() {
   runApp(const MainApp());

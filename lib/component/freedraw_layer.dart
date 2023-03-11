@@ -19,7 +19,6 @@ class FreeDrawLayer extends StatelessWidget {
 
 /// 绘制当前笔画
 Widget buildCurrentPath(BuildContext context) {
-  final BoardModal boardModal = Get.find<BoardModal>();
   return GetBuilder<BoardModal>(
     builder: (BoardModal boardModal) {
       return Transform(
@@ -122,6 +121,7 @@ class Sketcher extends CustomPainter {
 
   @override
   bool shouldRepaint(Sketcher oldDelegate) {
+    
     return true;
   }
 }

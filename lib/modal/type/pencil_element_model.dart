@@ -9,9 +9,9 @@ class PencilElementModel extends BaseElementModel {
 }
 
 class Stroke {
+  const Stroke(this.strokePoints);
   final List<Point> strokePoints;
 
-  const Stroke(this.strokePoints);
 }
 
 class StrokeOptions {
