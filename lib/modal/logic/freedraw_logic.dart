@@ -18,9 +18,12 @@ extension FreeDrawLogic on BoardModal {
     currentStrokeOptions = StrokeOptions(
       simulatePressure: details.kind != PointerDeviceKind.stylus,
     );
-    final StrokePoint strokePoint = getStrokePoint(details);
-    currentStroke = Stroke([strokePoint]);
-    update();
+    if (currentStroke.pointerId == 0) {
+      final StrokePoint strokePoint = getStrokePoint(details);
+      currentStroke =
+          Stroke(strokePoints: [strokePoint], pointerId: details.pointer);
+      update();
+    }
   }
 
   /// 自由绘画下，移笔触发逻辑
@@ -28,12 +31,13 @@ extension FreeDrawLogic on BoardModal {
     if (currentToolType != ToolType.freeDraw) {
       return;
     }
-    if (isMultiplePointer) {
-      return;
+    if (details.pointer == currentStroke.pointerId) {
+      final StrokePoint strokePoint = getStrokePoint(details);
+      currentStroke = Stroke(
+          strokePoints: [...currentStroke.strokePoints, strokePoint],
+          pointerId: details.pointer);
+      update();
     }
-    final StrokePoint strokePoint = getStrokePoint(details);
-    currentStroke = Stroke([...currentStroke.strokePoints, strokePoint]);
-    update();
   }
 
   /// 自由绘画下，提笔触发逻辑
@@ -41,13 +45,12 @@ extension FreeDrawLogic on BoardModal {
     if (currentToolType != ToolType.freeDraw) {
       return;
     }
-    if (isMultiplePointer) {
-      return;
+    if (details.pointer == currentStroke.pointerId) {
+      strokes = List.from(strokes)..add(currentStroke!);
+      currentStroke = Stroke(strokePoints: [], pointerId: 0);
+      // currentStrokeOptions = StrokeOptions();
+      update();
     }
-    strokes = List.from(strokes)..add(currentStroke!);
-    currentStroke = Stroke([]);
-    // currentStrokeOptions = StrokeOptions();
-    update();
   }
 
   StrokePoint getStrokePoint(PointerEvent details) {

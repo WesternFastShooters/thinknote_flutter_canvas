@@ -41,10 +41,7 @@ class BoardModal extends GetxController {
   List<Stroke> strokes = <Stroke>[];
 
   /// 当前笔画
-  Stroke currentStroke = Stroke([]);
-
-  /// 是否多指
-  bool isMultiplePointer = false;
+  Stroke currentStroke = Stroke(strokePoints: [], pointerId: 0);
 
   /// 当前橡皮擦的位置
   Offset? currentEraserPosition;
@@ -100,7 +97,6 @@ extension BaseAction on BoardModal {
 
   /// 缩放开始触发逻辑
   onScaleStart(ScaleStartDetails details) {
-    isMultiplePointer = details.pointerCount > 1;
     switch (currentToolType) {
       case ToolType.translateAndScaleCanvas:
         onScaleStartForArea(details);

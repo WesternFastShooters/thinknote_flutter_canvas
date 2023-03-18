@@ -9,9 +9,12 @@ class PencilElementModel extends BaseElementModel {
 }
 
 class Stroke {
-  Stroke(this.strokePoints);
-   List<Point> strokePoints = [];
-
+  Stroke({
+    required this.strokePoints,
+    required this.pointerId,
+  });
+  List<Point> strokePoints = [];
+  int pointerId = 0;
 }
 
 class StrokeOptions {
