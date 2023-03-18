@@ -41,7 +41,7 @@ class BoardModal extends GetxController {
   List<Stroke> strokes = <Stroke>[];
 
   /// 当前笔画
-  Stroke? currentStroke;
+  Stroke currentStroke = Stroke([]);
 
   /// 是否多指
   bool isMultiplePointer = false;

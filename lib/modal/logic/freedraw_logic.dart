@@ -32,7 +32,7 @@ extension FreeDrawLogic on BoardModal {
       return;
     }
     final StrokePoint strokePoint = getStrokePoint(details);
-    currentStroke = Stroke([...currentStroke!.strokePoints, strokePoint]);
+    currentStroke = Stroke([...currentStroke.strokePoints, strokePoint]);
     update();
   }
 
@@ -41,9 +41,12 @@ extension FreeDrawLogic on BoardModal {
     if (currentToolType != ToolType.freeDraw) {
       return;
     }
+    if (isMultiplePointer) {
+      return;
+    }
     strokes = List.from(strokes)..add(currentStroke!);
-    currentStroke = null;
-    currentStrokeOptions = StrokeOptions();
+    currentStroke = Stroke([]);
+    // currentStrokeOptions = StrokeOptions();
     update();
   }
 
