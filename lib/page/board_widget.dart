@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/component/eraser_layer.dart';
 import 'package:flutter_application_2/component/freedraw_layer.dart';
 import 'package:flutter_application_2/component/gesture_layer.dart';
+import 'package:flutter_application_2/component/lasso_layer.dart';
 import 'package:flutter_application_2/component/toolbar.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:get/get.dart';
@@ -26,6 +27,7 @@ class BoardWidget extends StatelessWidget {
         children: const [
           FreeDrawLayer(),
           EraserLayer(),
+          LassoLayer(),
           GestureLayer(),
           Positioned(
             top: 20,

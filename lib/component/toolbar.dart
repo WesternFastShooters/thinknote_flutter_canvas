@@ -28,6 +28,7 @@ class _ToolBarWidgetState extends State<ToolBar>
           children: [
             _drawPencilWidget(),
             _eraseWidget(),
+            _lassoWidget(),
             _translateCanvasWidget(),
           ],
         );
@@ -35,6 +36,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     );
   }
 
+  /// 自由绘画icon
   Widget _drawPencilWidget() {
     return IconButton(
       icon: const Icon(Icons.brush),
@@ -44,21 +46,32 @@ class _ToolBarWidgetState extends State<ToolBar>
     );
   }
 
+  /// 拖拽icon
   Widget _translateCanvasWidget() {
     return IconButton(
       icon: const Icon(Icons.pan_tool),
       onPressed: () {
-        boardModal.currentToolType = ToolType.translateAndScaleCanvas;
+        boardModal.currentToolType = ToolType.drag;
       },
     );
   }
 
-  // 添加一个橡皮擦工具，按压时切换属性，属性为枚举值ToolType.erase
+  // 橡皮擦icon
   Widget _eraseWidget() {
     return IconButton(
       icon: const Icon(Icons.phonelink_erase),
       onPressed: () {
         boardModal.currentToolType = ToolType.eraser;
+      },
+    );
+  }
+
+  /// 套索icon
+  Widget _lassoWidget() {
+    return IconButton(
+      icon: const Icon(Icons.crop_square),
+      onPressed: () {
+        boardModal.currentToolType = ToolType.lasso;
       },
     );
   }

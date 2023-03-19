@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
-import 'package:flutter_application_2/modal/logic/area_logic.dart';
+import 'package:flutter_application_2/modal/logic/drag_logic.dart';
 import 'package:get/get.dart';
 
 class GestureLayer extends StatelessWidget {

@@ -4,7 +4,6 @@ import 'package:flutter_application_2/constants/tool_type.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:flutter_application_2/modal/type/pencil_element_model.dart';
 import 'package:flutter_application_2/modal/utils/getElementOffsetByDrawing.dart';
-import 'package:flutter_application_2/modal/utils/getOffsetByScaleChange.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 
 typedef StrokePoint = Point;
@@ -76,3 +75,5 @@ extension FreeDrawLogic on BoardModal {
     return strokePoint;
   }
 }
+
+

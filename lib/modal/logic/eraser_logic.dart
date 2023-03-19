@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
-
 import '../utils/getElementOffsetByDrawing.dart';
 
 extension EraserLogic on BoardModal {

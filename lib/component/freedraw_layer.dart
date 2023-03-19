@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/modal/board_modal.dart';
-import 'package:flutter_application_2/modal/logic/freedraw_logic.dart';
 import 'package:flutter_application_2/modal/type/pencil_element_model.dart';
 import 'package:get/get.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';

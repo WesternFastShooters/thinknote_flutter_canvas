@@ -1,12 +1,7 @@
 import 'dart:ui';
-import 'package:flutter_application_2/modal/logic/freedraw_logic.dart';
-import 'package:flutter_application_2/modal/type/base_element_model.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 
-class PencilElementModel extends BaseElementModel {
-  /// 笔迹上所有的点
-  List<StrokePoint> strokePoints = [];
-}
+
 
 class Stroke {
   Stroke({

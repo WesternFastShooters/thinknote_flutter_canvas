@@ -1,14 +1,15 @@
 import 'package:flutter_application_2/constants/tool_type.dart';
-import 'package:flutter_application_2/modal/logic/area_logic.dart';
+import 'package:flutter_application_2/modal/logic/drag_logic.dart';
 import 'package:flutter_application_2/modal/logic/eraser_logic.dart';
 import 'package:flutter_application_2/modal/logic/freedraw_logic.dart';
+import 'package:flutter_application_2/modal/logic/lasso_logic.dart';
 import 'package:flutter_application_2/modal/type/pencil_element_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class BoardModal extends GetxController {
   /// 当前选用工具类型（默认为平移缩放）
-  ToolType currentToolType = ToolType.translateAndScaleCanvas;
+  ToolType currentToolType = ToolType.drag;
 
   /// 画布当前的偏移量
   Offset curCanvasOffset = Offset.zero;
@@ -48,13 +49,19 @@ class BoardModal extends GetxController {
 
   /// 橡皮擦半径
   double eraserRadius = 10.0;
+
+  /// 绘制套索虚线路径
+  List<Offset> currentLassoPoints = [];
+
+  /// 套索闭合路径
+  List<Offset> closedShapePolygonPoints = [];
 }
 
 extension BaseAction on BoardModal {
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
     switch (currentToolType) {
-      case ToolType.translateAndScaleCanvas:
+      case ToolType.drag:
         break;
       case ToolType.freeDraw:
         execPointerDownForFreeDraw(event);
@@ -62,13 +69,16 @@ extension BaseAction on BoardModal {
       case ToolType.eraser:
         execPointerDownForEraser(event);
         break;
+      case ToolType.lasso:
+        execPointerDownForLasso(event);
+        break;
     }
   }
 
   /// 手势平移触发逻辑
   onPointerMove(PointerMoveEvent event) {
     switch (currentToolType) {
-      case ToolType.translateAndScaleCanvas:
+      case ToolType.drag:
         execPointerMoveForTranslate(event);
         break;
       case ToolType.freeDraw:
@@ -77,13 +87,16 @@ extension BaseAction on BoardModal {
       case ToolType.eraser:
         execPointerMoveForEraser(event);
         break;
+      case ToolType.lasso:
+        execPointerMoveForLasso(event);
+        break;
     }
   }
 
   /// 手势提起触发逻辑
   onPointerUp(PointerUpEvent event) {
     switch (currentToolType) {
-      case ToolType.translateAndScaleCanvas:
+      case ToolType.drag:
         execPointerUpForTranslate(event);
         break;
       case ToolType.freeDraw:
@@ -92,13 +105,16 @@ extension BaseAction on BoardModal {
       case ToolType.eraser:
         execPointerUpForEraser(event);
         break;
+      case ToolType.lasso:
+        execPointerUpForLasso(event);
+        break;
     }
   }
 
   /// 缩放开始触发逻辑
   onScaleStart(ScaleStartDetails details) {
     switch (currentToolType) {
-      case ToolType.translateAndScaleCanvas:
+      case ToolType.drag:
         onScaleStartForArea(details);
         break;
       case ToolType.freeDraw:
@@ -109,7 +125,7 @@ extension BaseAction on BoardModal {
   /// 缩放中触发逻辑
   onScaleUpdate(ScaleUpdateDetails details) {
     switch (currentToolType) {
-      case ToolType.translateAndScaleCanvas:
+      case ToolType.drag:
         onScaleUpdateForArea(details);
         break;
       case ToolType.freeDraw:
@@ -120,7 +136,7 @@ extension BaseAction on BoardModal {
   /// 缩放结束触发逻辑
   onScaleEnd(ScaleEndDetails details) {
     switch (currentToolType) {
-      case ToolType.translateAndScaleCanvas:
+      case ToolType.drag:
         onScaleEndForArea(details);
         break;
       case ToolType.freeDraw:
