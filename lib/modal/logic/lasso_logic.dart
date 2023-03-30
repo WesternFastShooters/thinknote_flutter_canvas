@@ -9,7 +9,7 @@ extension LassoLogic on BoardModal {
     if (currentToolType != ToolType.lasso) {
       return;
     }
-    currentLassoPoints.add(event.localPosition);
+    currentLassoPoints.add(transformToCanvasPoint(event.localPosition));
     update();
   }
 
@@ -19,7 +19,7 @@ extension LassoLogic on BoardModal {
     if (currentToolType != ToolType.lasso) {
       return;
     }
-    currentLassoPoints.add(event.localPosition);
+    currentLassoPoints.add(transformToCanvasPoint(event.localPosition));
     update();
   }
 

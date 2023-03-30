@@ -47,7 +47,6 @@ extension FreeDrawLogic on BoardModal {
     if (details.pointer == currentStroke.pointerId) {
       strokes = List.from(strokes)..add(currentStroke!);
       currentStroke = Stroke(strokePoints: [], pointerId: 0);
-      // currentStrokeOptions = StrokeOptions();
       update();
     }
   }

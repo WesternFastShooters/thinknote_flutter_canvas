@@ -18,10 +18,18 @@ class LassoLayer extends StatelessWidget {
 /// 绘制当前正在绘制的套索虚线
 Widget drawingCurrentLassoPath() {
   return GetBuilder<BoardModal>(builder: (BoardModal boardModal) {
-    return RepaintBoundary(
-      child: CustomPaint(
-        isComplex: true,
-        painter: LassoDashedLine(),
+    return Transform(
+      transform: Matrix4.identity()
+        ..translate(
+          boardModal.curCanvasOffset.dx,
+          boardModal.curCanvasOffset.dy,
+        )
+        ..scale(boardModal.curCanvasScale),
+      child: RepaintBoundary(
+        child: CustomPaint(
+          isComplex: true,
+          painter: LassoDashedLine(),
+        ),
       ),
     );
   });
