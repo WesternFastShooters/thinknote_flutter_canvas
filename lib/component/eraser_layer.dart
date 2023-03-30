@@ -12,11 +12,19 @@ class EraserLayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<BoardModal>(
       builder: (BoardModal boardModal) {
-        return RepaintBoundary(
-          child: CustomPaint(
-            isComplex: true,
-            painter: Eraser(eraserLocation: boardModal.currentEraserPosition),
-          ),
+        return Transform(
+          transform: Matrix4.identity()
+            ..translate(
+              boardModal.curCanvasOffset.dx,
+              boardModal.curCanvasOffset.dy,
+            )
+            ..scale(boardModal.curCanvasScale),
+          child: RepaintBoundary(
+            child: CustomPaint(
+              isComplex: true,
+              painter: Eraser(eraserLocation: boardModal.currentEraserPosition),
+            ),
+          ) ,
         );
       },
     );

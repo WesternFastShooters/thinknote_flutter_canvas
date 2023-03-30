@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 Offset getElementPointByDrawing({
-  required Offset screenPoint,
+  required Offset position,
   required Offset curCanvasOffset,
   required double curCanvasScale,
 }) {
-  return (screenPoint - curCanvasOffset) / curCanvasScale;
+  return (position - curCanvasOffset) / curCanvasScale;
 }

@@ -54,7 +54,7 @@ extension FreeDrawLogic on BoardModal {
 
   StrokePoint getStrokePoint(PointerEvent details) {
     final offsetStrokePoint = getElementPointByDrawing(
-      screenPoint: details.localPosition,
+      position: details.localPosition,
       curCanvasOffset: curCanvasOffset,
       curCanvasScale: curCanvasScale,
     );

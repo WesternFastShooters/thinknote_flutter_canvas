@@ -45,7 +45,14 @@ class BoardModal extends GetxController {
   Stroke currentStroke = Stroke(strokePoints: [], pointerId: 0);
 
   /// 当前橡皮擦的位置
-  Offset? currentEraserPosition;
+  Offset? _currentEraserPosition;
+  Offset? get currentEraserPosition => _currentEraserPosition;
+  set currentEraserPosition(Offset? position) {
+    _currentEraserPosition = position != null
+        ? transformToCanvasPoint(position)
+        : position; 
+    update();
+  }
 
   /// 橡皮擦半径
   double eraserRadius = 10.0;
@@ -55,9 +62,11 @@ class BoardModal extends GetxController {
 
   /// 套索闭合路径
   List<Offset> closedShapePolygonPoints = [];
-}
 
-extension BaseAction on BoardModal {
+  /// 根据传入的坐标映射为canvas的坐标
+  Offset transformToCanvasPoint(Offset position) =>
+      ((position - curCanvasOffset) / curCanvasScale);
+
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
     switch (currentToolType) {
@@ -117,8 +126,6 @@ extension BaseAction on BoardModal {
       case ToolType.drag:
         onScaleStartForArea(details);
         break;
-      case ToolType.freeDraw:
-        break;
     }
   }
 
@@ -128,8 +135,6 @@ extension BaseAction on BoardModal {
       case ToolType.drag:
         onScaleUpdateForArea(details);
         break;
-      case ToolType.freeDraw:
-        break;
     }
   }
 
@@ -138,8 +143,6 @@ extension BaseAction on BoardModal {
     switch (currentToolType) {
       case ToolType.drag:
         onScaleEndForArea(details);
-        break;
-      case ToolType.freeDraw:
         break;
     }
   }
