@@ -3,11 +3,16 @@ import 'package:flutter_application_2/modal/logic/drag_logic.dart';
 import 'package:flutter_application_2/modal/logic/eraser_logic.dart';
 import 'package:flutter_application_2/modal/logic/freedraw_logic.dart';
 import 'package:flutter_application_2/modal/logic/lasso_logic.dart';
-import 'package:flutter_application_2/modal/type/pencil_element_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import './stroke.dart';
 
 class BoardModal extends GetxController {
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
   /// 当前选用工具类型（默认为平移缩放）
   ToolType currentToolType = ToolType.drag;
 
@@ -36,21 +41,32 @@ class BoardModal extends GetxController {
   final double maxCanvasScale = 3.0;
 
   /// 当前笔画的配置属性
-  StrokeOptions currentStrokeOptions = StrokeOptions();
+  Map currentStrokeOption = {
+    'size': 3.0,
+    'thinning': 0.1,
+    'smoothing': 0.5,
+    'streamline': 0.5,
+    'taperStart': 0.0,
+    'capStart': true,
+    'taperEnd': 0.1,
+    'capEnd': true,
+    'simulatePressure': true,
+    'isComplete': false,
+    'color': Colors.green,
+  };
 
   /// 所有笔画
   List<Stroke> strokes = <Stroke>[];
 
   /// 当前笔画
-  Stroke currentStroke = Stroke(strokePoints: [], pointerId: 0);
+  Stroke currentStroke = Stroke();
 
   /// 当前橡皮擦的位置
   Offset? _currentEraserPosition;
   Offset? get currentEraserPosition => _currentEraserPosition;
   set currentEraserPosition(Offset? position) {
-    _currentEraserPosition = position != null
-        ? transformToCanvasPoint(position)
-        : position; 
+    _currentEraserPosition =
+        position != null ? transformToCanvasPoint(position) : position;
     update();
   }
 
