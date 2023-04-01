@@ -8,49 +8,42 @@ class EraserLogic extends GetxController {
   final FreeDrawLogic freeDrawLogic = Get.find<FreeDrawLogic>();
 
   /// 当前橡皮擦的位置
-  Offset? _currentEraserPosition;
-  Offset? get currentEraserPosition => _currentEraserPosition;
-  set currentEraserPosition(Offset? position) {
-    _currentEraserPosition = position != null
-        ? transformLogicModal.transformToCanvasPoint(position)
-        : position;
-    update();
-  }
+  Rx<Offset?> currentEraserPosition = Rx<Offset?>(null);
 
   /// 橡皮擦半径
-  double eraserRadius = 10.0;
-
+  RxDouble eraserRadius = RxDouble(10.0);
 
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
+    currentEraserPosition.value = event.localPosition;
     erase(event.localPosition);
-    update();
   }
 
   /// 手势移动触发逻辑
   onPointerMove(PointerMoveEvent event) {
+    currentEraserPosition.value = event.localPosition;
     erase(event.localPosition);
-    update();
   }
 
   /// 手势抬起触发逻辑
   onPointerUp(PointerUpEvent event) {
-    currentEraserPosition = null;
-    update();
+    currentEraserPosition.value = null;
   }
 
   /// 橡皮擦擦除逻辑
   erase(Offset position) {
-    currentEraserPosition = position;
+    currentEraserPosition.value = position;
     if (currentEraserPosition == null) {
       return;
     }
     freeDrawLogic.strokes.removeWhere((stroke) {
+      final eraserCanvasPosition =
+          transformLogicModal.transformToCanvasPoint(position);
       return stroke.strokePoints.any((strokPoint) {
         final point = Offset(strokPoint.x, strokPoint.y);
         final distance =
-            (currentEraserPosition! - point).distance; // 计算橡皮擦的位置和笔画的位置的距离
-        return distance < eraserRadius;
+            (eraserCanvasPosition - point).distance; // 计算橡皮擦的位置和笔画的位置的距离
+        return distance <= eraserRadius.value;
       });
     });
     update();

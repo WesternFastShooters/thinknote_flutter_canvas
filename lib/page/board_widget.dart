@@ -13,13 +13,13 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transformLogic = Get.find<TransformLogic>();
-    transformLogic.visibleAreaSize = MediaQuery.of(context).size;
-    transformLogic.visibleAreaCenter = Offset(
+    transformLogic.visibleAreaSize.value = MediaQuery.of(context).size;
+    transformLogic.visibleAreaCenter.value = Offset(
       MediaQuery.of(context).size.width / 2,
       MediaQuery.of(context).size.height / 2,
     );
-    if (transformLogic.curCanvasOffset == Offset.zero) {
-      transformLogic.curCanvasOffset = transformLogic.visibleAreaCenter;
+    if (transformLogic.curCanvasOffset.value == Offset.zero) {
+      transformLogic.curCanvasOffset.value = transformLogic.visibleAreaCenter.value;
     }
 
     return Scaffold(

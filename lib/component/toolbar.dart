@@ -16,26 +16,18 @@ class _ToolBarWidgetState extends State<ToolBar>
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _drawPencilWidget(),
-        _eraseWidget(),
-        _lassoWidget(),
-        _translateCanvasWidget(),
-      ],
+    return GetBuilder<WhiteBoardBase>(
+      builder: (whiteBoardBase) {
+        return Row(
+          children: [
+            _drawPencilWidget(),
+            _eraseWidget(),
+            _lassoWidget(),
+            _translateCanvasWidget(),
+          ],
+        );
+      },
     );
-    // return GetBuilder<WhiteBoardBase>(
-    //   builder: (whiteBoardBase) {
-    //     return Row(
-    //       children: [
-    //         _drawPencilWidget(),
-    //         _eraseWidget(),
-    //         _lassoWidget(),
-    //         _translateCanvasWidget(),
-    //       ],
-    //     );
-    //   },
-    // );
   }
 
   /// 自由绘画icon

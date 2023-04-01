@@ -3,11 +3,25 @@ import 'package:flutter_application_2/modal/eraser_logic.dart';
 import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:get/get.dart';
 
-// class CombineModelForEraser extends GetxController {
-//   final transformLogic = Get.find<TransformLogic>();
-//   final eraseLogic = Get.find<EraserLogic>();
-//   CombineModelForEraser();
-// }
+class EraserController extends GetxController {
+  final transformLogic = Get.find<TransformLogic>();
+  final eraseLogic = Get.find<EraserLogic>();
+
+  Rx<Offset> get curCanvasOffset => transformLogic.curCanvasOffset;
+  Rx<double> get curCanvasScale => transformLogic.curCanvasScale;
+  Rx<Offset?> get currentEraserPosition => eraseLogic.currentEraserPosition;
+  RxDouble get eraserRadius => eraseLogic.eraserRadius;
+
+  @override
+  void onInit() {
+    super.onInit();
+    everAll(
+        [curCanvasOffset, curCanvasScale, currentEraserPosition, eraserRadius],
+        (calback) {
+      update();
+    });
+  }
+}
 
 class EraserLayer extends StatelessWidget {
   final eraseLogic = Get.find<EraserLogic>();
@@ -16,44 +30,32 @@ class EraserLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Transform(
-      transform: Matrix4.identity()
-        ..translate(
-          transformLogic.curCanvasOffset.dx,
-          transformLogic.curCanvasOffset.dy,
-        )
-        ..scale(transformLogic.curCanvasScale),
-      child: RepaintBoundary(
-        child: CustomPaint(
-          isComplex: true,
-          painter: Eraser(eraserLocation: eraseLogic.currentEraserPosition),
-        ),
-      ),
+    return GetX<EraserController>(
+      init: EraserController(),
+      builder: (eraserController) {
+        return Transform(
+          transform: Matrix4.identity()
+            ..translate(
+              eraserController.curCanvasOffset.value.dx,
+              eraserController.curCanvasOffset.value.dy,
+            )
+            ..scale(eraserController.curCanvasScale.value),
+          child: RepaintBoundary(
+            child: CustomPaint(
+              isComplex: true,
+              painter: Eraser(
+                  eraserLocation: eraserController.currentEraserPosition.value),
+            ),
+          ),
+        );
+      },
     );
-    // return GetBuilder(
-    //   builder: (_) {
-    //     return Transform(
-    //       transform: Matrix4.identity()
-    //         ..translate(
-    //           transformLogic.curCanvasOffset.dx,
-    //           transformLogic.curCanvasOffset.dy,
-    //         )
-    //         ..scale(transformLogic.curCanvasScale),
-    //       child: RepaintBoundary(
-    //         child: CustomPaint(
-    //           isComplex: true,
-    //           painter: Eraser(
-    //               eraserLocation: eraseLogic.currentEraserPosition),
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // );
   }
 }
 
 class Eraser extends CustomPainter {
-  final eraseLogic = Get.find<EraserLogic>();
+  final eraserController = Get.find<EraserController>();
+  final transformLogicModal = Get.find<TransformLogic>();
 
   late Offset? eraserLocation;
 
@@ -64,7 +66,9 @@ class Eraser extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // 绘制一个半径为10的圆形，颜色为蓝色
     if (eraserLocation != null) {
-      canvas.drawCircle(eraserLocation!, eraseLogic.eraserRadius,
+      canvas.drawCircle(
+          transformLogicModal.transformToCanvasPoint(eraserLocation!),
+          eraserController.eraserRadius.value,
           Paint()..color = Colors.blue);
     }
   }

@@ -6,10 +6,10 @@ class LassoLogic extends GetxController {
   final TransformLogic transformLogicModal = Get.find<TransformLogic>();
 
   /// 绘制套索虚线路径
-  List<Offset> currentLassoPoints = [];
+  RxList<Offset> currentLassoPoints = RxList<Offset>([]);
 
   /// 套索闭合路径
-  List<Offset> closedShapePolygonPoints = [];
+  RxList<Offset> closedShapePolygonPoints = RxList<Offset>([]);
 
 
   /// 手势按下触发逻辑

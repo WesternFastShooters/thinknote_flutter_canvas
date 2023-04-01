@@ -23,10 +23,10 @@ class FreeDrawLogic extends GetxController {
   };
 
   /// 当前笔画
-  Stroke currentStroke = Stroke();
+  Rx<Stroke> currentStroke = (Stroke.init()).obs;
 
   /// 所有笔画
-  List<Stroke> strokes = <Stroke>[];
+  RxList<Stroke> strokes = <Stroke>[].obs;
 
   /// 自由绘画模式下，落笔触发逻辑
   void onPointerDown(PointerDownEvent details) {
@@ -34,54 +34,65 @@ class FreeDrawLogic extends GetxController {
       ...currentStrokeOption,
       'simulatePressure': details.kind != PointerDeviceKind.stylus,
     };
-    if (currentStroke.pointerId == 0) {
-      currentStroke =
-          Stroke(pointerId: details.pointer, option: currentStrokeOption)
-            ..storeStrokePoint(details);
-      update();
+    if (currentStroke.value.pointerId == -1) {
+      currentStroke = (Stroke(
+        pointerId: details.pointer,
+        option: currentStrokeOption,
+      )..storeStrokePoint(details))
+          .obs;
     }
+    update();
   }
 
   /// 自由绘画下，移笔触发逻辑
   void onPointerMove(PointerMoveEvent details) {
-    if (details.pointer == currentStroke.pointerId) {
-      currentStroke.storeStrokePoint(details);
-      update();
+    if (details.pointer == currentStroke.value.pointerId) {
+      currentStroke.value.storeStrokePoint(details);
     }
+    update();
   }
 
   /// 自由绘画下，提笔触发逻辑
   void onPointerUp(PointerUpEvent details) {
-    if (details.pointer == currentStroke.pointerId) {
-      strokes = List.from(strokes)..add(currentStroke);
-      currentStroke = Stroke();
-      update();
+    if (details.pointer == currentStroke.value.pointerId) {
+      strokes = RxList(List.from(strokes.value)..add(currentStroke.value));
+      currentStroke = (Stroke.init()).obs;
     }
+    update();
   }
 }
 
-class Stroke {
-  final TransformLogic transformLogicModal = Get.find<TransformLogic>();
-
-  Stroke({int? pointerId, Map? option}) {
-    this.option = option ?? {...this.option};
+class Stroke extends GetxController {
+  Stroke({
+    required this.pointerId,
+    required Map? option,
+  }) {
+    this.option = RxMap(option ?? {...this.option});
   }
+  factory Stroke.init() => Stroke(pointerId: -1, option: null);
+  final TransformLogic transformLogicModal = Get.find<TransformLogic>();
+  /// 笔画点集合
+  RxList<StrokePoint> strokePoints = <StrokePoint>[].obs; // { dx,dy,pressure }[]
 
-  int pointerId = 0;
+  /// 笔画id，用于区分不同的笔画，防止多个笔画同时绘制
+  int pointerId = -1;
+
+  /// 笔画配置属性
   Map option = {
-    'size': 3.0,
-    'thinning': 0.1,
-    'smoothing': 0.5,
-    'streamline': 0.5,
-    'taperStart': 0.0,
-    'capStart': true,
-    'taperEnd': 0.1,
-    'capEnd': true,
-    'simulatePressure': true,
-    'isComplete': false,
-    'color': Colors.pink,
+    'size': 3.0.obs,
+    'thinning': 0.1.obs,
+    'smoothing': 0.5.obs,
+    'streamline': 0.5.obs,
+    'taperStart': 0.0.obs,
+    'capStart': true.obs,
+    'taperEnd': 0.1.obs,
+    'capEnd': true.obs,
+    'simulatePressure': true.obs,
+    'isComplete': false.obs,
+    'color': Colors.pink.obs,
   };
-  List<Point> strokePoints = []; // { dx,dy,pressure }[]
+
+  /// 笔画路径
   Map get pathCanvas {
     final path = Path();
     Paint paint = Paint()..color = option['color'];
@@ -112,8 +123,10 @@ class Stroke {
     return {'path': path, 'paint': paint};
   }
 
+  /// 判断笔画是否为空
   bool get isEmpty => strokePoints.isEmpty;
 
+  /// 存储笔画点
   storeStrokePoint(PointerEvent details) {
     final offsetStrokePoint =
         transformLogicModal.transformToCanvasPoint(details.localPosition);
@@ -126,5 +139,6 @@ class Stroke {
           )
         : StrokePoint(offsetStrokePoint.dx, offsetStrokePoint.dy);
     strokePoints.add(strokePoint);
+    update();
   }
 }

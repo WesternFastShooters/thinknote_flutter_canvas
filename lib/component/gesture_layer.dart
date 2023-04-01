@@ -9,41 +9,25 @@ class GestureLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onScaleStart: whiteBoardBase.onScaleStart,
-        onScaleUpdate: whiteBoardBase.onScaleUpdate,
-        onScaleEnd: whiteBoardBase.onScaleEnd,
-        child: Listener(
-          behavior: HitTestBehavior.opaque,
-          onPointerDown: whiteBoardBase.onPointerDown,
-          onPointerMove: whiteBoardBase.onPointerMove,
-          onPointerUp: whiteBoardBase.onPointerUp,
-        ),
-      ),
+    return GetBuilder<WhiteBoardBase>(
+      builder: (whiteBoardBase) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onScaleStart: whiteBoardBase.onScaleStart,
+            onScaleUpdate: whiteBoardBase.onScaleUpdate,
+            onScaleEnd: whiteBoardBase.onScaleEnd,
+            child: Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerDown: whiteBoardBase.onPointerDown,
+              onPointerMove: whiteBoardBase.onPointerMove,
+              onPointerUp: whiteBoardBase.onPointerUp,
+            ),
+          ),
+        );
+      },
     );
-    // return GetBuilder<WhiteBoardBase>(
-    //   builder: (whiteBoardBase) {
-    //     return SizedBox(
-    //       width: MediaQuery.of(context).size.width,
-    //       height: MediaQuery.of(context).size.height,
-    //       child: GestureDetector(
-    //         behavior: HitTestBehavior.opaque,
-    //         onScaleStart: whiteBoardBase.onScaleStart,
-    //         onScaleUpdate: whiteBoardBase.onScaleUpdate,
-    //         onScaleEnd: whiteBoardBase.onScaleEnd,
-    //         child: Listener(
-    //           behavior: HitTestBehavior.opaque,
-    //           onPointerDown: whiteBoardBase.onPointerDown,
-    //           onPointerMove: whiteBoardBase.onPointerMove,
-    //           onPointerUp: whiteBoardBase.onPointerUp,
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // );
   }
 }

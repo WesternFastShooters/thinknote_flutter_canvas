@@ -4,6 +4,30 @@ import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:get/get.dart';
 import 'package:dash_painter/dash_painter.dart';
 
+class LassoController extends GetxController {
+  final lassoLogic = Get.find<LassoLogic>();
+  final transformLogic = Get.find<TransformLogic>();
+
+  Rx<Offset> get curCanvasOffset => transformLogic.curCanvasOffset;
+  Rx<double> get curCanvasScale => transformLogic.curCanvasScale;
+// currentLassoPoints
+// closedShapePolygonPoints
+  RxList<Offset> get currentLassoPoints => lassoLogic.currentLassoPoints;
+  RxList<Offset> get closedShapePolygonPoints =>
+      lassoLogic.closedShapePolygonPoints;
+
+  @override
+  void onInit() {
+    everAll([
+      curCanvasOffset,
+      curCanvasScale,
+      currentLassoPoints,
+      closedShapePolygonPoints,
+    ], (callback) => update([]));
+    super.onInit();
+  }
+}
+
 class LassoLayer extends StatelessWidget {
   final transformLogic = Get.find<TransformLogic>();
 
@@ -11,34 +35,24 @@ class LassoLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Transform(
-      transform: Matrix4.identity()
-        ..translate(
-          transformLogic.curCanvasOffset.dx,
-          transformLogic.curCanvasOffset.dy,
-        )
-        ..scale(transformLogic.curCanvasScale),
-      child: Stack(children: [
-        closeLassoScale(),
-        drawingCurrentLassoPath(),
-      ]),
+    return GetBuilder(
+      id:'lasso',
+      init:LassoController(),
+      builder: (LassoController lassoController) {
+        return Transform(
+          transform: Matrix4.identity()
+            ..translate(
+              lassoController.curCanvasOffset.value.dx,
+              lassoController.curCanvasOffset.value.dy,
+            )
+            ..scale(lassoController.curCanvasScale.value),
+          child: Stack(children: [
+            closeLassoScale(),
+            drawingCurrentLassoPath(),
+          ]),
+        );
+      },
     );
-    // return GetBuilder(
-    //   builder: (_) {
-    //     return Transform(
-    //       transform: Matrix4.identity()
-    //         ..translate(
-    //           transformLogic.curCanvasOffset.dx,
-    //           transformLogic.curCanvasOffset.dy,
-    //         )
-    //         ..scale(transformLogic.curCanvasScale),
-    //       child: Stack(children: [
-    //         closeLassoScale(),
-    //         drawingCurrentLassoPath(),
-    //       ]),
-    //     );
-    //   },
-    // );
   }
 
   /// 绘制当前正在绘制的套索虚线
@@ -64,13 +78,13 @@ class LassoLayer extends StatelessWidget {
 
 /// 套索虚线canvas
 class LassoDashedLine extends CustomPainter {
-  final lassoLogic = Get.find<LassoLogic>();
+  final lassoController = Get.find<LassoController>();
   LassoDashedLine();
 
   @override
   void paint(Canvas canvas, Size size) {
     // 消费boardModal中的currentLassoPoints绘制虚线path
-    if (lassoLogic.currentLassoPoints.length > 1) {
+    if (lassoController.currentLassoPoints.length > 1) {
       final Paint paint = Paint()
         ..color = Colors.blue
         ..strokeWidth = 2
@@ -80,11 +94,11 @@ class LassoDashedLine extends CustomPainter {
         ..strokeJoin = StrokeJoin.miter;
 
       final Path path = Path();
-      path.moveTo(lassoLogic.currentLassoPoints[0].dx,
-          lassoLogic.currentLassoPoints[0].dy);
-      for (int i = 1; i < lassoLogic.currentLassoPoints.length; i++) {
-        path.lineTo(lassoLogic.currentLassoPoints[i].dx,
-            lassoLogic.currentLassoPoints[i].dy);
+      path.moveTo(lassoController.currentLassoPoints[0].dx,
+          lassoController.currentLassoPoints[0].dy);
+      for (int i = 1; i < lassoController.currentLassoPoints.length; i++) {
+        path.lineTo(lassoController.currentLassoPoints[i].dx,
+            lassoController.currentLassoPoints[i].dy);
       }
       const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
     }

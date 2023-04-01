@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +10,6 @@ enum ScaleLayerWidgetType {
 }
 
 class TransformLogic extends GetxController {
-
   /// 用来计算双指缩放是缩小还是放大
   ScaleUpdateDetails? lastScaleUpdateDetails;
 
@@ -25,29 +23,29 @@ class TransformLogic extends GetxController {
   double preCanvasScale = 1.0;
 
   /// 画布当前的偏移量
-  Offset curCanvasOffset = Offset.zero;
-
-  /// 可视区域的大小
-  Size visibleAreaSize = Size.zero;
-
-  /// 可视区域的中心
-  Offset visibleAreaCenter = Offset.zero;
+  Rx<Offset> curCanvasOffset = Rx<Offset>(Offset.zero);
 
   /// 画布当前的缩放比例
-  double curCanvasScale = 1.0;
+  Rx<double> curCanvasScale = Rx<double>(1.0);
+
+  /// 可视区域的大小
+  Rx<Size> visibleAreaSize = Rx<Size>(Size.zero);
+
+  /// 可视区域的中心
+  Rx<Offset> visibleAreaCenter = Rx<Offset>(Offset.zero);
 
   /// 根据传入的坐标映射为canvas的坐标
   Offset transformToCanvasPoint(Offset position) =>
-      ((position - curCanvasOffset) / curCanvasScale);
+      ((position - curCanvasOffset.value) / curCanvasScale.value);
 
   /// 触发平移执行回调
   onPointerMove(PointerMoveEvent event) {
-    curCanvasOffset += event.localDelta;
+    curCanvasOffset.value += event.localDelta;
     update();
   }
 
   onPointerUp(PointerUpEvent event) {
-    curCanvasOffset += event.localDelta;
+    curCanvasOffset.value += event.localDelta;
     update();
   }
 
@@ -78,7 +76,7 @@ class TransformLogic extends GetxController {
 
   /// 执行平移
   void _executeTranslating(ScaleUpdateDetails details) {
-    curCanvasOffset += details.focalPointDelta;
+    curCanvasOffset.value += details.focalPointDelta;
   }
 
   /// 执行缩放
@@ -118,27 +116,27 @@ class TransformLogic extends GetxController {
     if (type == ScaleLayerWidgetType.zoomOut) {
       // 中心缩小画布
       if (double.parse(curCanvasScale.toStringAsFixed(1)) <= minCanvasScale) {
-        preCanvasScale = curCanvasScale;
-        curCanvasScale = minCanvasScale;
+        preCanvasScale = curCanvasScale.value;
+        curCanvasScale.value = minCanvasScale;
       } else {
-        preCanvasScale = curCanvasScale;
+        preCanvasScale = curCanvasScale.value;
         curCanvasScale -= stepScale;
       }
     } else if (type == ScaleLayerWidgetType.zoomIn) {
       // 中心放大画布
       if (double.parse(curCanvasScale.toStringAsFixed(1)) >= maxCanvasScale) {
-        preCanvasScale = curCanvasScale;
-        curCanvasScale = maxCanvasScale;
+        preCanvasScale = curCanvasScale.value;
+        curCanvasScale.value = maxCanvasScale;
       } else {
-        preCanvasScale = curCanvasScale;
+        preCanvasScale = curCanvasScale.value;
         curCanvasScale += stepScale;
       }
     }
 
-    curCanvasOffset += getOffsetByScaleChange(
+    curCanvasOffset.value += getOffsetByScaleChange(
       center: center,
-      curCanvasOffset: curCanvasOffset,
-      curCanvasScale: curCanvasScale,
+      curCanvasOffset: curCanvasOffset.value,
+      curCanvasScale: curCanvasScale.value,
       preCanvasScale: preCanvasScale,
     );
     update();
