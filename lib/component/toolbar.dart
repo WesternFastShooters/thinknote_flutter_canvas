@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/constants/tool_type.dart';
-import 'package:flutter_application_2/modal/board_modal.dart';
 import 'package:get/get.dart';
+import '../modal/white_board_base.dart';
 
 /// 工具条Widget
 class ToolBar extends StatefulWidget {
@@ -13,27 +12,30 @@ class ToolBar extends StatefulWidget {
 
 class _ToolBarWidgetState extends State<ToolBar>
     with SingleTickerProviderStateMixin {
-  final BoardModal boardModal = Get.find<BoardModal>();
-
-  late AnimationController _animationController;
-  late CurvedAnimation _curvedAnimation;
-  late Tween<double> _scaleTween;
-  late Animation _scaleAnimation;
+  final whiteBoardBase = Get.find<WhiteBoardBase>();
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<BoardModal>(
-      builder: (_) {
-        return Row(
-          children: [
-            _drawPencilWidget(),
-            _eraseWidget(),
-            _lassoWidget(),
-            _translateCanvasWidget(),
-          ],
-        );
-      },
+    return Row(
+      children: [
+        _drawPencilWidget(),
+        _eraseWidget(),
+        _lassoWidget(),
+        _translateCanvasWidget(),
+      ],
     );
+    // return GetBuilder<WhiteBoardBase>(
+    //   builder: (whiteBoardBase) {
+    //     return Row(
+    //       children: [
+    //         _drawPencilWidget(),
+    //         _eraseWidget(),
+    //         _lassoWidget(),
+    //         _translateCanvasWidget(),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 
   /// 自由绘画icon
@@ -41,7 +43,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.brush),
       onPressed: () {
-        boardModal.currentToolType = ToolType.freeDraw;
+        whiteBoardBase.currentToolType = ToolType.freeDraw;
       },
     );
   }
@@ -51,7 +53,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.pan_tool),
       onPressed: () {
-        boardModal.currentToolType = ToolType.drag;
+        whiteBoardBase.currentToolType = ToolType.transform;
       },
     );
   }
@@ -61,7 +63,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.phonelink_erase),
       onPressed: () {
-        boardModal.currentToolType = ToolType.eraser;
+        whiteBoardBase.currentToolType = ToolType.eraser;
       },
     );
   }
@@ -71,7 +73,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.crop_square),
       onPressed: () {
-        boardModal.currentToolType = ToolType.lasso;
+        whiteBoardBase.currentToolType = ToolType.lasso;
       },
     );
   }

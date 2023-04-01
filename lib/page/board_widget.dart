@@ -4,32 +4,32 @@ import 'package:flutter_application_2/component/freedraw_layer.dart';
 import 'package:flutter_application_2/component/gesture_layer.dart';
 import 'package:flutter_application_2/component/lasso_layer.dart';
 import 'package:flutter_application_2/component/toolbar.dart';
-import 'package:flutter_application_2/modal/board_modal.dart';
+import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:get/get.dart';
 
 class BoardWidget extends StatelessWidget {
   BoardWidget({Key? key}) : super(key: key);
-  final boardModal = Get.put(BoardModal());
 
   @override
   Widget build(BuildContext context) {
-    boardModal.visibleAreaSize = MediaQuery.of(context).size;
-    boardModal.visibleAreaCenter = Offset(
+    final transformLogic = Get.find<TransformLogic>();
+    transformLogic.visibleAreaSize = MediaQuery.of(context).size;
+    transformLogic.visibleAreaCenter = Offset(
       MediaQuery.of(context).size.width / 2,
       MediaQuery.of(context).size.height / 2,
     );
-    if (boardModal.curCanvasOffset == Offset.zero) {
-      boardModal.curCanvasOffset = boardModal.visibleAreaCenter;
+    if (transformLogic.curCanvasOffset == Offset.zero) {
+      transformLogic.curCanvasOffset = transformLogic.visibleAreaCenter;
     }
 
     return Scaffold(
       body: Stack(
-        children: const [
+        children: [
           FreeDrawLayer(),
           EraserLayer(),
           LassoLayer(),
           GestureLayer(),
-          Positioned(
+          const Positioned(
             top: 20,
             right: 20,
             child: ToolBar(),

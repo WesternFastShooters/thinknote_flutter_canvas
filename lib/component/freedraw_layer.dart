@@ -1,71 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/modal/board_modal.dart';
-import 'package:flutter_application_2/modal/stroke.dart';
+import 'package:flutter_application_2/modal/freedraw_logic.dart';
+import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:get/get.dart';
-import 'package:perfect_freehand/perfect_freehand.dart';
 
 class FreeDrawLayer extends StatelessWidget {
-  const FreeDrawLayer({super.key});
+  final transformLogic = Get.find<TransformLogic>();
+  final freedrawLogic = Get.find<FreeDrawLogic>();
+  FreeDrawLayer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      buildAllPaths(context),
-      buildCurrentPath(context),
-    ]);
+    return Transform(
+      transform: Matrix4.identity()
+        ..translate(
+          transformLogic.curCanvasOffset.dx,
+          transformLogic.curCanvasOffset.dy,
+        )
+        ..scale(transformLogic.curCanvasScale),
+      child: Stack(children: [
+        buildAllPaths(context),
+        buildCurrentPath(context),
+      ]),
+    );
+    // return GetBuilder(
+    //   builder: (_) {
+    //     return Transform(
+    //       transform: Matrix4.identity()
+    //         ..translate(
+    //           transformLogic.curCanvasOffset.dx,
+    //           transformLogic.curCanvasOffset.dy,
+    //         )
+    //         ..scale(transformLogic.curCanvasScale),
+    //       child: Stack(children: [
+    //         buildAllPaths(context),
+    //         buildCurrentPath(context),
+    //       ]),
+    //     );
+    //   },
+    // );
   }
-}
 
-/// 绘制当前笔画
-Widget buildCurrentPath(BuildContext context) {
-  return GetBuilder<BoardModal>(
-    builder: (BoardModal boardModal) {
-      return Transform(
-        transform: Matrix4.identity()
-          ..translate(
-            boardModal.curCanvasOffset.dx,
-            boardModal.curCanvasOffset.dy,
-          )
-          ..scale(boardModal.curCanvasScale),
-        child: RepaintBoundary(
-          child: CustomPaint(
-            isComplex: true,
-            painter: Sketcher(
-              propStrokes: boardModal.currentStroke.isEmpty
-                  ? []
-                  : [boardModal.currentStroke],
-              options: boardModal.currentStrokeOption,
-            ),
-          ),
+  /// 绘制当前笔画
+  Widget buildCurrentPath(BuildContext context) {
+    return RepaintBoundary(
+      child: CustomPaint(
+        isComplex: true,
+        painter: Sketcher(
+          propStrokes: freedrawLogic.currentStroke.isEmpty
+              ? []
+              : [freedrawLogic.currentStroke],
+          options: freedrawLogic.currentStrokeOption,
         ),
-      );
-    },
-  );
-}
+      ),
+    );
+  }
 
-/// 绘制所有笔画
-Widget buildAllPaths(BuildContext context) {
-  return GetBuilder<BoardModal>(
-    builder: (BoardModal boardModal) {
-      return Transform(
-        transform: Matrix4.identity()
-          ..translate(
-            boardModal.curCanvasOffset.dx,
-            boardModal.curCanvasOffset.dy,
-          )
-          ..scale(boardModal.curCanvasScale),
-        child: RepaintBoundary(
-          child: CustomPaint(
-            isComplex: true,
-            painter: Sketcher(
-              propStrokes: boardModal.strokes,
-              options: boardModal.currentStrokeOption,
-            ),
-          ),
+  /// 绘制所有笔画
+  Widget buildAllPaths(BuildContext context) {
+    return RepaintBoundary(
+      child: CustomPaint(
+        isComplex: true,
+        painter: Sketcher(
+          propStrokes: freedrawLogic.strokes,
+          options: freedrawLogic.currentStrokeOption,
         ),
-      );
-    },
-  );
+      ),
+    );
+  }
 }
 
 class Sketcher extends CustomPainter {
