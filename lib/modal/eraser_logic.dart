@@ -32,13 +32,12 @@ class EraserLogic extends GetxController {
 
   /// 橡皮擦擦除逻辑
   erase(Offset position) {
-    currentEraserPosition.value = position;
     if (currentEraserPosition == null) {
       return;
     }
+    final eraserCanvasPosition =
+        transformLogicModal.transformToCanvasPoint(position);
     freeDrawLogic.strokes.removeWhere((stroke) {
-      final eraserCanvasPosition =
-          transformLogicModal.transformToCanvasPoint(position);
       return stroke.strokePoints.any((strokPoint) {
         final point = Offset(strokPoint.x, strokPoint.y);
         final distance =
@@ -46,6 +45,5 @@ class EraserLogic extends GetxController {
         return distance <= eraserRadius.value;
       });
     });
-    update();
   }
 }

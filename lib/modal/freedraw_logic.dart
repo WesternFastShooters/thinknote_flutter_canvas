@@ -118,7 +118,7 @@ class Stroke {
       taperEnd: 0.1,
       capEnd: true,
       simulatePressure: true,
-      isComplete: false,
+      isComplete: true,
     );
     if (outlinePoints.isEmpty) {
       return null;
