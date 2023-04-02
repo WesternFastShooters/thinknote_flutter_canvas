@@ -78,9 +78,9 @@ class Sketcher extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (int i = 0; i < propStrokes.length; ++i) {
-      if (propStrokes[i].path == null) continue;
-      canvas.drawPath(propStrokes[i].path!, propStrokes[i].paint);
+    for (var stroke in propStrokes) {
+      if (stroke.path == null) continue;
+      canvas.drawPath(stroke.path!, stroke.paint);
     }
   }
 
