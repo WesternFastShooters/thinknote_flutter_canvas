@@ -14,7 +14,6 @@ class FreeDrawController extends GetxController {
 
   @override
   void onInit() {
-    print(111);
     super.onInit();
     everAll([curCanvasOffset, curCanvasScale, currentStroke, strokes], (_) {
       update();
@@ -38,8 +37,8 @@ class FreeDrawLayer extends StatelessWidget {
             )
             ..scale(controller.curCanvasScale.value),
           child: Stack(children: [
-            buildAllPaths(context),
-            buildCurrentPath(context),
+            buildAllPaths(),
+            buildCurrentPath(),
           ]),
         );
       },
@@ -47,7 +46,7 @@ class FreeDrawLayer extends StatelessWidget {
   }
 
   /// 绘制当前笔画
-  Widget buildCurrentPath(BuildContext context) {
+  Widget buildCurrentPath() {
     final freeDrawController = Get.find<FreeDrawController>();
     return RepaintBoundary(
       child: CustomPaint(
@@ -60,9 +59,8 @@ class FreeDrawLayer extends StatelessWidget {
   }
 
   /// 绘制所有笔画
-  Widget buildAllPaths(BuildContext context) {
+  Widget buildAllPaths() {
     final freeDrawController = Get.find<FreeDrawController>();
-
     return RepaintBoundary(
       child: CustomPaint(
         isComplex: true,
@@ -76,15 +74,13 @@ class FreeDrawLayer extends StatelessWidget {
 
 class Sketcher extends CustomPainter {
   final List<Stroke> propStrokes; // 用List表示一笔或者多笔，
-
   Sketcher(this.propStrokes);
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (var item in propStrokes) {
-      final path = item.pathCanvas['path'];
-      final paint = item.pathCanvas['paint'];
-      canvas.drawPath(path, paint);
+    for (int i = 0; i < propStrokes.length; ++i) {
+      if (propStrokes[i].path == null) continue;
+      canvas.drawPath(propStrokes[i].path!, propStrokes[i].paint);
     }
   }
 

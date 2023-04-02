@@ -34,12 +34,13 @@ class FreeDrawLogic extends GetxController {
       ...currentStrokeOption,
       'simulatePressure': details.kind != PointerDeviceKind.stylus,
     };
+
     if (currentStroke.value.pointerId == -1) {
-      currentStroke = (Stroke(
-        pointerId: details.pointer,
-        option: currentStrokeOption,
-      )..storeStrokePoint(details))
-          .obs;
+      currentStroke.update((Stroke? val) {
+        val?.pointerId = details.pointer;
+        val?.option = currentStrokeOption;
+        val?.storeStrokePoint(details);
+      });
     }
     update();
   }
@@ -47,7 +48,9 @@ class FreeDrawLogic extends GetxController {
   /// 自由绘画下，移笔触发逻辑
   void onPointerMove(PointerMoveEvent details) {
     if (details.pointer == currentStroke.value.pointerId) {
-      currentStroke.value.storeStrokePoint(details);
+      currentStroke.update((val) {
+        val?.storeStrokePoint(details);
+      });
     }
     update();
   }
@@ -55,30 +58,38 @@ class FreeDrawLogic extends GetxController {
   /// 自由绘画下，提笔触发逻辑
   void onPointerUp(PointerUpEvent details) {
     if (details.pointer == currentStroke.value.pointerId) {
-      strokes = RxList(List.from(strokes.value)..add(currentStroke.value));
-      currentStroke = (Stroke.init()).obs;
+      strokes.add(Stroke(
+        pointerId: currentStroke.value.pointerId,
+        option: currentStroke.value.option,
+      )..strokePoints = currentStroke.value.strokePoints);
+      currentStroke.update((val) {
+        val?.pointerId = -1;
+        val?.option = null;
+        val?.strokePoints = [];
+      });
     }
     update();
   }
 }
 
-class Stroke extends GetxController {
+class Stroke {
   Stroke({
     required this.pointerId,
     required Map? option,
   }) {
-    this.option = RxMap(option ?? {...this.option});
+    this.option = option;
   }
   factory Stroke.init() => Stroke(pointerId: -1, option: null);
   final TransformLogic transformLogicModal = Get.find<TransformLogic>();
+
   /// 笔画点集合
-  RxList<StrokePoint> strokePoints = <StrokePoint>[].obs; // { dx,dy,pressure }[]
+  List<StrokePoint> strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
 
   /// 笔画id，用于区分不同的笔画，防止多个笔画同时绘制
   int pointerId = -1;
 
   /// 笔画配置属性
-  Map option = {
+  Map _option = {
     'size': 3.0.obs,
     'thinning': 0.1.obs,
     'smoothing': 0.5.obs,
@@ -91,37 +102,45 @@ class Stroke extends GetxController {
     'isComplete': false.obs,
     'color': Colors.pink.obs,
   };
+  set option(Map? option) => _option = option ?? _option;
+  Map get option => _option;
 
-  /// 笔画路径
-  Map get pathCanvas {
-    final path = Path();
-    Paint paint = Paint()..color = option['color'];
+  Path? get path {
+    final tempPath = Path();
     final outlinePoints = getStroke(
       strokePoints,
-      size: option['size'],
-      thinning: option['thinning'],
-      smoothing: option['smoothing'],
-      streamline: option['streamline'],
-      taperStart: option['taperStart'],
-      capStart: option['capStart'],
-      taperEnd: option['taperEnd'],
-      capEnd: option['capEnd'],
-      simulatePressure: option['simulatePressure'],
-      isComplete: option['isComplete'],
+      size: 3,
+      thinning: 0.1,
+      smoothing: 0.5,
+      streamline: 0.5,
+      taperStart: 0.0,
+      capStart: true,
+      taperEnd: 0.1,
+      capEnd: true,
+      simulatePressure: true,
+      isComplete: false,
     );
-    if (outlinePoints.length < 2) {
-      // 只画一个点
-      path.addOval(Rect.fromCircle(
+    if (outlinePoints.isEmpty) {
+      return null;
+    } else if (outlinePoints.length < 2) {
+      tempPath.addOval(Rect.fromCircle(
           center: Offset(outlinePoints[0].x, outlinePoints[0].y), radius: 1));
     } else {
-      // 画线
-      path.moveTo(outlinePoints[0].x, outlinePoints[0].y);
-      for (var i = 1; i < outlinePoints.length; i++) {
-        path.lineTo(outlinePoints[i].x, outlinePoints[i].y);
+      tempPath.moveTo(outlinePoints[0].x, outlinePoints[0].y);
+
+      for (int i = 1; i < outlinePoints.length - 1; ++i) {
+        final p0 = outlinePoints[i];
+        final p1 = outlinePoints[i + 1];
+        tempPath.quadraticBezierTo(
+            p0.x, p0.y, (p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
       }
     }
-    return {'path': path, 'paint': paint};
+    return tempPath;
   }
+
+  // Paint get paint => Paint()..color = option['color'];
+  // 转为响应式
+  Paint get paint => Paint()..color = option['color'];
 
   /// 判断笔画是否为空
   bool get isEmpty => strokePoints.isEmpty;
@@ -139,6 +158,5 @@ class Stroke extends GetxController {
           )
         : StrokePoint(offsetStrokePoint.dx, offsetStrokePoint.dy);
     strokePoints.add(strokePoint);
-    update();
   }
 }
