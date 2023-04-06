@@ -14,7 +14,7 @@ class TransformLogic extends GetxController {
   ScaleUpdateDetails? lastScaleUpdateDetails;
 
   /// 最小缩放
-  final double minCanvasScale = 0.1;
+  final double minCanvasScale = 1.0;
 
   /// 最大缩放
   final double maxCanvasScale = 3.0;
@@ -158,4 +158,5 @@ class TransformLogic extends GetxController {
         Offset(thisTimeCanvasOffsetX, thisTimeCanvasOffsetY);
     return thisTimeCanvasOffset;
   }
+
 }
