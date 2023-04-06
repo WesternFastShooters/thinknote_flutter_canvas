@@ -5,6 +5,8 @@ import 'package:flutter_application_2/type/white_board_element.dart';
 import 'package:get/get.dart';
 
 class WhiteBoardLayer extends StatelessWidget {
+  const WhiteBoardLayer({super.key});
+
   @override
   Widget build(BuildContext context) {
     final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
@@ -18,25 +20,23 @@ class WhiteBoardLayer extends StatelessWidget {
       whiteBoardManager.transformConfig['curCanvasOffset'] =
           whiteBoardManager.transformConfig['visibleAreaCenter'];
     }
-    return Scaffold(
-      body: GetX<WhiteBoardManager>(
-        builder: (whiteBoardManager) {
-          return Transform(
-            transform: Matrix4.identity()
-              ..translate(
-                whiteBoardManager.transformConfig['curCanvasOffset'].dx,
-                whiteBoardManager.transformConfig['curCanvasOffset'].dy,
-              )
-              ..scale(whiteBoardManager.transformConfig['curCanvasScale']),
-            child: RepaintBoundary(
-              child: CustomPaint(
-                isComplex: true,
-                painter: WhiteBoardPainter(),
-              ),
+    return GetBuilder<WhiteBoardManager>(
+      builder: (whiteBoardManager) {
+        return Transform(
+          transform: Matrix4.identity()
+            ..translate(
+              whiteBoardManager.transformConfig['curCanvasOffset'].dx,
+              whiteBoardManager.transformConfig['curCanvasOffset'].dy,
+            )
+            ..scale(whiteBoardManager.transformConfig['curCanvasScale']),
+          child: RepaintBoundary(
+            child: CustomPaint(
+              isComplex: true,
+              painter: WhiteBoardPainter(),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -50,6 +50,21 @@ class WhiteBoardPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+
+  /// 绘制所有画布元素
+  drawCanvasElementList(Canvas canvas) {
+    for (var item in whiteBoardManager.canvasElementList) {
+      switch (item.type) {
+        case WhiteBoardElementType.stroke:
+          if ((item.element as Stroke).path == null) continue;
+          canvas.drawPath(
+              (item.element as Stroke).path!, (item.element as Stroke).paint);
+          break;
+        case WhiteBoardElementType.geometricShape:
+          break;
+      }
+    }
   }
 
   /// 绘制正在绘制的元素
