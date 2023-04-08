@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/modal/transform_logic.dart';
+import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
 import 'dart:ui';
 import 'package:perfect_freehand/perfect_freehand.dart';
@@ -14,7 +15,7 @@ class Stroke {
     this.option = option;
   }
   factory Stroke.init() => Stroke(pointerId: -1, option: null);
-  final TransformLogic transformLogicModal = Get.find<TransformLogic>();
+  final WhiteBoardManager whiteBoardManger = Get.find<WhiteBoardManager>();
 
   /// 笔画点集合
   List<StrokePoint> strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
@@ -24,17 +25,17 @@ class Stroke {
 
   /// 笔画配置属性
   Map _option = {
-    'size': 3.0.obs,
-    'thinning': 0.1.obs,
-    'smoothing': 0.5.obs,
-    'streamline': 0.5.obs,
-    'taperStart': 0.0.obs,
-    'capStart': true.obs,
-    'taperEnd': 0.1.obs,
-    'capEnd': true.obs,
-    'simulatePressure': true.obs,
-    'isComplete': false.obs,
-    'color': Colors.pink.obs,
+    'size': 3.0,
+    'thinning': 0.1,
+    'smoothing': 0.5,
+    'streamline': 0.5,
+    'taperStart': 0.0,
+    'capStart': true,
+    'taperEnd': 0.1,
+    'capEnd': true,
+    'simulatePressure': true,
+    'isComplete': false,
+    'color': Colors.pink,
   };
   set option(Map? option) => _option = option ?? _option;
   Map get option => _option;
@@ -82,7 +83,7 @@ class Stroke {
   /// 存储笔画点
   storeStrokePoint(PointerEvent details) {
     final offsetStrokePoint =
-        transformLogicModal.transformToCanvasPoint(details.localPosition);
+        whiteBoardManger.transformToCanvasPoint(details.localPosition);
     final strokePoint = details.kind == PointerDeviceKind.stylus
         ? StrokePoint(
             offsetStrokePoint.dx,

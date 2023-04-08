@@ -1,9 +1,12 @@
 import 'dart:math';
-
+import 'dart:ui' as ui;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/type/stroke.dart';
-import 'package:flutter_application_2/type/white_board_element.dart';
+import 'package:flutter_application_2/type/configType/eraser_config.dart';
+import 'package:flutter_application_2/type/configType/freedraw_config.dart';
+import 'package:flutter_application_2/type/configType/transform_config.dart';
+import 'package:flutter_application_2/type/elementType/stroke_type.dart';
+import 'package:flutter_application_2/type/elementType/element_container.dart';
 import 'package:get/get.dart';
 
 enum ToolType {
@@ -36,62 +39,33 @@ class WhiteBoardManager extends GetxController {
   ToolType currentToolType = ToolType.transform;
 
   /// 存储正在绘制的canvas元素列表
-  List<WhiteBoardElement> drawingCanvasElementList = [];
+  List<ElementContainer> drawingCanvasElementList = [];
 
   /// 存储已经绘制完成的canvas元素列表
-  List<WhiteBoardElement> canvasElementList = [];
+  List<ElementContainer> canvasElementList = [];
 
   /// 指头编号
   int currentPointerId = -1;
 
   // 平移、缩放、位置相关配置
-  Map transformConfig = {
-    'minCanvasScale': 0.1, // 最小缩放
-    'maxCanvasScale': 3.0, // 最大缩放
-    'preCanvasScale': 1.0, // 画布上一次的缩放比例
-    'curCanvasOffset': Offset.zero, // 画布当前的偏移量
-    'curCanvasScale': 1.0, // 画布当前的缩放比例
-    'visibleAreaSize': Size.zero, // 可视区域的大小
-    'visibleAreaCenter': Offset.zero, // 可视区域的中心
-    'lastScaleUpdateDetails': null, // 用来计算双指缩放是缩小还是放大
-  };
+  TransformConfig transformConfig = TransformConfig();
 
   // 橡皮擦相关配置
-  Map eraserConfig = {
-    'currentEraserPosition': null, // 当前橡皮擦的位置
-    'eraserRadius': 10.0, // 橡皮擦半径
-  };
+  EraserConfig eraserConfig = EraserConfig(
+    currentEraserPosition: null,
+    eraserRadius: 10.0,
+  );
 
   // 画笔相关配置
-  Map freedrawConfig = {
-    'currentStrokeOption': {
-      'size': 3.0,
-      'thinning': 0.1,
-      'smoothing': 0.5,
-      'streamline': 0.5,
-      'taperStart': 0.0,
-      'capStart': true,
-      'taperEnd': 0.1,
-      'capEnd': true,
-      'simulatePressure': true,
-      'isComplete': false,
-      'color': Colors.green,
-    },
-  };
+  FreedrawConfig freedrawConfig = FreedrawConfig();
 }
 
 extension FreeDrawLogic on WhiteBoardManager {
   onFreeDrawPointerDown(PointerDownEvent details) {
-    freedrawConfig['currentStrokeOption'] = {
-      ...freedrawConfig['currentStrokeOption'],
-      'simulatePressure': details.kind != PointerDeviceKind.stylus,
-    };
-    // drawingCanvasElementList为空，说明当前没有正在绘制的元素，则新建一个stroke加入drawingCanvasElementList中
-    // drawingCanvasElementList不为空，说明当前有正在绘制的元素，则检查pointerId是否为-1，如果是-1则drawingCanvasElementList第一个元素需要更新
-    // 如果不是-1，则return
+    freedrawConfig.simulatePressure = details.kind != PointerDeviceKind.stylus;
     if (drawingCanvasElementList.isEmpty && currentPointerId == -1) {
-      drawingCanvasElementList.add(WhiteBoardElement<Stroke>(
-          type: WhiteBoardElementType.stroke, element: Stroke.init()));
+      drawingCanvasElementList.add(ElementContainer<Stroke>(
+          type: ElementType.stroke, element: Stroke.init()));
       currentPointerId = details.pointer;
       update();
     }
@@ -99,7 +73,7 @@ extension FreeDrawLogic on WhiteBoardManager {
 
   onFreeDrawPointerMove(PointerMoveEvent details) {
     if (details.pointer == currentPointerId) {
-      (drawingCanvasElementList[0] as WhiteBoardElement<Stroke>)
+      (drawingCanvasElementList[0] as ElementContainer<Stroke>)
           .element
           .storeStrokePoint(details);
       update();
@@ -109,7 +83,7 @@ extension FreeDrawLogic on WhiteBoardManager {
   onFreeDrawPointerUp(PointerUpEvent details) {
     if (details.pointer == currentPointerId) {
       canvasElementList.add(
-          (drawingCanvasElementList[0] as WhiteBoardElement<Stroke>).copy());
+          (drawingCanvasElementList[0] as ElementContainer<Stroke>).copy());
       drawingCanvasElementList.clear();
       currentPointerId = -1;
       update();
@@ -118,48 +92,41 @@ extension FreeDrawLogic on WhiteBoardManager {
 }
 
 extension EraserLogic on WhiteBoardManager {
-  void onEraserPointerDown(PointerDownEvent details) {
+  Future<void> onEraserPointerDown(PointerDownEvent details) async {
     if (drawingCanvasElementList.isEmpty && currentPointerId == -1) {
-      eraserConfig['currentEraserPosition'] =
+      eraserConfig.currentEraserPosition =
           transformToCanvasPoint(details.position);
-      erase();
+      await erase();
       currentPointerId = details.pointer;
       update();
     }
   }
 
-  void onEraserPointerMove(PointerMoveEvent details) {
+  Future<void> onEraserPointerMove(PointerMoveEvent details) async {
     if (details.pointer == currentPointerId) {
-      eraserConfig['currentEraserPosition'] =
+      eraserConfig.currentEraserPosition =
           transformToCanvasPoint(details.position);
-      erase();
+      await erase();
       update();
     }
   }
 
   void onEraserPointerUp(PointerUpEvent details) {
     if (details.pointer == currentPointerId) {
-      eraserConfig['currentEraserPosition'] = null;
+      eraserConfig.currentEraserPosition = null;
       currentPointerId = -1;
       update();
     }
   }
 
   /// 擦除
-  erase() {
-    if (eraserConfig['currentEraserPosition'] == null) return;
-    // 1.根据eraserConfig['currentEraserPosition']和eraserConfig['eraserRadius']构造一个path
-    // 2.将该path逐个与canvasElementList中的WhiteBoardElement.element.path进行相交判断
-    // 3.如果相交，则将该WhiteBoardElement从canvasElementList中移除
-    // 4.如果不相交，则不做任何操作
-    // 5.最后调用update()刷新页面
+  erase() async {
+    if (eraserConfig.currentEraserPosition == null) return;
+    final eraserPath = eraserConfig.eraserPath;
 
-    final eraserPath = Path()
-      ..addOval(Rect.fromCircle(
-          center: eraserConfig['currentEraserPosition']!,
-          radius: eraserConfig['eraserRadius']));
-    canvasElementList.removeWhere((element) {
-      return element.element.path.intersects(eraserPath);
+    canvasElementList.removeWhere((item) {
+      return isEraserIntersecting(
+          eraserPath: eraserPath, targetPath: (item.element as Stroke).path);
     });
     update();
   }
@@ -168,28 +135,28 @@ extension EraserLogic on WhiteBoardManager {
 extension TransformLogic on WhiteBoardManager {
   /// 根据传入的坐标映射为canvas的坐标
   Offset transformToCanvasPoint(Offset position) =>
-      ((position - transformConfig['curCanvasOffset']) /
-          transformConfig['curCanvasScale']);
+      ((position - transformConfig.curCanvasOffset) /
+          transformConfig.curCanvasScale);
 
   /// 平移时移动执行回调
   onTranslatePointerMove(PointerMoveEvent event) {
-    transformConfig['curCanvasOffset'] += event.localDelta;
+    transformConfig.curCanvasOffset += event.localDelta;
     update();
   }
 
   /// 平移时抬起执行回调
   onTranslatePointerUp(PointerUpEvent event) {
-    transformConfig['curCanvasOffset'] += event.localDelta;
+    transformConfig.curCanvasOffset += event.localDelta;
     update();
   }
 
   /// 缩放开始执行回调
-  onScaleStart(detail) {
+  onScaleStart(ScaleStartDetails detail) {
     _handleScaleEvent(detail);
   }
 
   /// 缩放中执行回调
-  onScaleUpdate(detail) {
+  onScaleUpdate(ScaleUpdateDetails detail) {
     _handleScaleEvent(detail);
   }
 
@@ -198,14 +165,14 @@ extension TransformLogic on WhiteBoardManager {
     _handleScaleEvent(null);
   }
 
-  void _handleScaleEvent(ScaleUpdateDetails? details) {
+  void _handleScaleEvent(dynamic details) {
     if (details == null) {
-      transformConfig['lastScaleUpdateDetails'] = null;
+      // transformConfig['lastScaleUpdateDetails'] = null;
+      transformConfig.lastScaleUpdateDetails = null;
     } else {
       bool isScaleEvent = details.pointerCount >= 2;
       if (isScaleEvent) {
-        // _executeTranslating(details);
-        transformConfig['curCanvasOffset'] = details.focalPointDelta;
+        transformConfig.curCanvasOffset = details.focalPointDelta;
         if (_executeScaling(details)) {
           update();
         }
@@ -213,32 +180,120 @@ extension TransformLogic on WhiteBoardManager {
     }
   }
 
-  bool _executeScaling(ScaleUpdateDetails detail) {
+  bool _executeScaling(dynamic detail) {
     double scaleIncrement =
-        detail.scale - transformConfig['lastScaleUpdateDetails']?.scale ?? 0.0;
+        detail.scale - transformConfig.lastScaleUpdateDetails?.scale ?? 0.0;
 
     // 判断是缩小还是放大
     ScaleLayerWidgetType type = scaleIncrement < 0
         ? ScaleLayerWidgetType.zoomOut
         : ScaleLayerWidgetType.zoomIn;
 
-    double curScale = transformConfig['curCanvasScale'];
+    double curScale = transformConfig.curCanvasScale;
 
     // 判断缩放后是否超过最大或最小值
     double newScale = type == ScaleLayerWidgetType.zoomOut
-        // ? max(curScale - scaleIncrement, minCanvasScale)
-        ? max(curScale - scaleIncrement, transformConfig['minCanvasScale'])
-        : min(curScale + scaleIncrement, transformConfig['maxCanvasScale']);
+        ? max(curScale - scaleIncrement, transformConfig.minCanvasScale)
+        : min(curScale + scaleIncrement, transformConfig.maxCanvasScale);
 
     if (newScale == curScale) {
       return false; // 缩放比例不变，无需执行更新操作
     }
 
-    transformConfig['preCanvasScale'] = curScale;
-    transformConfig['curCanvasScale'] = newScale;
-
-    transformConfig['lastScaleUpdateDetails'] = detail;
+    transformConfig.preCanvasScale = curScale;
+    transformConfig.curCanvasScale = newScale;
+    transformConfig.lastScaleUpdateDetails = detail;
 
     return true; // 执行了更新操作
+  }
+}
+
+extension GestureLogic on WhiteBoardManager {
+  /// 手势按下触发逻辑
+  Future<void> onPointerDown(PointerDownEvent event) async {
+    switch (currentToolType) {
+      case ToolType.transform:
+        break;
+      case ToolType.freeDraw:
+        onFreeDrawPointerDown(event);
+        break;
+      case ToolType.eraser:
+        await onEraserPointerDown(event);
+        break;
+      case ToolType.lasso:
+        break;
+    }
+  }
+
+  /// 手势平移触发逻辑
+  Future<void> onPointerMove(PointerMoveEvent event) async {
+    switch (currentToolType) {
+      case ToolType.transform:
+        onTranslatePointerMove(event);
+        break;
+      case ToolType.freeDraw:
+        onFreeDrawPointerMove(event);
+        break;
+      case ToolType.eraser:
+        await onEraserPointerMove(event);
+        break;
+      case ToolType.lasso:
+        break;
+    }
+  }
+
+  /// 手势提起触发逻辑
+  onPointerUp(PointerUpEvent event) {
+    switch (currentToolType) {
+      case ToolType.transform:
+        // transformLogic.onPointerUp(event);
+        onTranslatePointerUp(event);
+        break;
+      case ToolType.freeDraw:
+        onFreeDrawPointerUp(event);
+        break;
+      case ToolType.eraser:
+        onEraserPointerUp(event);
+        break;
+      case ToolType.lasso:
+        break;
+    }
+  }
+}
+
+extension CommonUtils on WhiteBoardManager {
+  /// 判断两个Path是否相交
+  bool isEraserIntersecting(
+      {required Path eraserPath, required Path? targetPath}) {
+    if (targetPath == null) {
+      return false;
+    }
+    // 1.判断如果targetPath的boundingBox在eraserPath的boundingBox之内，则一定相交
+    Rect outerRect = eraserPath.getBounds();
+    Rect innerRect = targetPath.getBounds();
+    if (outerRect.contains(innerRect.topLeft) &&
+        outerRect.contains(innerRect.bottomRight)) {
+      return true;
+    }
+    // 2.如果eraserPath的boundingBox包裹了targetPath的boundingBox，则采取如下判断
+    // 2.1.computeMetrics()方法获取targetPath曲线上的点
+    // 2.2.遍历点，判断是否在eraserPath内
+    // 2.3.如果有一个点在eraserPath内，则认为相交
+    // 2.4.如果所有点都不在eraserPath内，则认为不相交
+    List<Offset> points = [];
+    ui.PathMetrics targetPathMetrics = targetPath.computeMetrics();
+    for (ui.PathMetric pathMetric in targetPathMetrics) {
+      for (double i = 0; i < pathMetric.length; i++) {
+        ui.Tangent? tangent = pathMetric.getTangentForOffset(i);
+        points.add(tangent!.position);
+      }
+    }
+    for (Offset point in points) {
+      if (eraserPath.contains(point)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
-import '../modal/white_board_base.dart';
 
 /// 工具条Widget
 class ToolBar extends StatefulWidget {
@@ -12,12 +12,13 @@ class ToolBar extends StatefulWidget {
 
 class _ToolBarWidgetState extends State<ToolBar>
     with SingleTickerProviderStateMixin {
-  final whiteBoardBase = Get.find<WhiteBoardBase>();
+  // final whiteBoardBase = Get.find<WhiteBoardBase>();
+  final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<WhiteBoardBase>(
-      builder: (whiteBoardBase) {
+    return GetBuilder<WhiteBoardManager>(
+      builder: (whiteBoardManager) {
         return Row(
           children: [
             _drawPencilWidget(),
@@ -35,7 +36,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.brush),
       onPressed: () {
-        whiteBoardBase.currentToolType = ToolType.freeDraw;
+        whiteBoardManager.currentToolType = ToolType.freeDraw;
       },
     );
   }
@@ -45,7 +46,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.pan_tool),
       onPressed: () {
-        whiteBoardBase.currentToolType = ToolType.transform;
+        whiteBoardManager.currentToolType = ToolType.transform;
       },
     );
   }
@@ -55,7 +56,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.phonelink_erase),
       onPressed: () {
-        whiteBoardBase.currentToolType = ToolType.eraser;
+        whiteBoardManager.currentToolType = ToolType.eraser;
       },
     );
   }
@@ -65,7 +66,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.crop_square),
       onPressed: () {
-        whiteBoardBase.currentToolType = ToolType.lasso;
+        whiteBoardManager.currentToolType = ToolType.lasso;
       },
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
-import 'package:flutter_application_2/type/stroke.dart';
-import 'package:flutter_application_2/type/white_board_element.dart';
+import 'package:flutter_application_2/type/elementType/stroke_type.dart';
+import 'package:flutter_application_2/type/elementType/element_container.dart';
 import 'package:get/get.dart';
 
 class WhiteBoardLayer extends StatelessWidget {
@@ -9,26 +9,15 @@ class WhiteBoardLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
-    whiteBoardManager.transformConfig['visibleAreaSize'] =
-        MediaQuery.of(context).size;
-    whiteBoardManager.transformConfig['visibleAreaCenter'] = Offset(
-      MediaQuery.of(context).size.width / 2,
-      MediaQuery.of(context).size.height / 2,
-    );
-    if (whiteBoardManager.transformConfig['curCanvasOffset'] == Offset.zero) {
-      whiteBoardManager.transformConfig['curCanvasOffset'] =
-          whiteBoardManager.transformConfig['visibleAreaCenter'];
-    }
     return GetBuilder<WhiteBoardManager>(
       builder: (whiteBoardManager) {
         return Transform(
           transform: Matrix4.identity()
             ..translate(
-              whiteBoardManager.transformConfig['curCanvasOffset'].dx,
-              whiteBoardManager.transformConfig['curCanvasOffset'].dy,
+              whiteBoardManager.transformConfig.curCanvasOffset.dx,
+              whiteBoardManager.transformConfig.curCanvasOffset.dy,
             )
-            ..scale(whiteBoardManager.transformConfig['curCanvasScale']),
+            ..scale(whiteBoardManager.transformConfig.curCanvasScale),
           child: RepaintBoundary(
             child: CustomPaint(
               isComplex: true,
@@ -45,7 +34,10 @@ class WhiteBoardPainter extends CustomPainter {
   final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
 
   @override
-  void paint(Canvas canvas, Size size) {}
+  void paint(Canvas canvas, Size size) {
+    drawCanvasElementList(canvas);
+    drawCurrentElement(canvas);
+  }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
@@ -56,12 +48,12 @@ class WhiteBoardPainter extends CustomPainter {
   drawCanvasElementList(Canvas canvas) {
     for (var item in whiteBoardManager.canvasElementList) {
       switch (item.type) {
-        case WhiteBoardElementType.stroke:
+        case ElementType.stroke:
           if ((item.element as Stroke).path == null) continue;
           canvas.drawPath(
               (item.element as Stroke).path!, (item.element as Stroke).paint);
           break;
-        case WhiteBoardElementType.geometricShape:
+        case ElementType.geometricShape:
           break;
       }
     }
@@ -70,8 +62,6 @@ class WhiteBoardPainter extends CustomPainter {
   /// 绘制正在绘制的元素
   drawCurrentElement(Canvas canvas) {
     switch (whiteBoardManager.currentToolType) {
-      case ToolType.transform:
-        break;
       case ToolType.freeDraw:
         drawCurrentPen(canvas);
         break;
@@ -87,12 +77,15 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
+    if (whiteBoardManager.drawingCanvasElementList.isEmpty) {
+      return;
+    }
     final path = (whiteBoardManager.drawingCanvasElementList[0]
-            as WhiteBoardElement<Stroke>)
+            as ElementContainer<Stroke>)
         .element
         .path;
     final paint = (whiteBoardManager.drawingCanvasElementList[0]
-            as WhiteBoardElement<Stroke>)
+            as ElementContainer<Stroke>)
         .element
         .paint;
     if (path != null) {
@@ -102,10 +95,10 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制橡皮擦
   drawEraser(Canvas canvas) {
-    if (whiteBoardManager.eraserConfig['currentEraserPosition'] != null) {
+    if (whiteBoardManager.eraserConfig.currentEraserPosition != null) {
       canvas.drawCircle(
-        whiteBoardManager.eraserConfig['currentEraserPosition'],
-        whiteBoardManager.eraserConfig['eraserRadius'],
+        (whiteBoardManager.eraserConfig.currentEraserPosition as Offset),
+        whiteBoardManager.eraserConfig.eraserRadius,
         Paint()
           ..color = Colors.blue
           ..strokeWidth = 1
