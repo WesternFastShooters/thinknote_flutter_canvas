@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/modal/gesture_logic.dart';
+import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
 
@@ -19,12 +21,8 @@ class GestureLayer extends StatelessWidget {
             onScaleEnd: whiteBoardManager.onScaleEnd,
             child: Listener(
               behavior: HitTestBehavior.opaque,
-              onPointerDown: (event) async {
-                await whiteBoardManager.onPointerDown(event);
-              },
-              onPointerMove: (event) async {
-                await whiteBoardManager.onPointerMove(event);
-              },
+              onPointerDown: whiteBoardManager.onPointerDown,
+              onPointerMove: whiteBoardManager.onPointerMove,
               onPointerUp: whiteBoardManager.onPointerUp,
             ),
           ),

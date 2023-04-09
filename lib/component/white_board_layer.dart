@@ -1,5 +1,7 @@
+import 'package:dash_painter/dash_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'package:flutter_application_2/type/configType/lasso_config.dart';
 import 'package:flutter_application_2/type/elementType/stroke_type.dart';
 import 'package:flutter_application_2/type/elementType/element_container.dart';
 import 'package:get/get.dart';
@@ -62,22 +64,21 @@ class WhiteBoardPainter extends CustomPainter {
   /// 绘制正在绘制的元素
   drawCurrentElement(Canvas canvas) {
     switch (whiteBoardManager.currentToolType) {
-      case ToolType.freeDraw:
+      case ActionType.freeDraw:
         drawCurrentPen(canvas);
         break;
-      case ToolType.eraser:
+      case ActionType.eraser:
         drawEraser(canvas);
         break;
-      case ToolType.lasso:
-        break;
-      case ToolType.drag:
+      case ActionType.lasso:
+        drawLasso(canvas);
         break;
     }
   }
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
-    if(whiteBoardManager.freedrawConfig.currentStroke.path == null) return;
+    if (whiteBoardManager.freedrawConfig.currentStroke.path == null) return;
     final path = whiteBoardManager.freedrawConfig.currentStroke.path;
     final paint = whiteBoardManager.freedrawConfig.currentStroke.paint;
     if (path != null) {
@@ -97,5 +98,65 @@ class WhiteBoardPainter extends CustomPainter {
           ..style = PaintingStyle.stroke,
       );
     }
+  }
+
+  /// 绘制套索虚线
+  drawLasso(Canvas canvas) {
+    if (whiteBoardManager.lassoConfig.lassoPathPoints.isEmpty) return;
+    switch (whiteBoardManager.lassoConfig.lassoStep) {
+      case LassoStep.drawLine:
+        _drawLassoLine(canvas);
+        break;
+      case LassoStep.close:
+        _drawClosedShapePolygon(canvas);
+        break;
+    }
+   
+  }
+
+  _drawLassoLine(Canvas canvas) {
+     final Paint paint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..isAntiAlias = true
+      ..strokeJoin = StrokeJoin.miter;
+
+    final Path path = Path();
+    path.moveTo(whiteBoardManager.lassoConfig.lassoPathPoints[0].dx,
+        whiteBoardManager.lassoConfig.lassoPathPoints[0].dy);
+    for (int i = 1;
+        i < whiteBoardManager.lassoConfig.lassoPathPoints.length;
+        i++) {
+      path.lineTo(whiteBoardManager.lassoConfig.lassoPathPoints[i].dx,
+          whiteBoardManager.lassoConfig.lassoPathPoints[i].dy);
+    }
+    const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
+  }
+
+  /// 绘制套索闭合区域
+  _drawClosedShapePolygon(Canvas canvas) {
+    if (whiteBoardManager.lassoConfig.lassoPathPoints.isEmpty) return;
+    final Paint paint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..isAntiAlias = true
+      ..strokeJoin = StrokeJoin.miter;
+
+    final Path path = Path();
+    path.moveTo(whiteBoardManager.lassoConfig.lassoPathPoints[0].dx,
+        whiteBoardManager.lassoConfig.lassoPathPoints[0].dy);
+    for (int i = 1;
+        i < whiteBoardManager.lassoConfig.lassoPathPoints.length;
+        i++) {
+      path.lineTo(whiteBoardManager.lassoConfig.lassoPathPoints[i].dx,
+          whiteBoardManager.lassoConfig.lassoPathPoints[i].dy);
+    }
+    path.close();
+    const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
+    
   }
 }
