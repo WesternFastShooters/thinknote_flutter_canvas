@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/type/configType/eraser_config.dart';
 import 'package:flutter_application_2/type/configType/freedraw_config.dart';
+import 'package:flutter_application_2/type/configType/lasso_config.dart';
 import 'package:flutter_application_2/type/configType/transform_config.dart';
 import 'package:flutter_application_2/type/elementType/stroke_type.dart';
 import 'package:flutter_application_2/type/elementType/element_container.dart';
@@ -38,9 +39,6 @@ class WhiteBoardManager extends GetxController {
   /// 当前选用工具类型（默认为平移缩放）
   ToolType currentToolType = ToolType.transform;
 
-  /// 存储正在绘制的canvas元素列表
-  List<ElementContainer> drawingCanvasElementList = [];
-
   /// 存储已经绘制完成的canvas元素列表
   List<ElementContainer> canvasElementList = [];
 
@@ -58,14 +56,20 @@ class WhiteBoardManager extends GetxController {
 
   // 画笔相关配置
   FreedrawConfig freedrawConfig = FreedrawConfig();
+
+  /// 套索相关配置
+  LassoConfig lassoConfig = LassoConfig();
 }
 
 extension FreeDrawLogic on WhiteBoardManager {
   onFreeDrawPointerDown(PointerDownEvent details) {
-    freedrawConfig.simulatePressure = details.kind != PointerDeviceKind.stylus;
-    if (drawingCanvasElementList.isEmpty && currentPointerId == -1) {
-      drawingCanvasElementList.add(ElementContainer<Stroke>(
-          type: ElementType.stroke, element: Stroke.init()));
+    freedrawConfig.currentOption['simulatePressure'] =
+        details.kind != PointerDeviceKind.stylus;
+    if (freedrawConfig.currentStroke.strokePoints.isEmpty &&
+        currentPointerId == -1) {
+      freedrawConfig.currentStroke.storeStrokePoint(
+          position: transformToCanvasPoint(details.localPosition),
+          pointInfo: details);
       currentPointerId = details.pointer;
       update();
     }
@@ -73,18 +77,20 @@ extension FreeDrawLogic on WhiteBoardManager {
 
   onFreeDrawPointerMove(PointerMoveEvent details) {
     if (details.pointer == currentPointerId) {
-      (drawingCanvasElementList[0] as ElementContainer<Stroke>)
-          .element
-          .storeStrokePoint(details);
+      freedrawConfig.currentStroke.storeStrokePoint(
+          position: transformToCanvasPoint(details.localPosition),
+          pointInfo: details);
       update();
     }
   }
 
   onFreeDrawPointerUp(PointerUpEvent details) {
     if (details.pointer == currentPointerId) {
-      canvasElementList.add(
-          (drawingCanvasElementList[0] as ElementContainer<Stroke>).copy());
-      drawingCanvasElementList.clear();
+      canvasElementList.add(ElementContainer(
+        element: freedrawConfig.currentStroke,
+        type: ElementType.stroke,
+      ));
+      freedrawConfig.currentStroke = Stroke.init();
       currentPointerId = -1;
       update();
     }
@@ -93,7 +99,7 @@ extension FreeDrawLogic on WhiteBoardManager {
 
 extension EraserLogic on WhiteBoardManager {
   Future<void> onEraserPointerDown(PointerDownEvent details) async {
-    if (drawingCanvasElementList.isEmpty && currentPointerId == -1) {
+    if (eraserConfig.currentEraserPosition == null && currentPointerId == -1) {
       eraserConfig.currentEraserPosition =
           transformToCanvasPoint(details.position);
       await erase();
@@ -152,59 +158,123 @@ extension TransformLogic on WhiteBoardManager {
 
   /// 缩放开始执行回调
   onScaleStart(ScaleStartDetails detail) {
-    _handleScaleEvent(detail);
+    if (detail.pointerCount >= 2) {
+      transformConfig.lastScaleUpdateDetails = null;
+      update();
+    }
   }
 
   /// 缩放中执行回调
   onScaleUpdate(ScaleUpdateDetails detail) {
-    _handleScaleEvent(detail);
+    if (detail.pointerCount >= 2) {
+      _executeTranslating(detail);
+      _executeScaling(detail);
+      update();
+    }
   }
 
   /// 缩放结束执行回调
   onScaleEnd(ScaleEndDetails details) {
-    _handleScaleEvent(null);
+    if (details.pointerCount >= 2) {
+      transformConfig.lastScaleUpdateDetails = null;
+      update();
+    }
   }
 
-  void _handleScaleEvent(dynamic details) {
-    if (details == null) {
-      // transformConfig['lastScaleUpdateDetails'] = null;
-      transformConfig.lastScaleUpdateDetails = null;
-    } else {
-      bool isScaleEvent = details.pointerCount >= 2;
-      if (isScaleEvent) {
-        transformConfig.curCanvasOffset = details.focalPointDelta;
-        if (_executeScaling(details)) {
-          update();
-        }
+  // 执行缩放
+  void _executeScaling(ScaleUpdateDetails details) {
+    if (transformConfig.lastScaleUpdateDetails == null) {
+      transformConfig.lastScaleUpdateDetails = details;
+      return;
+    }
+
+    double scaleIncrement =
+        details.scale - transformConfig.lastScaleUpdateDetails!.scale;
+    if (scaleIncrement < 0) {
+      // 缩小
+      aroundCenterScale(
+        type: ScaleLayerWidgetType.zoomOut,
+        center: details.localFocalPoint,
+        stepScale: -scaleIncrement,
+      );
+    }
+    if (scaleIncrement > 0) {
+      // 放大
+      aroundCenterScale(
+        type: ScaleLayerWidgetType.zoomIn,
+        center: details.localFocalPoint,
+        stepScale: scaleIncrement,
+      );
+    }
+
+    // 缩放过程中实时更新上一次缩放的数据
+    transformConfig.lastScaleUpdateDetails = details;
+  }
+
+  // 执行平移
+  void _executeTranslating(ScaleUpdateDetails details) {
+    transformConfig.curCanvasOffset += details.focalPointDelta;
+  }
+
+  /// 以屏幕中心为缩放中心，通过动画的方式把画布缩放到[targetScale]
+  ///
+  /// 手动点击放大、缩小按钮
+  /// 100%
+  void aroundScreenScaleTo({
+    required targetScale,
+    required AnimationController animationController,
+    required Tween<double> scaleTween,
+  }) {
+    scaleTween.begin = transformConfig.curCanvasScale;
+    scaleTween.end = targetScale;
+    animationController.reset();
+    animationController.forward();
+  }
+
+  void updateLayerWidgetScale({
+    required double scale,
+  }) {
+    transformConfig.preCanvasScale = transformConfig.curCanvasScale;
+    transformConfig.curCanvasScale = scale;
+    transformConfig.curCanvasOffset +=
+        transformToCanvasPoint(transformConfig.visibleAreaCenter);
+
+    update();
+  }
+
+  /// 以任意点为中心缩放画布
+  ///
+  /// 多指缩放
+  /// 鼠标滚轮缩放
+  void aroundCenterScale({
+    required Offset center,
+    required ScaleLayerWidgetType type,
+    double stepScale = 0.1,
+  }) {
+    if (type == ScaleLayerWidgetType.zoomOut) {
+      // 中心缩小画布
+      if (double.parse(transformConfig.curCanvasScale.toStringAsFixed(1)) <=
+          transformConfig.minCanvasScale) {
+        transformConfig.preCanvasScale = transformConfig.curCanvasScale;
+        transformConfig.curCanvasScale = transformConfig.minCanvasScale;
+      } else {
+        transformConfig.preCanvasScale = transformConfig.curCanvasScale;
+        transformConfig.curCanvasScale -= stepScale;
+      }
+    } else if (type == ScaleLayerWidgetType.zoomIn) {
+      // 中心放大画布
+      if (double.parse(transformConfig.curCanvasScale.toStringAsFixed(1)) >=
+          transformConfig.maxCanvasScale) {
+        transformConfig.preCanvasScale = transformConfig.curCanvasScale;
+        transformConfig.curCanvasScale = transformConfig.maxCanvasScale;
+      } else {
+        transformConfig.preCanvasScale = transformConfig.curCanvasScale;
+        transformConfig.curCanvasScale += stepScale;
       }
     }
-  }
 
-  bool _executeScaling(dynamic detail) {
-    double scaleIncrement =
-        detail.scale - transformConfig.lastScaleUpdateDetails?.scale ?? 0.0;
-
-    // 判断是缩小还是放大
-    ScaleLayerWidgetType type = scaleIncrement < 0
-        ? ScaleLayerWidgetType.zoomOut
-        : ScaleLayerWidgetType.zoomIn;
-
-    double curScale = transformConfig.curCanvasScale;
-
-    // 判断缩放后是否超过最大或最小值
-    double newScale = type == ScaleLayerWidgetType.zoomOut
-        ? max(curScale - scaleIncrement, transformConfig.minCanvasScale)
-        : min(curScale + scaleIncrement, transformConfig.maxCanvasScale);
-
-    if (newScale == curScale) {
-      return false; // 缩放比例不变，无需执行更新操作
-    }
-
-    transformConfig.preCanvasScale = curScale;
-    transformConfig.curCanvasScale = newScale;
-    transformConfig.lastScaleUpdateDetails = detail;
-
-    return true; // 执行了更新操作
+    transformConfig.curCanvasOffset += transformToCanvasPoint(center);
+    update();
   }
 }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
 import 'dart:ui';
@@ -15,8 +14,6 @@ class Stroke {
     this.option = option;
   }
   factory Stroke.init() => Stroke(pointerId: -1, option: null);
-  final WhiteBoardManager whiteBoardManger = Get.find<WhiteBoardManager>();
-
   /// 笔画点集合
   List<StrokePoint> strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
 
@@ -81,20 +78,17 @@ class Stroke {
   bool get isEmpty => strokePoints.isEmpty;
 
   /// 存储笔画点
-  storeStrokePoint(PointerEvent details) {
-    final offsetStrokePoint =
-        whiteBoardManger.transformToCanvasPoint(details.localPosition);
-    final strokePoint = details.kind == PointerDeviceKind.stylus
+  storeStrokePoint( { required Offset position,required PointerEvent pointInfo}) {
+    final strokePoint = pointInfo.kind == PointerDeviceKind.stylus
         ? StrokePoint(
-            offsetStrokePoint.dx,
-            offsetStrokePoint.dy,
-            (details.pressure - details.pressureMin) /
-                (details.pressureMax - details.pressureMin),
+            position.dx,
+            position.dy,
+            (pointInfo.pressure - pointInfo.pressureMin) /
+                (pointInfo.pressureMax - pointInfo.pressureMin),
           )
-        : StrokePoint(offsetStrokePoint.dx, offsetStrokePoint.dy);
+        : StrokePoint(position.dx, position.dy);
     strokePoints.add(strokePoint);
   }
-
   
 }
 

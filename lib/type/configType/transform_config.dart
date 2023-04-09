@@ -6,7 +6,7 @@ class TransformConfig {
   TransformConfig();
 
   // 最小缩放
-  double minCanvasScale = 0.1;
+  double minCanvasScale = 1.0;
 
   // 最大缩放
   double maxCanvasScale = 3.0;

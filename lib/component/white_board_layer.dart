@@ -77,17 +77,9 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
-    if (whiteBoardManager.drawingCanvasElementList.isEmpty) {
-      return;
-    }
-    final path = (whiteBoardManager.drawingCanvasElementList[0]
-            as ElementContainer<Stroke>)
-        .element
-        .path;
-    final paint = (whiteBoardManager.drawingCanvasElementList[0]
-            as ElementContainer<Stroke>)
-        .element
-        .paint;
+    if(whiteBoardManager.freedrawConfig.currentStroke.path == null) return;
+    final path = whiteBoardManager.freedrawConfig.currentStroke.path;
+    final paint = whiteBoardManager.freedrawConfig.currentStroke.paint;
     if (path != null) {
       canvas.drawPath(path, paint);
     }
