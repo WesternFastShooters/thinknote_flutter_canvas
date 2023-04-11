@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/modal/common_utils.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 
 extension TransformLogic on WhiteBoardManager {
-  /// 根据传入的坐标映射为canvas的坐标
-  Offset transformToCanvasPoint(Offset position) =>
-      ((position - transformConfig.curCanvasOffset) /
-          transformConfig.curCanvasScale);
+
 
   /// 平移时移动执行回调
   onTranslatePointerMove(PointerMoveEvent event) {

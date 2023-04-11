@@ -54,4 +54,6 @@ class WhiteBoardManager extends GetxController {
 
   /// 套索相关配置
   LassoConfig lassoConfig = LassoConfig();
+
+  
 }

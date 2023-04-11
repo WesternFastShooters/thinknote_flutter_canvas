@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter_application_2/modal/common_utils.dart';
 import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:flutter_application_2/type/configType/lasso_config.dart';
+import 'package:flutter_application_2/type/elementType/element_container.dart';
 
 extension LassoLogic on WhiteBoardManager {
   /// 手势按下触发逻辑
@@ -32,5 +34,15 @@ extension LassoLogic on WhiteBoardManager {
       currentPointerId = -1;
       update();
     }
+  }
+
+  _setSelectedElement(){
+    canvasElementList.forEach((element) {
+      if (element.type == ElementType.stroke) {
+        element.isSelected = isIntersecting(
+            originPath: lassoConfig.lassoPath,
+            targetPath: (element.element as Stroke).path);
+      }
+    });
   }
 }

@@ -111,52 +111,20 @@ class WhiteBoardPainter extends CustomPainter {
         _drawClosedShapePolygon(canvas);
         break;
     }
-   
   }
 
   _drawLassoLine(Canvas canvas) {
-     final Paint paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke
-      ..isAntiAlias = true
-      ..strokeJoin = StrokeJoin.miter;
-
-    final Path path = Path();
-    path.moveTo(whiteBoardManager.lassoConfig.lassoPathPoints[0].dx,
-        whiteBoardManager.lassoConfig.lassoPathPoints[0].dy);
-    for (int i = 1;
-        i < whiteBoardManager.lassoConfig.lassoPathPoints.length;
-        i++) {
-      path.lineTo(whiteBoardManager.lassoConfig.lassoPathPoints[i].dx,
-          whiteBoardManager.lassoConfig.lassoPathPoints[i].dy);
-    }
+    if(whiteBoardManager.lassoConfig.isEmpty) return;
+    final path = whiteBoardManager.lassoConfig.lassoPath!;
+    final paint = whiteBoardManager.lassoConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
   }
 
   /// 绘制套索闭合区域
   _drawClosedShapePolygon(Canvas canvas) {
-    if (whiteBoardManager.lassoConfig.lassoPathPoints.isEmpty) return;
-    final Paint paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke
-      ..isAntiAlias = true
-      ..strokeJoin = StrokeJoin.miter;
-
-    final Path path = Path();
-    path.moveTo(whiteBoardManager.lassoConfig.lassoPathPoints[0].dx,
-        whiteBoardManager.lassoConfig.lassoPathPoints[0].dy);
-    for (int i = 1;
-        i < whiteBoardManager.lassoConfig.lassoPathPoints.length;
-        i++) {
-      path.lineTo(whiteBoardManager.lassoConfig.lassoPathPoints[i].dx,
-          whiteBoardManager.lassoConfig.lassoPathPoints[i].dy);
-    }
-    path.close();
+    if (!whiteBoardManager.lassoConfig.isConvexity) return;
+    final path = whiteBoardManager.lassoConfig.lassoPath!;
+    final paint = whiteBoardManager.lassoConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
-    
   }
 }

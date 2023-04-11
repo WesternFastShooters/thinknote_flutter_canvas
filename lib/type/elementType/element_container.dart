@@ -8,6 +8,8 @@ enum ElementType {
 class ElementContainer<T> {
   ElementType type;
   T element;
+  /// 是否处于选中状态
+  bool isSelected = false;
 
   ElementContainer({required this.type, required this.element});
 

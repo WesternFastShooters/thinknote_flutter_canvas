@@ -14,6 +14,9 @@ class Stroke {
     this.option = option;
   }
   factory Stroke.init() => Stroke(pointerId: -1, option: null);
+
+  
+
   /// 笔画点集合
   List<StrokePoint> strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
 
@@ -58,14 +61,15 @@ class Stroke {
       tempPath.addOval(Rect.fromCircle(
           center: Offset(outlinePoints[0].x, outlinePoints[0].y), radius: 1));
     } else {
-      tempPath.moveTo(outlinePoints[0].x, outlinePoints[0].y);
-
-      for (int i = 1; i < outlinePoints.length - 1; ++i) {
-        final p0 = outlinePoints[i];
-        final p1 = outlinePoints[i + 1];
-        tempPath.quadraticBezierTo(
-            p0.x, p0.y, (p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
-      }
+      outlinePoints.asMap().forEach((index, point) {
+        if (index == 0) {
+          tempPath.moveTo(point.x, point.y);
+        } else {
+          tempPath.quadraticBezierTo(
+              point.x, point.y, (point.x + outlinePoints[index + 1].x) / 2,
+              (point.y + outlinePoints[index + 1].y) / 2);
+        }
+      });
     }
     return tempPath;
   }
