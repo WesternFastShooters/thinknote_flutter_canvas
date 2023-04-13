@@ -24,6 +24,7 @@ class Stroke extends WhiteElement {
     dragOffset += delta;
   }
 
+
   /// 笔画点集合
   List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
   List<StrokePoint> get strokePoints => dragOffset == Offset.zero

@@ -11,27 +11,23 @@ extension LassoLogic on WhiteBoardManager {
       return;
     }
     currentPointerId = event.pointer;
-
     switch (lassoConfig.lassoStep) {
-      case LassoStep.none:
+      case LassoStep.drawLine:
         lassoConfig.setLassoStep(LassoStep.drawLine);
-        lassoConfig.clearLassoPathPoints();
+        lassoConfig.reset();
         lassoConfig
             .addLassoPathPoint(transformToCanvasPoint(event.localPosition));
         update();
-        break;
-      case LassoStep.drawLine:
         break;
       case LassoStep.close:
         if (lassoConfig.checkHitLassoCloseArea(
             transformToCanvasPoint(event.localPosition))) {
           // 命中套索区域内情况
+          // 不进行任何操作
           break;
         }
         // 不命中套索区域内情况
-        lassoConfig.setLassoStep(LassoStep.none);
-        setCurrentToolType(ActionType.transform);
-        lassoConfig.clearLassoPathPoints();
+        lassoConfig.reset();
         update();
     }
   }
@@ -42,23 +38,24 @@ extension LassoLogic on WhiteBoardManager {
       return;
     }
     switch (lassoConfig.lassoStep) {
-      case LassoStep.none:
-        break;
       case LassoStep.drawLine:
         lassoConfig
             .addLassoPathPoint(transformToCanvasPoint(event.localPosition));
         update();
         break;
       case LassoStep.close:
-        lassoConfig.setDragOffset(event.delta);
-        for (var item in selectedElementList) {
-          if (item.element.isEmpty) {
-            continue;
+        if (lassoConfig.checkHitLassoCloseArea(
+            transformToCanvasPoint(event.localPosition))) {
+          lassoConfig.setDragOffset(event.delta);
+          for (var item in selectedElementList) {
+            if (item.element.isEmpty) {
+              continue;
+            }
+            item.element.setDragOffset(event.delta);
+            update();
           }
-          item.element.setDragOffset(event.delta);
-          update();
+          break;
         }
-        break;
     }
   }
 
@@ -68,11 +65,14 @@ extension LassoLogic on WhiteBoardManager {
       return;
     }
     switch (lassoConfig.lassoStep) {
-      case LassoStep.none:
-        break;
       case LassoStep.drawLine:
         lassoConfig.setLassoStep(LassoStep.close);
-        setSelectedElement();
+        if (!lassoConfig.isEmpty) {
+          setSelectedElement();
+        }
+        if (selectedElementList.isEmpty) {
+          lassoConfig.reset();
+        }
         break;
       case LassoStep.close:
         break;
@@ -85,7 +85,7 @@ extension LassoLogic on WhiteBoardManager {
   setSelectedElement() {
     selectedElementList = canvasElementList
         .where((element) => isIntersecting(
-            originPath: lassoConfig.lassoPath!,
+            originPath: lassoConfig.closedShapePath!,
             targetPath: (element.element).path))
         .toList();
   }

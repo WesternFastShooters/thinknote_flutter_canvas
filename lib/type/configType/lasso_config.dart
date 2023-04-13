@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 enum LassoStep {
-  /// 未开始套索
-  none,
-
   /// 画线
   drawLine,
 
@@ -12,7 +9,7 @@ enum LassoStep {
   close,
 }
 
-class LassoConfig  {
+class LassoConfig {
   /// 套索行为阶段
   LassoStep lassoStep = LassoStep.drawLine;
   setLassoStep(LassoStep step) {
@@ -85,8 +82,10 @@ class LassoConfig  {
     lassoPathPoints.add(point);
   }
 
-  /// 清空套索虚线点
-  clearLassoPathPoints() {
-    lassoPathPoints.clear();
+  /// 清空套索
+  reset() {
+    lassoStep = LassoStep.drawLine;
+    _lassoPathPoints.clear();
+    dragOffset = Offset.zero;
   }
 }

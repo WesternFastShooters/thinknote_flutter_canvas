@@ -35,7 +35,6 @@ class WhiteBoardManager extends GetxController {
   ActionType currentToolType = ActionType.transform;
   setCurrentToolType(ActionType type) {
     currentToolType = type;
-    update();
   }
 
   /// 存储已经绘制完成的canvas元素列表
