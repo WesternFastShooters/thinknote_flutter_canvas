@@ -5,8 +5,8 @@ import 'package:flutter_application_2/modal/white_board_manager.dart';
 extension CommonUtils on WhiteBoardManager {
   /// 根据传入的坐标映射为canvas的坐标
   Offset transformToCanvasPoint(Offset position) =>
-      ((position - transformConfig.curCanvasOffset) /
-          transformConfig.curCanvasScale);
+      ((position - transformConfig.globalCanvasOffset) /
+          transformConfig.globalCanvasScale);
 
   /// 判断两个Path是否相交
   bool isIntersecting(
@@ -15,18 +15,18 @@ extension CommonUtils on WhiteBoardManager {
       return false;
     }
 
-    // 1.判断如果targetPath的boundingBox和eraserPath的boundingBox不重合，则一定不相交
+    // 1.判断如果targetPath的boundingBox和originPath的boundingBox不重合，则一定不相交
     ui.Rect outerRect = originPath.getBounds();
     ui.Rect innerRect = targetPath.getBounds();
     if (!outerRect.overlaps(innerRect)) {
       return false;
     }
 
-    // 2.如果eraserPath的boundingBox包裹了targetPath的boundingBox，则采取如下判断
+    // 2.如果originPath的boundingBox包裹了targetPath的boundingBox，则采取如下判断
     // 2.1.computeMetrics()方法获取targetPath曲线上的点
-    // 2.2.遍历点，判断是否在eraserPath内
-    // 2.3.如果有一个点在eraserPath内，则认为相交
-    // 2.4.如果所有点都不在eraserPath内，则认为不相交
+    // 2.2.遍历点，判断是否在originPath内
+    // 2.3.如果有一个点在originPath内，则认为相交
+    // 2.4.如果所有点都不在originPath内，则认为不相交
     List<Offset> points = [];
     ui.PathMetrics targetPathMetrics = targetPath.computeMetrics();
     for (ui.PathMetric pathMetric in targetPathMetrics) {

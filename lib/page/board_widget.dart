@@ -17,8 +17,8 @@ class BoardWidget extends StatelessWidget {
       MediaQuery.of(context).size.width / 2,
       MediaQuery.of(context).size.height / 2,
     );
-    if (whiteBoardManager.transformConfig.curCanvasOffset == Offset.zero) {
-      whiteBoardManager.transformConfig.curCanvasOffset =
+    if (whiteBoardManager.transformConfig.globalCanvasOffset == Offset.zero) {
+      whiteBoardManager.transformConfig.globalCanvasOffset =
           whiteBoardManager.transformConfig.visibleAreaCenter;
     }
 

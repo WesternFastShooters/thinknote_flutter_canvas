@@ -16,10 +16,10 @@ class WhiteBoardLayer extends StatelessWidget {
         return Transform(
           transform: Matrix4.identity()
             ..translate(
-              whiteBoardManager.transformConfig.curCanvasOffset.dx,
-              whiteBoardManager.transformConfig.curCanvasOffset.dy,
+              whiteBoardManager.transformConfig.globalCanvasOffset.dx,
+              whiteBoardManager.transformConfig.globalCanvasOffset.dy,
             )
-            ..scale(whiteBoardManager.transformConfig.curCanvasScale),
+            ..scale(whiteBoardManager.transformConfig.globalCanvasScale),
           child: RepaintBoundary(
             child: CustomPaint(
               isComplex: true,
@@ -78,12 +78,10 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
-    if (whiteBoardManager.freedrawConfig.currentStroke.path == null) return;
+    if (whiteBoardManager.freedrawConfig.currentStroke.isEmpty) return;
     final path = whiteBoardManager.freedrawConfig.currentStroke.path;
     final paint = whiteBoardManager.freedrawConfig.currentStroke.paint;
-    if (path != null) {
-      canvas.drawPath(path, paint);
-    }
+    canvas.drawPath(path, paint);
   }
 
   /// 绘制橡皮擦
@@ -100,7 +98,7 @@ class WhiteBoardPainter extends CustomPainter {
     }
   }
 
-  /// 绘制套索虚线
+  /// 绘制套索
   drawLasso(Canvas canvas) {
     if (whiteBoardManager.lassoConfig.lassoPathPoints.isEmpty) return;
     switch (whiteBoardManager.lassoConfig.lassoStep) {
@@ -113,8 +111,9 @@ class WhiteBoardPainter extends CustomPainter {
     }
   }
 
+  /// 绘制套索虚线
   _drawLassoLine(Canvas canvas) {
-    if(whiteBoardManager.lassoConfig.isEmpty) return;
+    if (whiteBoardManager.lassoConfig.isEmpty) return;
     final path = whiteBoardManager.lassoConfig.lassoPath!;
     final paint = whiteBoardManager.lassoConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
@@ -123,7 +122,7 @@ class WhiteBoardPainter extends CustomPainter {
   /// 绘制套索闭合区域
   _drawClosedShapePolygon(Canvas canvas) {
     if (!whiteBoardManager.lassoConfig.isConvexity) return;
-    final path = whiteBoardManager.lassoConfig.lassoPath!;
+    final path = whiteBoardManager.lassoConfig.closedShapePath!;
     final paint = whiteBoardManager.lassoConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
   }

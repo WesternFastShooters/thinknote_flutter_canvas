@@ -37,6 +37,9 @@ class WhiteBoardManager extends GetxController {
   /// 存储已经绘制完成的canvas元素列表
   List<ElementContainer> canvasElementList = [];
 
+  /// 存储被套索选中的元素
+  List<ElementContainer> selectedElementList = [];
+
   /// 指头编号
   int currentPointerId = -1;
 

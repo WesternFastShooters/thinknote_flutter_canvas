@@ -6,19 +6,19 @@ class TransformConfig {
   TransformConfig();
 
   // 最小缩放
-  double minCanvasScale = 1.0;
+  double globalMinCanvasScale = 1.0;
 
   // 最大缩放
-  double maxCanvasScale = 3.0;
+  double globalMaxCanvasScale = 3.0;
 
   // 画布上一次的缩放比例
-  double preCanvasScale = 1.0;
+  double globalPreCanvasScale = 1.0;
 
-  // 画布当前的偏移量
-  Offset curCanvasOffset = Offset.zero;
+  // 画布的偏移量
+  Offset globalCanvasOffset = Offset.zero;
 
   // 画布当前的缩放比例
-  double curCanvasScale = 1.0;
+  double globalCanvasScale = 1.0;
 
   // 可视区域的大小
   Size visibleAreaSize = Size.zero;
