@@ -33,6 +33,10 @@ enum ScaleLayerWidgetType {
 class WhiteBoardManager extends GetxController {
   /// 当前选用工具类型（默认为平移缩放）
   ActionType currentToolType = ActionType.transform;
+  setCurrentToolType(ActionType type) {
+    currentToolType = type;
+    update();
+  }
 
   /// 存储已经绘制完成的canvas元素列表
   List<ElementContainer> canvasElementList = [];
@@ -57,6 +61,7 @@ class WhiteBoardManager extends GetxController {
 
   /// 套索相关配置
   LassoConfig lassoConfig = LassoConfig();
+
 
   
 }

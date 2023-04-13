@@ -7,6 +7,5 @@ abstract class WhiteElement {
   bool get isEmpty;
 
   /// 拖拽偏移量
-  Offset get dragOffset;
-  set dragOffset(Offset offset);
+  setDragOffset(Offset delta);
 }

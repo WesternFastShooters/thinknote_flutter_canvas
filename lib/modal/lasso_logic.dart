@@ -11,26 +11,28 @@ extension LassoLogic on WhiteBoardManager {
       return;
     }
     currentPointerId = event.pointer;
+
     switch (lassoConfig.lassoStep) {
       case LassoStep.none:
-        lassoConfig.lassoStep = LassoStep.drawLine;
-        lassoConfig.lassoPathPoints.clear();
-        lassoConfig.lassoPathPoints
-            .add(transformToCanvasPoint(event.localPosition));
+        lassoConfig.setLassoStep(LassoStep.drawLine);
+        lassoConfig.clearLassoPathPoints();
+        lassoConfig
+            .addLassoPathPoint(transformToCanvasPoint(event.localPosition));
         update();
-        return;
+        break;
       case LassoStep.drawLine:
-        return;
+        break;
       case LassoStep.close:
-        if (lassoConfig.lassoPath!
-            .contains(transformToCanvasPoint(event.localPosition))) {
-          return;
+        if (lassoConfig.checkHitLassoCloseArea(
+            transformToCanvasPoint(event.localPosition))) {
+          // 命中套索区域内情况
+          break;
         }
-        lassoConfig.lassoStep = LassoStep.none;
-        currentToolType = ActionType.transform;
-        lassoConfig.lassoPathPoints.clear();
+        // 不命中套索区域内情况
+        lassoConfig.setLassoStep(LassoStep.none);
+        setCurrentToolType(ActionType.transform);
+        lassoConfig.clearLassoPathPoints();
         update();
-        return;
     }
   }
 
@@ -41,40 +43,42 @@ extension LassoLogic on WhiteBoardManager {
     }
     switch (lassoConfig.lassoStep) {
       case LassoStep.none:
-        return;
+        break;
       case LassoStep.drawLine:
-        lassoConfig.lassoPathPoints
-            .add(transformToCanvasPoint(event.localPosition));
+        lassoConfig
+            .addLassoPathPoint(transformToCanvasPoint(event.localPosition));
         update();
-        return;
+        break;
       case LassoStep.close:
+        lassoConfig.setDragOffset(event.delta);
         for (var item in selectedElementList) {
           if (item.element.isEmpty) {
             continue;
           }
-          item.element.dragOffset += event.delta;
+          item.element.setDragOffset(event.delta);
           update();
         }
-        return;
+        break;
     }
   }
 
   /// 手势提起触发逻辑
   onLassoPointerUp(PointerUpEvent event) {
-    if (event.pointer == currentPointerId) {}
+    if (event.pointer != currentPointerId) {
+      return;
+    }
     switch (lassoConfig.lassoStep) {
       case LassoStep.none:
-        return;
+        break;
       case LassoStep.drawLine:
-        if (event.pointer != currentPointerId) return;
-        lassoConfig.lassoStep = LassoStep.close;
-        currentPointerId = -1;
+        lassoConfig.setLassoStep(LassoStep.close);
         setSelectedElement();
-        update();
-        return;
+        break;
       case LassoStep.close:
-        return;
+        break;
     }
+    currentPointerId = -1;
+    update();
   }
 
   /// 过滤出被套索选中的元素

@@ -15,15 +15,26 @@ class Stroke extends WhiteElement {
   }
   factory Stroke.init() => Stroke(pointerId: -1, option: null);
 
-  /// 笔画点集合
-  List<StrokePoint> strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
-
-  /// 笔画id，用于区分不同的笔画，防止多个笔画同时绘制
-  int pointerId = -1;
-
   /// 拖拽偏移量
   @override
   Offset dragOffset = Offset.zero;
+
+  @override
+  setDragOffset(Offset delta) {
+    dragOffset += delta;
+  }
+
+  /// 笔画点集合
+  List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
+  List<StrokePoint> get strokePoints => dragOffset == Offset.zero
+      ? _strokePoints
+      : _strokePoints
+          .map(
+              (e) => StrokePoint(e.x + dragOffset.dx, e.y + dragOffset.dy, e.p))
+          .toList();
+
+  /// 笔画id，用于区分不同的笔画，防止多个笔画同时绘制
+  int pointerId = -1;
 
   /// 笔画配置属性
   Map _option = {
@@ -44,7 +55,7 @@ class Stroke extends WhiteElement {
 
   @override
   Path get path {
-    final _path = Path();
+    var _path = Path();
     final outlinePoints = getStroke(
       strokePoints,
       size: 3,
@@ -75,11 +86,11 @@ class Stroke extends WhiteElement {
       }
     }
 
-    var boundingBox = _path.getBounds();
-    var topLeft = boundingBox.topLeft;
-    topLeft += dragOffset;
-    Matrix4 matrix = Matrix4.identity()..translate(topLeft.dx, topLeft.dy);
-    _path.transform(matrix.storage);
+    // var boundingBox = _path.getBounds();
+    // var topLeft = boundingBox.topLeft;
+    // topLeft += dragOffset;
+    // Matrix4 matrix = Matrix4.identity()..translate(topLeft.dx, topLeft.dy);
+    // _path=_path.transform(matrix.storage);
 
     return _path;
   }
@@ -101,6 +112,17 @@ class Stroke extends WhiteElement {
                 (pointInfo.pressureMax - pointInfo.pressureMin),
           )
         : StrokePoint(position.dx, position.dy);
-    strokePoints.add(strokePoint);
+    _strokePoints.add(strokePoint);
   }
+
+  /// 根据拖拽偏移量，计算出笔画点集合
+  // getStrokePointsByDragOffset(Offset delta) {
+  //   strokePoints = strokePoints.map((e) {
+  //     return StrokePoint(
+  //       e.x + delta.dx,
+  //       e.y + delta.dy,
+  //       e.p,
+  //     );
+  //   }).toList();
+  // }
 }

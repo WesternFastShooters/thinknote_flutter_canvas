@@ -6,10 +6,9 @@ import 'package:flutter_application_2/type/elementType/element_container.dart';
 
 extension FreeDrawLogic on WhiteBoardManager {
   onFreeDrawPointerDown(PointerDownEvent details) {
-    freedrawConfig.currentOption['simulatePressure'] =
-        details.kind != PointerDeviceKind.stylus;
-    if (freedrawConfig.currentStroke.strokePoints.isEmpty &&
-        currentPointerId == -1) {
+    if (freedrawConfig.currentStroke.isEmpty && currentPointerId == -1) {
+      freedrawConfig.currentOption['simulatePressure'] =
+          details.kind != PointerDeviceKind.stylus;
       freedrawConfig.currentStroke.storeStrokePoint(
           position: transformToCanvasPoint(details.localPosition),
           pointInfo: details);

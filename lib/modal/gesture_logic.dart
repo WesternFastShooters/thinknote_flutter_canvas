@@ -8,6 +8,7 @@ import 'package:flutter_application_2/modal/white_board_manager.dart';
 extension GestureLogic on WhiteBoardManager {
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
+    print('currentToolType:${currentToolType}');
     switch (currentToolType) {
       case ActionType.transform:
         break;

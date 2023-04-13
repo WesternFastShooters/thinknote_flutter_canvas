@@ -100,7 +100,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索
   drawLasso(Canvas canvas) {
-    if (whiteBoardManager.lassoConfig.lassoPathPoints.isEmpty) return;
+    if (whiteBoardManager.lassoConfig.isEmpty) return;
     switch (whiteBoardManager.lassoConfig.lassoStep) {
       case LassoStep.drawLine:
         _drawLassoLine(canvas);

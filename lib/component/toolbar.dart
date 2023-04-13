@@ -36,7 +36,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.brush),
       onPressed: () {
-        whiteBoardManager.currentToolType = ActionType.freeDraw;
+        whiteBoardManager.setCurrentToolType(ActionType.freeDraw);
       },
     );
   }
@@ -46,7 +46,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.pan_tool),
       onPressed: () {
-        whiteBoardManager.currentToolType = ActionType.transform;
+        whiteBoardManager.setCurrentToolType(ActionType.transform);
       },
     );
   }
@@ -56,7 +56,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.phonelink_erase),
       onPressed: () {
-        whiteBoardManager.currentToolType = ActionType.eraser;
+        whiteBoardManager.setCurrentToolType(ActionType.eraser);
       },
     );
   }
@@ -66,7 +66,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.crop_square),
       onPressed: () {
-        whiteBoardManager.currentToolType = ActionType.lasso;
+        whiteBoardManager.setCurrentToolType(ActionType.lasso);
       },
     );
   }
