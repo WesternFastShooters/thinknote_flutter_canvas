@@ -15,7 +15,7 @@ class FreedrawConfig {
     'capEnd': true,
     'simulatePressure': true,
     'isComplete': false,
-    'color': Colors.green,
+    'color': Color.fromARGB(255, 192, 80, 117),
   };
 
   /// 当前笔画配置

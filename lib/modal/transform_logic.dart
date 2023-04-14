@@ -17,7 +17,7 @@ extension TransformLogic on WhiteBoardManager {
 
   /// 缩放开始执行回调
   onScaleStart(ScaleStartDetails detail) {
-    if (currentToolType != ActionType.transform) return;
+    if (currentToolType.value != ActionType.transform) return;
     if (detail.pointerCount >= 2) {
       transformConfig.lastScaleUpdateDetails = null;
       update();
@@ -26,7 +26,7 @@ extension TransformLogic on WhiteBoardManager {
 
   /// 缩放中执行回调
   onScaleUpdate(ScaleUpdateDetails detail) {
-    if (currentToolType != ActionType.transform) return;
+    if (currentToolType.value != ActionType.transform) return;
     if (detail.pointerCount >= 2) {
       _executeTranslating(detail);
       _executeScaling(detail);
@@ -36,7 +36,7 @@ extension TransformLogic on WhiteBoardManager {
 
   /// 缩放结束执行回调
   onScaleEnd(ScaleEndDetails details) {
-    if (currentToolType != ActionType.transform) return;
+    if (currentToolType.value != ActionType.transform) return;
     if (details.pointerCount >= 2) {
       transformConfig.lastScaleUpdateDetails = null;
       update();

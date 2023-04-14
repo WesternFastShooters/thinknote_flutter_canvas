@@ -19,4 +19,10 @@ class EraserConfig {
     ..addOval(Rect.fromCircle(
         center: currentEraserPosition!,
         radius: eraserRadius));
+  
+  /// 配置重置
+  reset(){
+    currentEraserPosition = null;
+    eraserRadius = 10.0;
+  }
 }

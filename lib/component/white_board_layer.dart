@@ -63,7 +63,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制正在绘制的元素
   drawCurrentElement(Canvas canvas) {
-    switch (whiteBoardManager.currentToolType) {
+    switch (whiteBoardManager.currentToolType.value) {
       case ActionType.freeDraw:
         drawCurrentPen(canvas);
         break;
