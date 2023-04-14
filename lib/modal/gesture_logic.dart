@@ -11,6 +11,7 @@ extension GestureLogic on WhiteBoardManager {
     if (currentPointerId != -1) {
       return;
     }
+    currentPointerId = event.pointer;
     switch (currentToolType) {
       case ActionType.transform:
         break;
@@ -52,9 +53,9 @@ extension GestureLogic on WhiteBoardManager {
     if (event.pointer != currentPointerId) {
       return;
     }
+    currentPointerId = -1;
     switch (currentToolType) {
       case ActionType.transform:
-        // transformLogic.onPointerUp(event);
         onTranslatePointerUp(event);
         break;
       case ActionType.freeDraw:
@@ -67,7 +68,6 @@ extension GestureLogic on WhiteBoardManager {
         onLassoPointerUp(event);
         break;
     }
-    currentPointerId = -1;
     update();
   }
 }

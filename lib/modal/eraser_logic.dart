@@ -5,30 +5,24 @@ import 'package:flutter_application_2/type/elementType/stroke_type.dart';
 
 extension EraserLogic on WhiteBoardManager {
   onEraserPointerDown(PointerDownEvent details) {
-    if (eraserConfig.currentEraserPosition == null && currentPointerId == -1) {
+    if (eraserConfig.currentEraserPosition == null) {
       eraserConfig.currentEraserPosition =
           transformToCanvasPoint(details.position);
       erase();
-      currentPointerId = details.pointer;
       update();
     }
   }
 
   onEraserPointerMove(PointerMoveEvent details) {
-    if (details.pointer == currentPointerId) {
-      eraserConfig.currentEraserPosition =
-          transformToCanvasPoint(details.position);
-      erase();
-      update();
-    }
+    eraserConfig.currentEraserPosition =
+        transformToCanvasPoint(details.position);
+    erase();
+    update();
   }
 
   onEraserPointerUp(PointerUpEvent details) {
-    if (details.pointer == currentPointerId) {
-      eraserConfig.currentEraserPosition = null;
-      currentPointerId = -1;
-      update();
-    }
+    eraserConfig.currentEraserPosition = null;
+    update();
   }
 
   /// 擦除
