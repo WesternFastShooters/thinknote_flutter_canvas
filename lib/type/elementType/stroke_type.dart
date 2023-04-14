@@ -16,6 +16,7 @@ class Stroke extends WhiteElement {
   @override
   Offset dragOffset = Offset.zero;
 
+  /// 设置偏移量
   @override
   setDragOffset(Offset delta) {
     dragOffset += delta;
@@ -108,15 +109,5 @@ class Stroke extends WhiteElement {
         : StrokePoint(position.dx, position.dy);
     _strokePoints.add(strokePoint);
   }
-
-  /// 根据拖拽偏移量，计算出笔画点集合
-  // getStrokePointsByDragOffset(Offset delta) {
-  //   strokePoints = strokePoints.map((e) {
-  //     return StrokePoint(
-  //       e.x + delta.dx,
-  //       e.y + delta.dy,
-  //       e.p,
-  //     );
-  //   }).toList();
-  // }
+  
 }

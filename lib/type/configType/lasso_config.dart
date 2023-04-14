@@ -17,7 +17,7 @@ class LassoConfig {
   }
 
   /// 套索的路径点
-  List<Offset> _lassoPathPoints = [];
+  final List<Offset> _lassoPathPoints = [];
   List<Offset> get lassoPathPoints => dragOffset == Offset.zero
       ? _lassoPathPoints
       : _lassoPathPoints.map((e) => e + dragOffset).toList();
