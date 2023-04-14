@@ -8,9 +8,11 @@ typedef StrokePoint = Point;
 
 class Stroke extends WhiteElement {
   Stroke({
-    required Map? option,
-  });
-  factory Stroke.init() => Stroke(option: null);
+    required this.option,
+    required List<StrokePoint> strokePoints,
+  }) {
+    this.strokePoints = strokePoints;
+  }
 
   /// 拖拽偏移量
   @override
@@ -23,7 +25,11 @@ class Stroke extends WhiteElement {
   }
 
   /// 笔画点集合
-  final List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
+  List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
+  set strokePoints(List<StrokePoint> strokePoints) {
+    _strokePoints = strokePoints;
+  }
+
   List<StrokePoint> get strokePoints => dragOffset == Offset.zero
       ? _strokePoints
       : _strokePoints
@@ -32,22 +38,9 @@ class Stroke extends WhiteElement {
           .toList();
 
   /// 笔画配置属性
-  Map _option = {
-    'size': 3.0,
-    'thinning': 0.1,
-    'smoothing': 0.5,
-    'streamline': 0.5,
-    'taperStart': 0.0,
-    'capStart': true,
-    'taperEnd': 0.1,
-    'capEnd': true,
-    'simulatePressure': true,
-    'isComplete': false,
-    'color': Colors.pink,
-  };
-  set option(Map? option) => _option = option ?? _option;
-  Map get option => _option;
+  Map option;
 
+  /// 画迹路径
   @override
   Path get path {
     var _path = Path();
@@ -81,33 +74,14 @@ class Stroke extends WhiteElement {
       }
     }
 
-    // var boundingBox = _path.getBounds();
-    // var topLeft = boundingBox.topLeft;
-    // topLeft += dragOffset;
-    // Matrix4 matrix = Matrix4.identity()..translate(topLeft.dx, topLeft.dy);
-    // _path=_path.transform(matrix.storage);
-
     return _path;
   }
 
+  /// 画迹样式
   Paint get paint => Paint()..color = option['color'];
 
   /// 判断笔画是否为空
   @override
   bool get isEmpty => path.getBounds().isEmpty;
 
-  /// 存储笔画点
-  storeStrokePoint(
-      {required Offset position, required PointerEvent pointInfo}) {
-    final strokePoint = pointInfo.kind == PointerDeviceKind.stylus
-        ? StrokePoint(
-            position.dx,
-            position.dy,
-            (pointInfo.pressure - pointInfo.pressureMin) /
-                (pointInfo.pressureMax - pointInfo.pressureMin),
-          )
-        : StrokePoint(position.dx, position.dy);
-    _strokePoints.add(strokePoint);
-  }
-  
 }
