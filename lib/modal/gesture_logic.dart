@@ -8,6 +8,9 @@ import 'package:flutter_application_2/modal/white_board_manager.dart';
 extension GestureLogic on WhiteBoardManager {
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
+    if (currentPointerId != -1) {
+      return;
+    }
     switch (currentToolType) {
       case ActionType.transform:
         break;
@@ -25,6 +28,9 @@ extension GestureLogic on WhiteBoardManager {
 
   /// 手势平移触发逻辑
   onPointerMove(PointerMoveEvent event) {
+    if (event.pointer != currentPointerId) {
+      return;
+    }
     switch (currentToolType) {
       case ActionType.transform:
         onTranslatePointerMove(event);
@@ -43,6 +49,9 @@ extension GestureLogic on WhiteBoardManager {
 
   /// 手势提起触发逻辑
   onPointerUp(PointerUpEvent event) {
+    if (event.pointer != currentPointerId) {
+      return;
+    }
     switch (currentToolType) {
       case ActionType.transform:
         // transformLogic.onPointerUp(event);
@@ -58,5 +67,7 @@ extension GestureLogic on WhiteBoardManager {
         onLassoPointerUp(event);
         break;
     }
+    currentPointerId = -1;
+    update();
   }
 }

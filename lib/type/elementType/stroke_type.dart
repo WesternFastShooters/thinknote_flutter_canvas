@@ -8,12 +8,9 @@ typedef StrokePoint = Point;
 
 class Stroke extends WhiteElement {
   Stroke({
-    required this.pointerId,
     required Map? option,
-  }) {
-    this.option = option;
-  }
-  factory Stroke.init() => Stroke(pointerId: -1, option: null);
+  });
+  factory Stroke.init() => Stroke(option: null);
 
   /// 拖拽偏移量
   @override
@@ -24,18 +21,14 @@ class Stroke extends WhiteElement {
     dragOffset += delta;
   }
 
-
   /// 笔画点集合
-  List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
+  final List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
   List<StrokePoint> get strokePoints => dragOffset == Offset.zero
       ? _strokePoints
       : _strokePoints
           .map(
               (e) => StrokePoint(e.x + dragOffset.dx, e.y + dragOffset.dy, e.p))
           .toList();
-
-  /// 笔画id，用于区分不同的笔画，防止多个笔画同时绘制
-  int pointerId = -1;
 
   /// 笔画配置属性
   Map _option = {

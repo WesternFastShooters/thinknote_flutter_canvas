@@ -51,7 +51,7 @@ class WhiteBoardPainter extends CustomPainter {
     for (var item in whiteBoardManager.canvasElementList) {
       switch (item.type) {
         case ElementType.stroke:
-          if ((item.element as Stroke).path == null) continue;
+          if (item.element.isEmpty) continue;
           canvas.drawPath(
               (item.element as Stroke).path!, (item.element as Stroke).paint);
           break;

@@ -7,9 +7,6 @@ import 'package:flutter_application_2/type/elementType/stroke_type.dart';
 extension LassoLogic on WhiteBoardManager {
   /// 手势按下触发逻辑
   onLassoPointerDown(PointerDownEvent event) {
-    if (currentPointerId != -1) {
-      return;
-    }
     currentPointerId = event.pointer;
     switch (lassoConfig.lassoStep) {
       case LassoStep.drawLine:
@@ -34,9 +31,6 @@ extension LassoLogic on WhiteBoardManager {
 
   /// 手势平移触发逻辑
   onLassoPointerMove(PointerMoveEvent event) {
-    if (event.pointer != currentPointerId) {
-      return;
-    }
     switch (lassoConfig.lassoStep) {
       case LassoStep.drawLine:
         lassoConfig
@@ -61,9 +55,7 @@ extension LassoLogic on WhiteBoardManager {
 
   /// 手势提起触发逻辑
   onLassoPointerUp(PointerUpEvent event) {
-    if (event.pointer != currentPointerId) {
-      return;
-    }
+    
     switch (lassoConfig.lassoStep) {
       case LassoStep.drawLine:
         lassoConfig.setLassoStep(LassoStep.close);
@@ -77,7 +69,7 @@ extension LassoLogic on WhiteBoardManager {
       case LassoStep.close:
         break;
     }
-    currentPointerId = -1;
+    
     update();
   }
 
