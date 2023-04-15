@@ -16,6 +16,8 @@ class LassoConfig {
     lassoStep = step;
   }
 
+ 
+
   /// 套索的路径点
   final List<Offset> _lassoPathPoints = [];
   List<Offset> get lassoPathPoints => dragOffset == Offset.zero
@@ -75,7 +77,7 @@ class LassoConfig {
   bool get isConvexity => lassoPathPoints.length > 2;
 
   /// 检查是否命中套索区域内
-  bool checkHitLassoCloseArea(Offset position) => lassoPath!.contains(position);
+  bool isHitLassoCloseArea(Offset position) => lassoPath!.contains(position);
 
   /// 添加套索虚线点
   addLassoPathPoint(Offset point) {

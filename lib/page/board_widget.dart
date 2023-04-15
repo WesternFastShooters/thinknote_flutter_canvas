@@ -33,6 +33,10 @@ class BoardWidget extends StatelessWidget {
             right: 20,
             child: ToolBar(),
           ),
+          // DropDownMenu(
+          //   isShowMenu: whiteBoardManager.menuConfig.isShowMenu,
+          //   menuPosition: whiteBoardManager.menuConfig.menuPosition,
+          // )
         ],
       ),
     );

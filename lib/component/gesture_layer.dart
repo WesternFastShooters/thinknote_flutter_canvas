@@ -19,6 +19,7 @@ class GestureLayer extends StatelessWidget {
             onScaleStart: whiteBoardManager.onScaleStart,
             onScaleUpdate: whiteBoardManager.onScaleUpdate,
             onScaleEnd: whiteBoardManager.onScaleEnd,
+            // onLongPressDown: ,
             child: Listener(
               behavior: HitTestBehavior.opaque,
               onPointerDown: whiteBoardManager.onPointerDown,
@@ -30,4 +31,6 @@ class GestureLayer extends StatelessWidget {
       },
     );
   }
+
+
 }

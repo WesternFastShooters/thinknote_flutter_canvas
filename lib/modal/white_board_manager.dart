@@ -1,6 +1,8 @@
+import 'package:flutter_application_2/modal/common_utils.dart';
 import 'package:flutter_application_2/type/configType/eraser_config.dart';
 import 'package:flutter_application_2/type/configType/freedraw_config.dart';
 import 'package:flutter_application_2/type/configType/lasso_config.dart';
+import 'package:flutter_application_2/type/configType/menu_config.dart';
 import 'package:flutter_application_2/type/configType/transform_config.dart';
 import 'package:flutter_application_2/type/elementType/element_container.dart';
 import 'package:get/get.dart';
@@ -50,6 +52,7 @@ class WhiteBoardManager extends GetxController {
     freedrawConfig.reset();
     eraserConfig.reset();
     lassoConfig.reset();
+    update();
   }
 
   /// 存储已经绘制完成的canvas元素列表
@@ -57,6 +60,20 @@ class WhiteBoardManager extends GetxController {
 
   /// 存储被套索选中的元素
   List<ElementContainer> selectedElementList = [];
+
+  /// 过滤出被套索选中的元素
+  setSelectedElement() {
+    selectedElementList = canvasElementList
+        .where((element) => isIntersecting(
+            originPath: lassoConfig.closedShapePath!,
+            targetPath: (element.element).path))
+        .toList();
+  }
+
+  /// 清空被套索选中的元素
+  clearSelectedElement() {
+    selectedElementList.clear();
+  }
 
   /// 指头编号
   int currentPointerId = -1;
@@ -75,4 +92,7 @@ class WhiteBoardManager extends GetxController {
 
   /// 套索相关配置
   LassoConfig lassoConfig = LassoConfig();
+
+  /// 菜单相关配置
+  MenuConfig menuConfig = MenuConfig();
 }

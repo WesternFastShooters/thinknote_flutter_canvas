@@ -1,9 +1,11 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter_application_2/modal/common_utils.dart';
 import 'package:flutter_application_2/modal/eraser_logic.dart';
 import 'package:flutter_application_2/modal/freedraw_logic.dart';
 import 'package:flutter_application_2/modal/lasso_logic.dart';
 import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'package:flutter_application_2/type/configType/lasso_config.dart';
 
 extension GestureLogic on WhiteBoardManager {
   /// 手势按下触发逻辑
@@ -25,6 +27,15 @@ extension GestureLogic on WhiteBoardManager {
         onLassoPointerDown(event);
         break;
     }
+  }
+
+  onLongPress(LongPressDownDetails details) {
+    if (currentToolType.value == ActionType.lasso &&
+        lassoConfig.lassoStep == LassoStep.close &&
+        lassoConfig.isHitLassoCloseArea(
+            transformToCanvasPoint(details.localPosition))) {
+              
+            }
   }
 
   /// 手势平移触发逻辑
