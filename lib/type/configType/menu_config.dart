@@ -19,4 +19,11 @@ class MenuConfig {
     this.isShowMenu = isShowMenu;
     this.menuItems = menuItems;
   }
+
+  /// 配置重置
+  reset() {
+    menuPosition = Offset.zero;
+    isShowMenu = false;
+    menuItems = [];
+  }
 }

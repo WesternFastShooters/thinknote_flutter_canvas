@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_application_2/modal/gesture_logic.dart';
+import 'package:flutter_application_2/modal/menu_logic.dart';
 import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
@@ -19,7 +20,9 @@ class GestureLayer extends StatelessWidget {
             onScaleStart: whiteBoardManager.onScaleStart,
             onScaleUpdate: whiteBoardManager.onScaleUpdate,
             onScaleEnd: whiteBoardManager.onScaleEnd,
-            // onLongPressDown: ,
+            onLongPressStart:(e){
+              whiteBoardManager.onLongPressStart(e);
+            },
             child: Listener(
               behavior: HitTestBehavior.opaque,
               onPointerDown: whiteBoardManager.onPointerDown,
@@ -31,6 +34,4 @@ class GestureLayer extends StatelessWidget {
       },
     );
   }
-
-
 }

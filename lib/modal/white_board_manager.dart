@@ -52,6 +52,7 @@ class WhiteBoardManager extends GetxController {
     freedrawConfig.reset();
     eraserConfig.reset();
     lassoConfig.reset();
+    menuConfig.reset();
     update();
   }
 
@@ -60,20 +61,6 @@ class WhiteBoardManager extends GetxController {
 
   /// 存储被套索选中的元素
   List<ElementContainer> selectedElementList = [];
-
-  /// 过滤出被套索选中的元素
-  setSelectedElement() {
-    selectedElementList = canvasElementList
-        .where((element) => isIntersecting(
-            originPath: lassoConfig.closedShapePath!,
-            targetPath: (element.element).path))
-        .toList();
-  }
-
-  /// 清空被套索选中的元素
-  clearSelectedElement() {
-    selectedElementList.clear();
-  }
 
   /// 指头编号
   int currentPointerId = -1;

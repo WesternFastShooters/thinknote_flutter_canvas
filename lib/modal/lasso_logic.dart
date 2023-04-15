@@ -18,18 +18,15 @@ extension LassoLogic on WhiteBoardManager {
       case LassoStep.close:
         if (lassoConfig
             .isHitLassoCloseArea(transformToCanvasPoint(event.localPosition))) {
-          // 命中套索区域内情况
-          // 不进行任何操作
+          // 命中套索区域内情况,不进行任何操作
           break;
         }
-        // 不命中套索区域内情况
+        // 不命中套索区域内情况,重置套索配置
         lassoConfig.reset();
         update();
         break;
     }
   }
-
- 
 
   /// 手势平移触发逻辑
   onLassoPointerMove(PointerMoveEvent event) {
@@ -75,4 +72,17 @@ extension LassoLogic on WhiteBoardManager {
     update();
   }
 
+  /// 过滤出被套索选中的元素
+  setSelectedElement() {
+    selectedElementList = canvasElementList
+        .where((element) => isIntersecting(
+            originPath: lassoConfig.closedShapePath!,
+            targetPath: (element.element).path))
+        .toList();
+  }
+
+  /// 清空被套索选中的元素
+  clearSelectedElement() {
+    selectedElementList.clear();
+  }
 }

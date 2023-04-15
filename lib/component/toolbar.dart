@@ -12,7 +12,6 @@ class ToolBar extends StatefulWidget {
 
 class _ToolBarWidgetState extends State<ToolBar>
     with SingleTickerProviderStateMixin {
-  // final whiteBoardBase = Get.find<WhiteBoardBase>();
   final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
 
   @override

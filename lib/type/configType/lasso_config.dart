@@ -77,7 +77,7 @@ class LassoConfig {
   bool get isConvexity => lassoPathPoints.length > 2;
 
   /// 检查是否命中套索区域内
-  bool isHitLassoCloseArea(Offset position) => lassoPath!.contains(position);
+  bool isHitLassoCloseArea(Offset position) => isEmpty ? false : closedShapePath!.contains(position);
 
   /// 添加套索虚线点
   addLassoPathPoint(Offset point) {
