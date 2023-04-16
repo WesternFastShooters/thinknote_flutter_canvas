@@ -80,9 +80,6 @@ extension LassoLogic on WhiteBoardManager {
             targetPath: (element.element).path))
         .toList();
   }
-
-  /// 清空被套索选中的元素
-  clearSelectedElement() {
-    selectedElementList.clear();
-  }
 }
+
+

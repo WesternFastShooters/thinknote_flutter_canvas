@@ -20,7 +20,7 @@ class GestureLayer extends StatelessWidget {
             onScaleStart: whiteBoardManager.onScaleStart,
             onScaleUpdate: whiteBoardManager.onScaleUpdate,
             onScaleEnd: whiteBoardManager.onScaleEnd,
-            onLongPressStart:(e){
+            onLongPressStart: (e) {
               whiteBoardManager.onLongPressStart(e);
             },
             child: Listener(

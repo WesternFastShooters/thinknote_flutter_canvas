@@ -46,16 +46,16 @@ class Stroke extends WhiteElement {
     var _path = Path();
     final outlinePoints = getStroke(
       strokePoints,
-      size: 3,
-      thinning: 0.1,
-      smoothing: 0.5,
-      streamline: 0.5,
-      taperStart: 0.0,
-      capStart: true,
-      taperEnd: 0.1,
-      capEnd: true,
-      simulatePressure: true,
-      isComplete: true,
+      size: option['size'],
+      thinning: option['thinning'],
+      smoothing: option['smoothing'],
+      streamline: option['streamline'],
+      taperStart: option['taperStart'],
+      capStart: option['capStart'],
+      taperEnd: option['taperEnd'],
+      capEnd: option['capEnd'],
+      simulatePressure: option['simulatePressure'],
+      isComplete: option['isComplete'],
     );
     if (outlinePoints.isEmpty) {
       return _path;
@@ -84,4 +84,12 @@ class Stroke extends WhiteElement {
   @override
   bool get isEmpty => path.getBounds().isEmpty;
 
+  /// 深拷贝
+  @override
+  Stroke deepCopy() {
+    return Stroke(
+      strokePoints: List.from(strokePoints),
+      option: Map.from(option),
+    );
+  }
 }

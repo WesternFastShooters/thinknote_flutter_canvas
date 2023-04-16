@@ -14,4 +14,7 @@ abstract class WhiteElement {
 
   /// 设置偏移量
   setDragOffset(Offset delta);
+
+  /// 深拷贝
+  deepCopy();
 }

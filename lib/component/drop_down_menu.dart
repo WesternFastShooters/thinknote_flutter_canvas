@@ -2,9 +2,9 @@
 // 菜单项有复制、粘贴、剪切、删除
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/modal/common_utils.dart';
 import 'package:flutter_application_2/modal/menu_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'package:flutter_application_2/type/configType/menu_config.dart';
 import 'package:get/get.dart';
 
 class DropDownMenu extends StatelessWidget {
@@ -17,8 +17,8 @@ class DropDownMenu extends StatelessWidget {
     return GetBuilder<WhiteBoardManager>(
       builder: (whiteBoardManager) {
         return Positioned(
-            left: whiteBoardManager.menuConfig.menuPosition.dx,
-            top: whiteBoardManager.menuConfig.menuPosition.dy,
+            left: whiteBoardManager.menuConfig.currentMenuPosition.dx,
+            top: whiteBoardManager.menuConfig.currentMenuPosition.dy,
             child: Offstage(
               offstage: !whiteBoardManager.menuConfig.isShowMenu,
               child: Container(
@@ -36,20 +36,20 @@ class DropDownMenu extends StatelessWidget {
     );
   }
 
-  Widget _menuItem(String title) {
+  Widget _menuItem(MenuItemEnum title) {
     return GestureDetector(
       onTap: () {
         switch (title) {
-          case '复制':
+          case MenuItemEnum.copy:
             whiteBoardManager.copyElement();
             break;
-          case '粘贴':
+          case MenuItemEnum.paste:
             whiteBoardManager.pasteElement();
             break;
-          case '剪切':
+          case MenuItemEnum.cut:
             whiteBoardManager.cutElement();
             break;
-          case '删除':
+          case MenuItemEnum.delete:
             whiteBoardManager.deleteElement();
             break;
         }
@@ -57,7 +57,7 @@ class DropDownMenu extends StatelessWidget {
       child: Container(
         width: 50,
         height: 25,
-        child: Text(title),
+        child: Text(title.value),
       ),
     );
   }

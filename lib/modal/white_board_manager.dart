@@ -1,10 +1,10 @@
-import 'package:flutter_application_2/modal/common_utils.dart';
 import 'package:flutter_application_2/type/configType/eraser_config.dart';
 import 'package:flutter_application_2/type/configType/freedraw_config.dart';
 import 'package:flutter_application_2/type/configType/lasso_config.dart';
 import 'package:flutter_application_2/type/configType/menu_config.dart';
 import 'package:flutter_application_2/type/configType/transform_config.dart';
 import 'package:flutter_application_2/type/elementType/element_container.dart';
+import 'package:flutter_application_2/type/elementType/white_element.dart';
 import 'package:get/get.dart';
 
 enum ActionType {
@@ -52,15 +52,17 @@ class WhiteBoardManager extends GetxController {
     freedrawConfig.reset();
     eraserConfig.reset();
     lassoConfig.reset();
-    menuConfig.reset();
     update();
   }
 
   /// 存储已经绘制完成的canvas元素列表
-  List<ElementContainer> canvasElementList = [];
+  List<ElementContainer<WhiteElement>> canvasElementList = [];
 
   /// 存储被套索选中的元素
-  List<ElementContainer> selectedElementList = [];
+  List<ElementContainer<WhiteElement>> selectedElementList = [];
+
+  /// 存储备份的元素
+  List<ElementContainer<WhiteElement>> copiedElementList = [];
 
   /// 指头编号
   int currentPointerId = -1;

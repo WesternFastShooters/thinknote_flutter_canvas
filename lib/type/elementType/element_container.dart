@@ -13,4 +13,11 @@ class ElementContainer<T extends WhiteElement> {
   T element;
 
   ElementContainer({required this.type, required this.element});
+
+  ElementContainer deepCopy() {
+    return ElementContainer(
+      type: type,
+      element: element.deepCopy(),
+    );
+  }
 }
