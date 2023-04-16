@@ -15,15 +15,18 @@ extension MenuLogic on WhiteBoardManager {
     }
   }
 
-  /// 长按开始触发逻辑
-  onLongPressStart(LongPressStartDetails details) {
+  /// 双击触发逻辑
+  onDoubleTapDown(TapDownDetails details) {
     menuConfig.currentMenuPosition = details.localPosition;
     if (currentToolType.value == ActionType.transform ||
         currentToolType.value == ActionType.lasso) {
-      menuConfig.openMenu(
-          currentMenuPosition: menuConfig.currentMenuPosition,
-          menuItems: getMenuItems());
-      update();
+      final menuItems = getMenuItems();
+      if (menuItems.isNotEmpty) {
+        menuConfig.openMenu(
+            currentMenuPosition: menuConfig.currentMenuPosition,
+            menuItems: menuItems);
+        update();
+      }
     }
   }
 
