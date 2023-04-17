@@ -2,12 +2,6 @@ import 'dart:ui';
 
 class EraserConfig {
 
-  // 构造函数
-  EraserConfig({
-    required this.currentEraserPosition,
-    required this.eraserRadius,
-  });
-
   /// 当前橡皮擦的位置
   Offset? currentEraserPosition;
 
@@ -20,9 +14,10 @@ class EraserConfig {
         center: currentEraserPosition!,
         radius: eraserRadius));
   
-  /// 配置重置
-  reset(){
+ /// 重置橡皮擦配置
+  resetEraserConfig() {
     currentEraserPosition = null;
     eraserRadius = 10.0;
   }
+
 }

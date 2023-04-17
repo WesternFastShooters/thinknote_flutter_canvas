@@ -1,23 +1,24 @@
-import 'dart:ui' as ui;
-import 'package:flutter/gestures.dart';
-import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'dart:ui';
 
-extension CommonUtils on WhiteBoardManager {
+import '../white_board_manager.dart';
+
+
+extension GeometryTool on WhiteBoardConfig {
   /// 根据传入的坐标映射为canvas的坐标
-  Offset transformToCanvasPoint(Offset position) =>
-      ((position - transformConfig.globalCanvasOffset) /
-          transformConfig.globalCanvasScale);
+  Offset transformToCanvasPoint(
+    currentPosition,
+  ) =>
+      ((currentPosition - globalCanvasOffset) / globalCanvasScale);
 
   /// 判断两个Path是否相交
-  bool isIntersecting(
-      {required ui.Path originPath, required ui.Path? targetPath}) {
+  bool isIntersecting({required Path originPath, required Path? targetPath}) {
     if (targetPath == null) {
       return false;
     }
 
     // 1.判断如果targetPath的boundingBox和originPath的boundingBox不重合，则一定不相交
-    ui.Rect outerRect = originPath.getBounds();
-    ui.Rect innerRect = targetPath.getBounds();
+    Rect outerRect = originPath.getBounds();
+    Rect innerRect = targetPath.getBounds();
     if (!outerRect.overlaps(innerRect)) {
       return false;
     }
@@ -28,12 +29,11 @@ extension CommonUtils on WhiteBoardManager {
     // 2.3.如果有一个点在originPath内，则认为相交
     // 2.4.如果所有点都不在originPath内，则认为不相交
     List<Offset> points = [];
-    ui.PathMetrics targetPathMetrics = targetPath.computeMetrics();
-    for (ui.PathMetric pathMetric in targetPathMetrics) {
+    PathMetrics targetPathMetrics = targetPath.computeMetrics();
+    for (PathMetric pathMetric in targetPathMetrics) {
       // pathMetric为targetPath中的线段
       for (double i = 0; i < pathMetric.length; i++) {
-        ui.Tangent? tangent =
-            pathMetric.getTangentForOffset(i); // 获取到线段上长度为i时的切线
+        Tangent? tangent = pathMetric.getTangentForOffset(i); // 获取到线段上长度为i时的切线
         points.add(tangent!.position); // 获取到切线对应的位置
       }
     }

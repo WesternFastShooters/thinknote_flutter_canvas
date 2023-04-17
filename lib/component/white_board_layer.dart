@@ -16,10 +16,10 @@ class WhiteBoardLayer extends StatelessWidget {
         return Transform(
           transform: Matrix4.identity()
             ..translate(
-              whiteBoardManager.transformConfig.globalCanvasOffset.dx,
-              whiteBoardManager.transformConfig.globalCanvasOffset.dy,
+              whiteBoardManager.whiteBoardConfig.globalCanvasOffset.dx,
+              whiteBoardManager.whiteBoardConfig.globalCanvasOffset.dy,
             )
-            ..scale(whiteBoardManager.transformConfig.globalCanvasScale),
+            ..scale(whiteBoardManager.whiteBoardConfig.globalCanvasScale),
           child: RepaintBoundary(
             child: CustomPaint(
               isComplex: true,
@@ -48,7 +48,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制所有画布元素
   drawCanvasElementList(Canvas canvas) {
-    for (var item in whiteBoardManager.canvasElementList) {
+    for (var item in whiteBoardManager.whiteBoardConfig.canvasElementList) {
       switch (item.type) {
         case ElementType.stroke:
           if (item.element.isEmpty) continue;
@@ -78,18 +78,18 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
-    if (whiteBoardManager.freedrawConfig.currentStroke.isEmpty) return;
-    final path = whiteBoardManager.freedrawConfig.currentStroke.path;
-    final paint = whiteBoardManager.freedrawConfig.currentStroke.paint;
+    if (whiteBoardManager.whiteBoardConfig.currentStroke.isEmpty) return;
+    final path = whiteBoardManager.whiteBoardConfig.currentStroke.currentPath;
+    final paint = whiteBoardManager.whiteBoardConfig.currentStroke.paint;
     canvas.drawPath(path, paint);
   }
 
   /// 绘制橡皮擦
   drawEraser(Canvas canvas) {
-    if (whiteBoardManager.eraserConfig.currentEraserPosition != null) {
+    if (whiteBoardManager.whiteBoardConfig.currentEraserPosition != null) {
       canvas.drawCircle(
-        (whiteBoardManager.eraserConfig.currentEraserPosition as Offset),
-        whiteBoardManager.eraserConfig.eraserRadius,
+        (whiteBoardManager.whiteBoardConfig.currentEraserPosition as Offset),
+        whiteBoardManager.whiteBoardConfig.eraserRadius,
         Paint()
           ..color = Colors.blue
           ..strokeWidth = 1
@@ -100,8 +100,8 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索
   drawLasso(Canvas canvas) {
-    if (whiteBoardManager.lassoConfig.isEmpty) return;
-    switch (whiteBoardManager.lassoConfig.lassoStep) {
+    if (whiteBoardManager.whiteBoardConfig.isEmpty) return;
+    switch (whiteBoardManager.whiteBoardConfig.lassoStep) {
       case LassoStep.drawLine:
         _drawLassoLine(canvas);
         break;
@@ -113,17 +113,17 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索虚线
   _drawLassoLine(Canvas canvas) {
-    if (whiteBoardManager.lassoConfig.isEmpty) return;
-    final path = whiteBoardManager.lassoConfig.lassoPath!;
-    final paint = whiteBoardManager.lassoConfig.paint;
+    if (whiteBoardManager.whiteBoardConfig.isEmpty) return;
+    final path = whiteBoardManager.whiteBoardConfig.lassoPath!;
+    final paint = whiteBoardManager.whiteBoardConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
   }
 
   /// 绘制套索闭合区域
   _drawClosedShapePolygon(Canvas canvas) {
-    if (!whiteBoardManager.lassoConfig.isConvexity) return;
-    final path = whiteBoardManager.lassoConfig.closedShapePath!;
-    final paint = whiteBoardManager.lassoConfig.paint;
+    if (!whiteBoardManager.whiteBoardConfig.isConvexity) return;
+    final path = whiteBoardManager.whiteBoardConfig.closedShapePath!;
+    final paint = whiteBoardManager.whiteBoardConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
   }
 }

@@ -1,35 +1,31 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter_application_2/modal/common_utils.dart';
-import 'package:flutter_application_2/modal/white_board_manager.dart';
-import 'package:flutter_application_2/type/elementType/stroke_type.dart';
+import 'package:flutter_application_2/modal/utils/geometry_tool.dart';
 import 'package:flutter_application_2/type/elementType/element_container.dart';
 
-extension FreeDrawLogic on WhiteBoardManager {
+import '../white_board_manager.dart';
+
+extension FreeDrawGesture on WhiteBoardConfig {
   onFreeDrawPointerDown(PointerDownEvent details) {
-    if (freedrawConfig.currentStroke.isEmpty) {
-      freedrawConfig.setCurrentOption(
+    if (currentStroke.isEmpty) {
+      setCurrentOption(
           {'simulatePressure': details.kind != PointerDeviceKind.stylus});
-      freedrawConfig.addStrokePoint(
+      addStrokePoint(
           position: transformToCanvasPoint(details.localPosition),
           pointInfo: details);
-
-      update();
     }
   }
 
   onFreeDrawPointerMove(PointerMoveEvent details) {
-    freedrawConfig.addStrokePoint(
+    addStrokePoint(
         position: transformToCanvasPoint(details.localPosition),
         pointInfo: details);
-    update();
   }
 
   onFreeDrawPointerUp(PointerUpEvent details) {
     canvasElementList.add(ElementContainer(
-      element: freedrawConfig.currentStroke,
+      element: currentStroke,
       type: ElementType.stroke,
     ));
-    freedrawConfig.reset();
-    update();
+    resetFreeDraw();
   }
 }

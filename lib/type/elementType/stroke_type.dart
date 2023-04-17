@@ -24,28 +24,20 @@ class Stroke extends WhiteElement {
     dragOffset += delta;
   }
 
-  /// 笔画点集合
-  List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
-  set strokePoints(List<StrokePoint> strokePoints) {
-    _strokePoints = strokePoints;
-  }
-
-  List<StrokePoint> get strokePoints => dragOffset == Offset.zero
-      ? _strokePoints
-      : _strokePoints
-          .map(
-              (e) => StrokePoint(e.x + dragOffset.dx, e.y + dragOffset.dy, e.p))
-          .toList();
-
   /// 笔画配置属性
   Map option;
 
-  /// 画迹路径
-  @override
-  Path get path {
+  /// 画迹样式
+  Paint get paint => Paint()..color = option['color'];
+
+  /// 当前笔画点集合
+  List<StrokePoint> currentStrokePointList = <StrokePoint>[];
+
+  /// 当前笔画点路径
+  Path get currentPath {
     var _path = Path();
     final outlinePoints = getStroke(
-      strokePoints,
+      currentStrokePointList,
       size: option['size'],
       thinning: option['thinning'],
       smoothing: option['smoothing'],
@@ -77,12 +69,34 @@ class Stroke extends WhiteElement {
     return _path;
   }
 
-  /// 画迹样式
-  Paint get paint => Paint()..color = option['color'];
+  /// 绘制完成的笔画路径
+  @override
+  Path? path;
+
+  /// 画笔绘制完毕
+  complete(){
+    // path = currentPath;
+    // 对 currentPath 进行深拷贝
+    currentStrokePointList.clear();
+  }
+
+  /// 笔画点集合
+  List<StrokePoint> _strokePoints = <StrokePoint>[]; // { dx,dy,pressure }[]
+  set strokePoints(List<StrokePoint> strokePoints) {
+    _strokePoints = strokePoints;
+  }
+
+  List<StrokePoint> get strokePoints => dragOffset == Offset.zero
+      ? _strokePoints
+      : _strokePoints
+          .map(
+              (e) => StrokePoint(e.x + dragOffset.dx, e.y + dragOffset.dy, e.p))
+          .toList();
+
 
   /// 判断笔画是否为空
   @override
-  bool get isEmpty => path.getBounds().isEmpty;
+  bool get isEmpty => path == null ? true : path!.getBounds().isEmpty;
 
   /// 深拷贝
   @override

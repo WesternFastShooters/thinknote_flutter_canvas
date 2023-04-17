@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 
 class TransformConfig {
-  TransformConfig();
 
   // 最小缩放
   double globalMinCanvasScale = 1.0;

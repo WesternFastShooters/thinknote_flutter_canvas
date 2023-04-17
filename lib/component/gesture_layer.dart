@@ -10,6 +10,8 @@ class GestureLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// 指头编号
+    int currentPointerId = -1;
     return GetBuilder<WhiteBoardManager>(
       builder: (whiteBoardManager) {
         return SizedBox(
@@ -23,9 +25,26 @@ class GestureLayer extends StatelessWidget {
             onDoubleTapDown: whiteBoardManager.onDoubleTapDown,
             child: Listener(
               behavior: HitTestBehavior.opaque,
-              onPointerDown: whiteBoardManager.onPointerDown,
-              onPointerMove: whiteBoardManager.onPointerMove,
-              onPointerUp: whiteBoardManager.onPointerUp,
+              onPointerDown: (event) {
+                if (currentPointerId != -1) {
+                  return;
+                }
+                currentPointerId = event.pointer;
+                whiteBoardManager.onPointerDown(event);
+              },
+              onPointerMove: (event) {
+                if (event.pointer != currentPointerId) {
+                  return;
+                }
+                whiteBoardManager.onPointerMove(event);
+              },
+              onPointerUp: (event) {
+                if (event.pointer != currentPointerId) {
+                  return;
+                }
+                currentPointerId = -1;
+                whiteBoardManager.onPointerUp(event);
+              },
             ),
           ),
         );

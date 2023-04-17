@@ -1,22 +1,15 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter_application_2/modal/eraser_logic.dart';
-import 'package:flutter_application_2/modal/freedraw_logic.dart';
-import 'package:flutter_application_2/modal/lasso_logic.dart';
-import 'package:flutter_application_2/modal/menu_logic.dart';
-import 'package:flutter_application_2/modal/transform_logic.dart';
+import 'package:flutter_application_2/modal/eraser/eraser_gesture.dart';
+import 'package:flutter_application_2/modal/freedraw/freedraw_gesture.dart';
+import 'package:flutter_application_2/modal/lasso/lasso_gesture.dart';
+import 'package:flutter_application_2/modal/menu/menu_gesture.dart';
+import 'package:flutter_application_2/modal/transform/transform_gesture.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 
-extension GestureLogic on WhiteBoardManager {
+extension GestureLogic on WhiteBoardConfig {
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
-    if (currentPointerId != -1) {
-      return;
-    }
-    currentPointerId = event.pointer;
-    switch (currentToolType.value) {
-      case ActionType.transform:
-        onMenuPointerDown(event);
-        break;
+    switch (currentToolType) {
       case ActionType.freeDraw:
         onFreeDrawPointerDown(event);
         break;
@@ -32,10 +25,7 @@ extension GestureLogic on WhiteBoardManager {
 
   /// 手势平移触发逻辑
   onPointerMove(PointerMoveEvent event) {
-    if (event.pointer != currentPointerId) {
-      return;
-    }
-    switch (currentToolType.value) {
+    switch (currentToolType) {
       case ActionType.transform:
         onTranslatePointerMove(event);
         break;
@@ -53,11 +43,7 @@ extension GestureLogic on WhiteBoardManager {
 
   /// 手势提起触发逻辑
   onPointerUp(PointerUpEvent event) {
-    if (event.pointer != currentPointerId) {
-      return;
-    }
-    currentPointerId = -1;
-    switch (currentToolType.value) {
+    switch (currentToolType) {
       case ActionType.transform:
         onTranslatePointerUp(event);
         break;
@@ -71,6 +57,14 @@ extension GestureLogic on WhiteBoardManager {
         onLassoPointerUp(event);
         break;
     }
-    update();
+  }
+
+  /// 双击触发逻辑
+  onDoubleTapDown(TapDownDetails details) {
+    switch (currentToolType) {
+      case ActionType.lasso:
+        onMenuDoubleTapDown(details);
+        break;
+    }
   }
 }

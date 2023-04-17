@@ -1,8 +1,9 @@
-import 'package:flutter_application_2/type/configType/eraser_config.dart';
-import 'package:flutter_application_2/type/configType/freedraw_config.dart';
-import 'package:flutter_application_2/type/configType/lasso_config.dart';
-import 'package:flutter_application_2/type/configType/menu_config.dart';
-import 'package:flutter_application_2/type/configType/transform_config.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_application_2/modal/eraser/eraser_config.dart';
+import 'package:flutter_application_2/modal/freedraw/freedraw_config.dart';
+import 'package:flutter_application_2/modal/lasso/lasso_config.dart';
+import 'package:flutter_application_2/modal/menu/menu_config.dart';
+import 'package:flutter_application_2/modal/transform/transform_config.dart';
 import 'package:flutter_application_2/type/elementType/element_container.dart';
 import 'package:flutter_application_2/type/elementType/white_element.dart';
 import 'package:get/get.dart';
@@ -24,64 +25,34 @@ enum ActionType {
   drag,
 }
 
-enum ScaleLayerWidgetType {
-  /// 中心缩小画布
-  zoomOut,
+class WhiteBoardManager extends GetxController {
+  setCurrentToolType(ActionType type) {
+    whiteBoardConfig.currentToolType = type;
+    whiteBoardConfig.onSwitchCurrentToolType();
+  }
 
-  /// 中心放大画布
-  zoomIn,
+  WhiteBoardConfig whiteBoardConfig = WhiteBoardConfig();
 }
 
-class WhiteBoardManager extends GetxController {
-  @override
-  void onInit() {
-    ever(currentToolType, (_) {
-      resetConfig();
-    });
-    super.onInit();
-  }
+class WhiteBoardConfig
+    with
+        EraserConfig,
+        FreedrawConfig,
+        LassoConfig,
+        MenuConfig,
+        TransformConfig {
+  WhiteBoardConfig();
 
   /// 当前选用工具类型（默认为平移缩放）
-  Rx<ActionType> currentToolType = Rx(ActionType.transform);
-  setCurrentToolType(ActionType type) {
-    currentToolType.value = type;
-  }
+  ActionType currentToolType = ActionType.transform;
 
-  /// 重置配置
-  resetConfig() {
-    freedrawConfig.reset();
-    eraserConfig.reset();
-    lassoConfig.reset();
-    update();
+  /// 切换当前工具触发逻辑
+  onSwitchCurrentToolType() {
+    resetEraserConfig();
+    resetFreeDraw();
+    resetLassoConfig();
   }
 
   /// 存储已经绘制完成的canvas元素列表
   List<ElementContainer<WhiteElement>> canvasElementList = [];
-
-  /// 存储被套索选中的元素
-  List<ElementContainer<WhiteElement>> selectedElementList = [];
-
-  /// 存储备份的元素
-  List<ElementContainer<WhiteElement>> copiedElementList = [];
-
-  /// 指头编号
-  int currentPointerId = -1;
-
-  // 平移、缩放、位置相关配置
-  TransformConfig transformConfig = TransformConfig();
-
-  // 橡皮擦相关配置
-  EraserConfig eraserConfig = EraserConfig(
-    currentEraserPosition: null,
-    eraserRadius: 10.0,
-  );
-
-  // 画笔相关配置
-  FreedrawConfig freedrawConfig = FreedrawConfig();
-
-  /// 套索相关配置
-  LassoConfig lassoConfig = LassoConfig();
-
-  /// 菜单相关配置
-  MenuConfig menuConfig = MenuConfig();
 }

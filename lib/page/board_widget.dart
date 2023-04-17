@@ -12,15 +12,15 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final whiteBoardManager = Get.find<WhiteBoardManager>();
-    whiteBoardManager.transformConfig.visibleAreaSize =
+    whiteBoardManager.whiteBoardConfig.visibleAreaSize =
         MediaQuery.of(context).size;
-    whiteBoardManager.transformConfig.visibleAreaCenter = Offset(
+    whiteBoardManager.whiteBoardConfig.visibleAreaCenter = Offset(
       MediaQuery.of(context).size.width / 2,
       MediaQuery.of(context).size.height / 2,
     );
-    if (whiteBoardManager.transformConfig.globalCanvasOffset == Offset.zero) {
-      whiteBoardManager.transformConfig.globalCanvasOffset =
-          whiteBoardManager.transformConfig.visibleAreaCenter;
+    if (whiteBoardManager.whiteBoardConfig.globalCanvasOffset == Offset.zero) {
+      whiteBoardManager.whiteBoardConfig.globalCanvasOffset =
+          whiteBoardManager.whiteBoardConfig.visibleAreaCenter;
     }
 
     return Scaffold(

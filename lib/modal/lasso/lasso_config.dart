@@ -20,10 +20,9 @@ class LassoConfig {
   }
 
   /// 套索的路径点
-  final List<Offset> _lassoPathPoints = [];
-  List<Offset> get lassoPathPoints => dragOffset == Offset.zero
-      ? _lassoPathPoints
-      : _lassoPathPoints.map((e) => e + dragOffset).toList();
+  final List<Offset> lassoPathPointList = [];
+  List<Offset> get lassoPathPoints =>
+      lassoPathPointList.map((e) => e + dragOffset).toList();
 
   /// 添加套索虚线点
   addLassoPathPoint(Offset point) {
@@ -86,11 +85,14 @@ class LassoConfig {
   bool isHitLassoCloseArea(Offset position) =>
       isEmpty ? false : closedShapePath!.contains(position);
 
-  /// 清空套索
-  reset() {
-    lassoStep = LassoStep.drawLine;
-    _lassoPathPoints.clear();
-    dragOffset = Offset.zero;
-  }
+  /// 存储被套索选中的元素
+  List<ElementContainer<WhiteElement>> selectedElementList = [];
 
+  /// 重置套索配置
+  resetLassoConfig() {
+    lassoStep = LassoStep.drawLine;
+    lassoPathPointList.clear();
+    dragOffset = Offset.zero;
+    selectedElementList.clear;
+  }
 }
