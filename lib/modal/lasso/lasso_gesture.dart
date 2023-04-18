@@ -35,6 +35,7 @@ extension LassoGesture on WhiteBoardConfig {
         break;
       case LassoStep.close:
         if (isHitLassoCloseArea(transformToCanvasPoint(event.localPosition))) {
+          translateClosedShape(offset: event.delta);
           for (var item in selectedElementList) {
             if (item.isEmpty) {
               continue;
@@ -51,15 +52,14 @@ extension LassoGesture on WhiteBoardConfig {
   onLassoPointerUp(PointerUpEvent event) {
     switch (lassoStep) {
       case LassoStep.drawLine:
-        setLassoStep(LassoStep.close);
+        completeDashesLine();
         if (!isDashesLineEmpty) {
-          completeDashesLine();
           setSelectedElement();
         }
         if (selectedElementList.isEmpty) {
-          // 未选中任何元素，则重置套索配置
           resetLassoConfig();
         }
+        setLassoStep(LassoStep.close);
         break;
       case LassoStep.close:
         break;

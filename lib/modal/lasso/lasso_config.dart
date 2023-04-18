@@ -20,7 +20,7 @@ class LassoConfig {
   Path closedShapePath = Path();
 
   /// 拖拽偏移量
-  Offset dragOffset = Offset.zero;
+  Offset dragLassoOffset = Offset.zero;
 
   /// 存储被套索选中的元素
   List<WhiteBoardElement> selectedElementList = [];

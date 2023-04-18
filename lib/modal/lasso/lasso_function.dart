@@ -33,7 +33,7 @@ extension LassoFunction on WhiteBoardConfig {
   resetLassoConfig() {
     lassoStep = LassoStep.drawLine;
     lassoPathPointList.clear();
-    dragOffset = Offset.zero;
+    dragLassoOffset = Offset.zero;
     selectedElementList.clear;
   }
 
@@ -51,11 +51,12 @@ extension LassoFunction on WhiteBoardConfig {
   completeDashesLine() {
     dashesLinePath!.close();
     closedShapePath = Path.from(dashesLinePath!);
+    lassoPathPointList.clear();
   }
 
-  translateElementClosedShape({required Offset offset}) {
-    dragOffset += offset;
-    final matrix4 = Matrix4.identity()..translate(dragOffset.dx, dragOffset.dy);
+  translateClosedShape({required Offset offset}) {
+    dragLassoOffset += offset;
+    final matrix4 = Matrix4.identity()..translate(dragLassoOffset.dx, dragLassoOffset.dy);
     closedShapePath = closedShapePath.transform(matrix4.storage);
   }
 }
