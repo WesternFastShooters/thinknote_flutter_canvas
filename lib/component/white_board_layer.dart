@@ -1,7 +1,9 @@
 import 'package:dash_painter/dash_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/modal/lasso/lasso_config.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:flutter_application_2/type/elementType/stroke_element.dart';
+import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
 import 'package:get/get.dart';
 
 class WhiteBoardLayer extends StatelessWidget {
@@ -47,11 +49,10 @@ class WhiteBoardPainter extends CustomPainter {
   /// 绘制所有画布元素
   drawCanvasElementList(Canvas canvas) {
     for (var item in whiteBoardManager.whiteBoardConfig.canvasElementList) {
-      switch (item.type) {
+      switch (item.elementType) {
         case ElementType.stroke:
-          if (item.element.isEmpty) continue;
-          canvas.drawPath(
-              (item.element as Stroke).path!, (item.element as Stroke).paint);
+          if (item.isEmpty) continue;
+          canvas.drawPath(item.path, (item as Stroke).paint);
           break;
         case ElementType.geometricShape:
           break;
@@ -61,7 +62,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制正在绘制的元素
   drawCurrentElement(Canvas canvas) {
-    switch (whiteBoardManager.currentToolType.value) {
+    switch (whiteBoardManager.whiteBoardConfig.currentToolType) {
       case ActionType.freeDraw:
         drawCurrentPen(canvas);
         break;

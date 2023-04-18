@@ -1,7 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_application_2/modal/gesture/gesture_logic.dart';
-import 'package:flutter_application_2/modal/menu_logic.dart';
-import 'package:flutter_application_2/modal/transform_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
 
@@ -19,9 +16,9 @@ class GestureLayer extends StatelessWidget {
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTransformScaleStart: whiteBoardManager.onTransformScaleStart,
-            onTransformScaleUpdate: whiteBoardManager.onTransformScaleUpdate,
-            onTransformScaleEnd: whiteBoardManager.onTransformScaleEnd,
+            onScaleStart: whiteBoardManager.onScaleStart,
+            onScaleUpdate: whiteBoardManager.onScaleUpdate,
+            onScaleEnd: whiteBoardManager.onScaleEnd,
             onDoubleTapDown: whiteBoardManager.onDoubleTapDown,
             child: Listener(
               behavior: HitTestBehavior.opaque,
