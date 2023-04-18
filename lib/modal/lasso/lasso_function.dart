@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter_application_2/modal/utils/geometry_tool.dart';
 
 import '../white_board_manager.dart';
@@ -16,11 +17,11 @@ extension LassoFunction on WhiteBoardConfig {
 
   /// 检查是否命中套索区域内
   bool isHitLassoCloseArea(Offset position) =>
-      isEmpty ? false : closedShapePath!.contains(position);
+      isDashesLineEmpty ? false : closedShapePath!.contains(position);
 
   /// 添加套索虚线点
   addLassoPathPoint(Offset point) {
-    lassoPathPoints.add(point);
+    lassoPathPointList.add(point);
   }
 
   /// 设置套索行为阶段
@@ -45,5 +46,16 @@ extension LassoFunction on WhiteBoardConfig {
     }
     center = bounds.center;
     return center;
+  }
+
+  completeDashesLine() {
+    dashesLinePath!.close();
+    closedShapePath = Path.from(dashesLinePath!);
+  }
+
+  translateElementClosedShape({required Offset offset}) {
+    dragOffset += offset;
+    final matrix4 = Matrix4.identity()..translate(dragOffset.dx, dragOffset.dy);
+    closedShapePath = closedShapePath.transform(matrix4.storage);
   }
 }

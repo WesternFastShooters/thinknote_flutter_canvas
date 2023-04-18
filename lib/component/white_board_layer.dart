@@ -99,7 +99,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索
   drawLasso(Canvas canvas) {
-    if (whiteBoardManager.whiteBoardConfig.isEmpty) return;
+    if (whiteBoardManager.whiteBoardConfig.isDashesLineEmpty) return;
     switch (whiteBoardManager.whiteBoardConfig.lassoStep) {
       case LassoStep.drawLine:
         _drawLassoLine(canvas);
@@ -112,8 +112,8 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索虚线
   _drawLassoLine(Canvas canvas) {
-    if (whiteBoardManager.whiteBoardConfig.isEmpty) return;
-    final path = whiteBoardManager.whiteBoardConfig.lassoPath!;
+    if (whiteBoardManager.whiteBoardConfig.isDashesLineEmpty) return;
+    final path = whiteBoardManager.whiteBoardConfig.dashesLinePath!;
     final paint = whiteBoardManager.whiteBoardConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
   }
@@ -121,7 +121,7 @@ class WhiteBoardPainter extends CustomPainter {
   /// 绘制套索闭合区域
   _drawClosedShapePolygon(Canvas canvas) {
     if (!whiteBoardManager.whiteBoardConfig.isConvexity) return;
-    final path = whiteBoardManager.whiteBoardConfig.closedShapePath!;
+    final path = whiteBoardManager.whiteBoardConfig.closedShapePath;
     final paint = whiteBoardManager.whiteBoardConfig.paint;
     const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
   }

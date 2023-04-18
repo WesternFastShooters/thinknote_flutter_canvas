@@ -67,7 +67,9 @@ class Stroke extends WhiteBoardElement {
 
   /// 判断笔画是否为空
   @override
-  bool get isEmpty => path.getBounds().isEmpty;
+  // bool get isEmpty => path.getBounds().isEmpty;
+  bool get isEmpty =>
+      currentStrokePointList.isEmpty && path.getBounds().isEmpty;
 
   /// path的中心位置
   Offset get center => path.getBounds().center;
@@ -94,11 +96,8 @@ class Stroke extends WhiteBoardElement {
 
   /// 画笔绘制完毕
   Stroke complete() {
-    // 情况当前笔画点集合
-    currentStrokePointList.clear();
-    // 深拷贝当前笔画路径
     path = Path.from(currentPath);
-
+    currentStrokePointList.clear();
     return this;
   }
 
