@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter_application_2/modal/lasso/lasso_function.dart';
 import 'package:flutter_application_2/modal/utils/geometry_tool.dart';
+import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
 
 import '../white_board_manager.dart';
 import 'lasso_config.dart';
@@ -34,12 +35,12 @@ extension LassoGesture on WhiteBoardConfig {
         break;
       case LassoStep.close:
         if (isHitLassoCloseArea(transformToCanvasPoint(event.localPosition))) {
-          setDragOffset(event.delta);
           for (var item in selectedElementList) {
-            if (item.element.isEmpty) {
+            if (item.isEmpty) {
               continue;
             }
-            item.element.setDragOffset(event.delta);
+            item.translateElement(
+                offset: event.delta, mode: MoveElementMode.drag);
           }
           break;
         }

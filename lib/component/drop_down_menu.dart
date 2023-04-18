@@ -2,9 +2,9 @@
 // 菜单项有复制、粘贴、剪切、删除
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/modal/menu_logic.dart';
+import 'package:flutter_application_2/modal/menu/menu_config.dart';
+import 'package:flutter_application_2/modal/menu/menu_function.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
-import 'package:flutter_application_2/type/configType/menu_config.dart';
 import 'package:get/get.dart';
 
 class DropDownMenu extends StatelessWidget {
@@ -17,16 +17,16 @@ class DropDownMenu extends StatelessWidget {
     return GetBuilder<WhiteBoardManager>(
       builder: (whiteBoardManager) {
         return Positioned(
-            left: whiteBoardManager.menuConfig.currentMenuPosition.dx,
-            top: whiteBoardManager.menuConfig.currentMenuPosition.dy,
+            left: whiteBoardManager.whiteBoardConfig.currentMenuPosition.dx,
+            top: whiteBoardManager.whiteBoardConfig.currentMenuPosition.dy,
             child: Offstage(
-              offstage: !whiteBoardManager.menuConfig.isShowMenu,
+              offstage: !whiteBoardManager.whiteBoardConfig.isShowMenu,
               child: Container(
                 width: 50,
                 height: 100,
                 color: Colors.grey,
                 child: Column(
-                  children: whiteBoardManager.menuConfig.menuItems
+                  children: whiteBoardManager.whiteBoardConfig.menuItems
                       .map((e) => _menuItem(e))
                       .toList(),
                 ),
@@ -39,20 +39,7 @@ class DropDownMenu extends StatelessWidget {
   Widget _menuItem(MenuItemEnum title) {
     return GestureDetector(
       onTap: () {
-        switch (title) {
-          case MenuItemEnum.copy:
-            whiteBoardManager.copyElement();
-            break;
-          case MenuItemEnum.paste:
-            whiteBoardManager.pasteElement();
-            break;
-          case MenuItemEnum.cut:
-            whiteBoardManager.cutElement();
-            break;
-          case MenuItemEnum.delete:
-            whiteBoardManager.deleteElement();
-            break;
-        }
+        whiteBoardManager.whiteBoardConfig.clickMenuItem(title);
       },
       child: Container(
         width: 50,

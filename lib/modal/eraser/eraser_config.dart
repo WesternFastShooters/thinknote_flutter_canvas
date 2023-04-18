@@ -14,10 +14,6 @@ class EraserConfig {
         center: currentEraserPosition!,
         radius: eraserRadius));
   
- /// 重置橡皮擦配置
-  resetEraserConfig() {
-    currentEraserPosition = null;
-    eraserRadius = 10.0;
-  }
+ 
 
 }

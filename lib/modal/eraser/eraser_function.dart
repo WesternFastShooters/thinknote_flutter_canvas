@@ -14,7 +14,13 @@ extension EraserFunction on WhiteBoardConfig {
 
     canvasElementList.removeWhere((item) {
       return isIntersecting(
-          originPath: eraserPath, targetPath: item.element.path);
+          originPath: eraserPath, targetPath: item.path);
     });
+  }
+
+  /// 重置橡皮擦配置
+  resetEraserConfig() {
+    currentEraserPosition = null;
+    eraserRadius = 10.0;
   }
 }

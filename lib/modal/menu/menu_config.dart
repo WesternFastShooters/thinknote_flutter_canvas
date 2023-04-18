@@ -1,6 +1,5 @@
 import 'dart:ui';
-import 'package:flutter_application_2/type/elementType/element_container.dart';
-import 'package:flutter_application_2/type/elementType/white_element.dart';
+import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
 
 enum MenuItemEnum {
   copy,
@@ -44,15 +43,9 @@ class MenuConfig {
   Offset lastMenuCopyOrCutPosition = Offset.zero;
 
   /// 存储备份的元素
-  List<ElementContainer<WhiteElement>> copiedElementList = [];
+  List<WhiteBoardElement> copiedElementList = [];
 
+  /// 所复制的所有元素的中心点
+  Offset copiedElementCenterPoint = Offset.zero;
 
-  /// 重置菜单配置
-  resetMenuConfig() {
-    currentMenuPosition = Offset.zero;
-    isShowMenu = false;
-    menuItems = [];
-    lastSelectItem = MenuItemEnum.none;
-    lastMenuCopyOrCutPosition = Offset.zero;
-  }
 }

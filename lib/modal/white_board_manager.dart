@@ -1,12 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter_application_2/modal/eraser/eraser_config.dart';
+import 'package:flutter_application_2/modal/eraser/eraser_function.dart';
 import 'package:flutter_application_2/modal/freedraw/freedraw_config.dart';
+import 'package:flutter_application_2/modal/freedraw/freedraw_function.dart';
+import 'package:flutter_application_2/modal/gesture/gesture_logic.dart';
 import 'package:flutter_application_2/modal/lasso/lasso_config.dart';
+import 'package:flutter_application_2/modal/lasso/lasso_function.dart';
 import 'package:flutter_application_2/modal/menu/menu_config.dart';
 import 'package:flutter_application_2/modal/transform/transform_config.dart';
-import 'package:flutter_application_2/type/elementType/element_container.dart';
-import 'package:flutter_application_2/type/elementType/white_element.dart';
 import 'package:get/get.dart';
+
+import '../type/elementType/whiteboard_element.dart';
 
 enum ActionType {
   /// 自由绘画模式
@@ -26,12 +30,58 @@ enum ActionType {
 }
 
 class WhiteBoardManager extends GetxController {
+  WhiteBoardConfig whiteBoardConfig = WhiteBoardConfig();
+
+  /// 切换当前工具
   setCurrentToolType(ActionType type) {
     whiteBoardConfig.currentToolType = type;
     whiteBoardConfig.onSwitchCurrentToolType();
+    update();
+  }
+}
+
+extension GestureLogic on WhiteBoardManager {
+  /// 手势按下触发逻辑
+  onPointerDown(PointerDownEvent event) {
+    whiteBoardConfig.onPointerDown(event);
+    update();
   }
 
-  WhiteBoardConfig whiteBoardConfig = WhiteBoardConfig();
+  /// 手势平移触发逻辑
+  onPointerMove(PointerMoveEvent event) {
+    whiteBoardConfig.onPointerMove(event);
+    update();
+  }
+
+  /// 手势提起触发逻辑
+  onPointerUp(PointerUpEvent event) {
+    whiteBoardConfig.onPointerUp(event);
+    update();
+  }
+
+  /// 缩放开始触发逻辑
+  onScaleStart(ScaleStartDetails details) {
+    whiteBoardConfig.onScaleStart(details);
+    update();
+  }
+
+  /// 缩放中触发逻辑
+  onScaleUpdate(ScaleUpdateDetails details) {
+    whiteBoardConfig.onScaleUpdate(details);
+    update();
+  }
+
+  /// 缩放结束触发逻辑
+  onScaleEnd(ScaleEndDetails details) {
+    whiteBoardConfig.onScaleEnd(details);
+    update();
+  }
+
+  /// 双击触发逻辑
+  onDoubleTapDown(TapDownDetails details) {
+    whiteBoardConfig.onDoubleTapDown(details);
+    update();
+  }
 }
 
 class WhiteBoardConfig
@@ -54,5 +104,5 @@ class WhiteBoardConfig
   }
 
   /// 存储已经绘制完成的canvas元素列表
-  List<ElementContainer<WhiteElement>> canvasElementList = [];
+  List<WhiteBoardElement> canvasElementList = [];
 }

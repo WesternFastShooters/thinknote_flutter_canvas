@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/type/elementType/element_container.dart';
-import 'package:flutter_application_2/type/elementType/white_element.dart';
+import '../../type/elementType/whiteboard_element.dart';
 
 enum LassoStep {
   /// 画线
@@ -14,28 +13,19 @@ class LassoConfig {
   /// 套索行为阶段
   LassoStep lassoStep = LassoStep.drawLine;
 
-  /// 设置套索行为阶段
-  setLassoStep(LassoStep step) {
-    lassoStep = step;
-  }
+ 
 
   /// 套索的路径点
   final List<Offset> lassoPathPointList = [];
   List<Offset> get lassoPathPoints =>
       lassoPathPointList.map((e) => e + dragOffset).toList();
 
-  /// 添加套索虚线点
-  addLassoPathPoint(Offset point) {
-    lassoPathPoints.add(point);
-  }
+ 
 
   /// 拖拽偏移量
   Offset dragOffset = Offset.zero;
 
-  /// 偏移量更改
-  setDragOffset(Offset offset) {
-    dragOffset += offset;
-  }
+  
 
   /// 路径绘制样式
   final Paint paint = Paint()
@@ -81,18 +71,8 @@ class LassoConfig {
   /// 套索是否可以封闭
   bool get isConvexity => lassoPathPoints.length > 2;
 
-  /// 检查是否命中套索区域内
-  bool isHitLassoCloseArea(Offset position) =>
-      isEmpty ? false : closedShapePath!.contains(position);
-
   /// 存储被套索选中的元素
-  List<ElementContainer<WhiteElement>> selectedElementList = [];
+  List<WhiteBoardElement> selectedElementList = [];
 
-  /// 重置套索配置
-  resetLassoConfig() {
-    lassoStep = LassoStep.drawLine;
-    lassoPathPointList.clear();
-    dragOffset = Offset.zero;
-    selectedElementList.clear;
-  }
+ 
 }

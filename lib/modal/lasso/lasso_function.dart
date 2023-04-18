@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-
 import 'package:flutter_application_2/modal/utils/geometry_tool.dart';
 
 import '../white_board_manager.dart';
@@ -11,7 +10,7 @@ extension LassoFunction on WhiteBoardConfig {
   setSelectedElement() {
     selectedElementList = canvasElementList
         .where((element) => isIntersecting(
-            originPath: closedShapePath!, targetPath: (element.element).path))
+            originPath: closedShapePath!, targetPath: element.path))
         .toList();
   }
 
@@ -27,5 +26,24 @@ extension LassoFunction on WhiteBoardConfig {
   /// 设置套索行为阶段
   setLassoStep(LassoStep step) {
     lassoStep = step;
+  }
+
+  /// 重置套索配置
+  resetLassoConfig() {
+    lassoStep = LassoStep.drawLine;
+    lassoPathPointList.clear();
+    dragOffset = Offset.zero;
+    selectedElementList.clear;
+  }
+
+  /// 获取所框选图形集合的中心
+  Offset getSelectedElementCenter(List<Path> pathList) {
+    var center = Offset.zero;
+    Rect bounds = Rect.zero;
+    for (var path in pathList) {
+      bounds = bounds.expandToInclude(path.getBounds());
+    }
+    center = bounds.center;
+    return center;
   }
 }

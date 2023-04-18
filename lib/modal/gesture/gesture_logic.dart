@@ -27,7 +27,7 @@ extension GestureLogic on WhiteBoardConfig {
   onPointerMove(PointerMoveEvent event) {
     switch (currentToolType) {
       case ActionType.transform:
-        onTranslatePointerMove(event);
+        onTransformPointerMove(event);
         break;
       case ActionType.freeDraw:
         onFreeDrawPointerMove(event);
@@ -44,9 +44,6 @@ extension GestureLogic on WhiteBoardConfig {
   /// 手势提起触发逻辑
   onPointerUp(PointerUpEvent event) {
     switch (currentToolType) {
-      case ActionType.transform:
-        onTranslatePointerUp(event);
-        break;
       case ActionType.freeDraw:
         onFreeDrawPointerUp(event);
         break;
@@ -59,6 +56,33 @@ extension GestureLogic on WhiteBoardConfig {
     }
   }
 
+  /// 缩放开始触发逻辑
+  onScaleStart(ScaleStartDetails details) {
+    switch (currentToolType) {
+      case ActionType.transform:
+        onTransformScaleStart(details);
+        break;
+    }
+  }
+
+  /// 缩放中触发逻辑
+  onScaleUpdate(ScaleUpdateDetails details) {
+    switch (currentToolType) {
+      case ActionType.transform:
+        onTransformScaleUpdate(details);
+        break;
+    }
+  }
+
+  /// 缩放结束触发逻辑
+  onScaleEnd(ScaleEndDetails details) {
+    switch (currentToolType) {
+      case ActionType.transform:
+        onTransformScaleEnd(details);
+        break;
+    }
+  }
+
   /// 双击触发逻辑
   onDoubleTapDown(TapDownDetails details) {
     switch (currentToolType) {
@@ -67,4 +91,5 @@ extension GestureLogic on WhiteBoardConfig {
         break;
     }
   }
+
 }
