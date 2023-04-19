@@ -52,14 +52,12 @@ extension LassoGesture on WhiteBoardConfig {
   onLassoPointerUp(PointerUpEvent event) {
     switch (lassoStep) {
       case LassoStep.drawLine:
-        completeDashesLine();
-        if (!isDashesLineEmpty) {
-          setSelectedElement();
-        }
-        if (selectedElementList.isEmpty) {
+        setLassoStep(LassoStep.close);
+        if (lassoPathPointList.length > 2) {
+          completeDashesLine();
+        } else {
           resetLassoConfig();
         }
-        setLassoStep(LassoStep.close);
         break;
       case LassoStep.close:
         break;

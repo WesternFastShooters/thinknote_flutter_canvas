@@ -17,7 +17,7 @@ extension LassoFunction on WhiteBoardConfig {
 
   /// 检查是否命中套索区域内
   bool isHitLassoCloseArea(Offset position) =>
-      isDashesLineEmpty ? false : closedShapePath!.contains(position);
+      closedShapePath.contains(position);
 
   /// 添加套索虚线点
   addLassoPathPoint(Offset point) {
@@ -51,12 +51,14 @@ extension LassoFunction on WhiteBoardConfig {
   completeDashesLine() {
     dashesLinePath!.close();
     closedShapePath = Path.from(dashesLinePath!);
+    setSelectedElement();
     lassoPathPointList.clear();
   }
 
   translateClosedShape({required Offset offset}) {
     dragLassoOffset += offset;
-    final matrix4 = Matrix4.identity()..translate(dragLassoOffset.dx, dragLassoOffset.dy);
+    final matrix4 = Matrix4.identity()
+      ..translate(dragLassoOffset.dx, dragLassoOffset.dy);
     closedShapePath = closedShapePath.transform(matrix4.storage);
   }
 }

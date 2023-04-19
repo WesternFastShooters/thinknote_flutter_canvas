@@ -25,8 +25,7 @@ class LassoConfig {
   /// 存储被套索选中的元素
   List<WhiteBoardElement> selectedElementList = [];
 
-  /// 套索是否可以封闭
-  bool get isConvexity => lassoPathPointList.length > 2;
+
 
   /// 路径绘制样式
   Paint get paint => Paint()
@@ -51,8 +50,5 @@ class LassoConfig {
     return path;
   }
 
-  /// 套索虚线是否为空
-  bool get isDashesLineEmpty => lassoPathPointList.isEmpty;
-
-
+  
 }
