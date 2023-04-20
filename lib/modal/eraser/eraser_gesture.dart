@@ -4,20 +4,25 @@ import 'package:flutter_application_2/modal/utils/geometry_tool.dart';
 
 import '../white_board_manager.dart';
 
-extension EraserGesture on WhiteBoardConfig {
+extension EraserGesture on WhiteBoardManager {
   onEraserPointerDown(PointerDownEvent details) {
-    if (currentEraserPosition == null) {
-      currentEraserPosition = transformToCanvasPoint(details.localPosition);
+    if (whiteBoardConfig.currentEraserPosition == null) {
+      whiteBoardConfig.currentEraserPosition =
+          transformToCanvasPoint(details.localPosition);
       erase();
     }
+    update();
   }
 
   onEraserPointerMove(PointerMoveEvent details) {
-    currentEraserPosition = transformToCanvasPoint(details.localPosition);
+    whiteBoardConfig.currentEraserPosition =
+        transformToCanvasPoint(details.localPosition);
     erase();
+    update();
   }
 
   onEraserPointerUp(PointerUpEvent details) {
-    currentEraserPosition = null;
+    whiteBoardConfig.currentEraserPosition = null;
+    update();
   }
 }

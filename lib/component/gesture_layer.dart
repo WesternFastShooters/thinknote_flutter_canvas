@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_application_2/modal/gesture/gesture_logic.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 import 'package:get/get.dart';
 

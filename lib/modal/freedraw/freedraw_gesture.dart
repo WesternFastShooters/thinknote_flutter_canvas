@@ -3,12 +3,12 @@ import 'package:flutter_application_2/modal/freedraw/freedraw_function.dart';
 import 'package:flutter_application_2/modal/utils/geometry_tool.dart';
 import '../white_board_manager.dart';
 
-extension FreeDrawGesture on WhiteBoardConfig {
+extension FreeDrawGesture on WhiteBoardManager {
   onFreeDrawPointerDown(PointerDownEvent details) {
-    if (currentStroke.isEmpty) {
-      currentStroke
+    if (whiteBoardConfig.currentStroke.isEmpty) {
+      whiteBoardConfig.currentStroke
         ..setOption({
-          ...currentOption,
+          ...whiteBoardConfig.currentOption,
           'simulatePressure': details.kind != PointerDeviceKind.stylus
         })
         ..addStrokePoint(
@@ -18,13 +18,14 @@ extension FreeDrawGesture on WhiteBoardConfig {
   }
 
   onFreeDrawPointerMove(PointerMoveEvent details) {
-    currentStroke.addStrokePoint(
+    whiteBoardConfig.currentStroke.addStrokePoint(
         position: transformToCanvasPoint(details.localPosition),
         pointInfo: details);
   }
 
   onFreeDrawPointerUp(PointerUpEvent details) {
-    canvasElementList.add(currentStroke.complete());
+    whiteBoardConfig.canvasElementList
+        .add(whiteBoardConfig.currentStroke.complete());
     resetFreeDraw();
   }
 }

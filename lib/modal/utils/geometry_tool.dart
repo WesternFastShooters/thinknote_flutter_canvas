@@ -2,13 +2,13 @@ import 'dart:ui';
 
 import '../white_board_manager.dart';
 
-
-extension GeometryTool on WhiteBoardConfig {
+extension GeometryTool on WhiteBoardManager {
   /// 根据传入的坐标映射为canvas的坐标
   Offset transformToCanvasPoint(
     currentPosition,
   ) =>
-      ((currentPosition - globalCanvasOffset) / globalCanvasScale);
+      ((currentPosition - whiteBoardConfig.globalCanvasOffset) /
+          whiteBoardConfig.globalCanvasScale);
 
   /// 判断两个Path是否相交
   bool isIntersecting({required Path originPath, required Path? targetPath}) {

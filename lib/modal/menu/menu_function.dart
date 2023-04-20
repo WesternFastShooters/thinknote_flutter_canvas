@@ -6,84 +6,95 @@ import '../../type/elementType/whiteboard_element.dart';
 import '../white_board_manager.dart';
 import 'menu_config.dart';
 
-extension MenuFuction on WhiteBoardConfig {
+extension MenuFuction on WhiteBoardManager {
   /// 打开菜单
   openMenu({
     required Offset currentMenuPosition,
   }) {
     if (menuItems.isNotEmpty) {
-      this.currentMenuPosition = currentMenuPosition;
-      isShowMenu = true;
-      this.menuItems = menuItems;
+      whiteBoardConfig.currentMenuPosition = currentMenuPosition;
+      whiteBoardConfig.isShowMenu = true;
+      whiteBoardConfig.menuItems = menuItems;
     }
   }
 
   /// 关闭菜单
   closeMenu() {
-    isShowMenu = false;
-    currentMenuPosition = Offset.zero;
+    whiteBoardConfig.isShowMenu = false;
+    whiteBoardConfig.currentMenuPosition = Offset.zero;
   }
 
   /// 重置菜单配置
   resetMenuConfig() {
-    currentMenuPosition = Offset.zero;
-    isShowMenu = false;
-    lastSelectItem = MenuItemEnum.none;
-    lastMenuCopyOrCutPosition = Offset.zero;
+    whiteBoardConfig.currentMenuPosition = Offset.zero;
+    whiteBoardConfig.isShowMenu = false;
+    whiteBoardConfig.lastSelectItem = MenuItemEnum.none;
+    whiteBoardConfig.lastMenuCopyOrCutPosition = Offset.zero;
   }
 
   /// 处理点击菜单项
-  clickMenuItem( MenuItemEnum currentSelectItem) {
-    isShowMenu = false;
+  clickMenuItem(MenuItemEnum currentSelectItem) {
+    whiteBoardConfig.isShowMenu = false;
     switch (currentSelectItem) {
       case MenuItemEnum.copy:
-        copiedElementList =
-            selectedElementList.map((e) => e.deepCopy()).toList();
-        copiedElementCenterPoint = getSelectedElementCenter(
-          copiedElementList.map((e) => e.path).toList(),
+        whiteBoardConfig.copiedElementList = whiteBoardConfig
+            .selectedElementList
+            .map((e) => e.deepCopy())
+            .toList();
+        whiteBoardConfig.copiedElementCenterPoint = getSelectedElementCenter(
+          whiteBoardConfig.copiedElementList.map((e) => e.path).toList(),
         );
-        lastSelectItem = currentSelectItem;
+        whiteBoardConfig.lastSelectItem = currentSelectItem;
         break;
       case MenuItemEnum.cut:
-        copiedElementList =
-            selectedElementList.map((e) => e.deepCopy()).toList();
-        copiedElementCenterPoint = getSelectedElementCenter(
-          copiedElementList.map((e) => e.path).toList(),
+        whiteBoardConfig.copiedElementList = whiteBoardConfig
+            .selectedElementList
+            .map((e) => e.deepCopy())
+            .toList();
+        whiteBoardConfig.copiedElementCenterPoint = getSelectedElementCenter(
+          whiteBoardConfig.copiedElementList.map((e) => e.path).toList(),
         );
-        canvasElementList.removeWhere((canvasElementItem) =>
-            selectedElementList.any((selectedElementItem) =>
+        whiteBoardConfig.canvasElementList.removeWhere((canvasElementItem) =>
+            whiteBoardConfig.selectedElementList.any((selectedElementItem) =>
                 identical(canvasElementItem, selectedElementItem)));
-        lastSelectItem = currentSelectItem;
+        whiteBoardConfig.lastSelectItem = currentSelectItem;
         break;
       case MenuItemEnum.paste:
-        if (lastSelectItem == MenuItemEnum.copy ||
-            lastSelectItem == MenuItemEnum.cut) {
-          for (var item in copiedElementList) {
+        if (whiteBoardConfig.lastSelectItem == MenuItemEnum.copy ||
+            whiteBoardConfig.lastSelectItem == MenuItemEnum.cut) {
+          for (var item in whiteBoardConfig.copiedElementList) {
             item.translateElement(
-                offset: (currentMenuPosition - copiedElementCenterPoint),
-                mode: MoveElementMode.teleport);
+              (whiteBoardConfig.currentMenuPosition -
+                  whiteBoardConfig.copiedElementCenterPoint),
+            );
           }
-          canvasElementList = [...canvasElementList, ...copiedElementList];
+          whiteBoardConfig.canvasElementList = [
+            ...whiteBoardConfig.canvasElementList,
+            ...whiteBoardConfig.copiedElementList
+          ];
         }
-        lastSelectItem = currentSelectItem;
+        whiteBoardConfig.lastSelectItem = currentSelectItem;
         break;
       case MenuItemEnum.delete:
-        canvasElementList.removeWhere((canvasElementItem) =>
-            selectedElementList.any((selectedElementItem) =>
+        whiteBoardConfig.canvasElementList.removeWhere((canvasElementItem) =>
+            whiteBoardConfig.selectedElementList.any((selectedElementItem) =>
                 identical(canvasElementItem, selectedElementItem)));
-        lastSelectItem = currentSelectItem;
+        whiteBoardConfig.lastSelectItem = currentSelectItem;
         break;
     }
     resetLassoConfig();
+    update();
   }
 
   /// 获取菜单项
   List<MenuItemEnum> get menuItems {
-    final pasteItem = copiedElementList.isNotEmpty ? [MenuItemEnum.paste] : [];
+    final pasteItem = whiteBoardConfig.copiedElementList.isNotEmpty
+        ? [MenuItemEnum.paste]
+        : [];
     final canOperate = isHitLassoCloseArea(transformToCanvasPoint(
-              currentMenuPosition,
+              whiteBoardConfig.currentMenuPosition,
             )) &&
-            selectedElementList.isNotEmpty
+            whiteBoardConfig.selectedElementList.isNotEmpty
         ? [MenuItemEnum.copy, MenuItemEnum.cut, MenuItemEnum.delete]
         : [];
     return [...canOperate, ...pasteItem];

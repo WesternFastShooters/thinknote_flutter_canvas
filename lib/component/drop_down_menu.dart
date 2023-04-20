@@ -39,9 +39,9 @@ class DropDownMenu extends StatelessWidget {
   Widget _menuItem(MenuItemEnum title) {
     return GestureDetector(
       onTap: () {
-        whiteBoardManager.whiteBoardConfig.clickMenuItem(title);
+        whiteBoardManager.clickMenuItem(title);
       },
-      child: Container(
+      child: SizedBox(
         width: 50,
         height: 25,
         child: Text(title.value),

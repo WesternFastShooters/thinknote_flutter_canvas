@@ -11,15 +11,16 @@ enum ScaleLayerWidgetType {
   zoomIn,
 }
 
-extension TransformFuction on WhiteBoardConfig {
+extension TransformFuction on WhiteBoardManager {
   // 执行缩放
   void executeScaling(ScaleUpdateDetails details) {
-    if (lastScaleUpdateDetails == null) {
-      lastScaleUpdateDetails = details;
+    if (whiteBoardConfig.lastScaleUpdateDetails == null) {
+      whiteBoardConfig.lastScaleUpdateDetails = details;
       return;
     }
 
-    double scaleIncrement = details.scale - lastScaleUpdateDetails!.scale;
+    double scaleIncrement =
+        details.scale - whiteBoardConfig.lastScaleUpdateDetails!.scale;
     if (scaleIncrement < 0) {
       // 缩小
       aroundCenterScale(
@@ -38,12 +39,12 @@ extension TransformFuction on WhiteBoardConfig {
     }
 
     // 缩放过程中实时更新上一次缩放的数据
-    lastScaleUpdateDetails = details;
+    whiteBoardConfig.lastScaleUpdateDetails = details;
   }
 
   // 执行平移
   void executeTranslating(ScaleUpdateDetails details) {
-    globalCanvasOffset += details.focalPointDelta;
+    whiteBoardConfig.globalCanvasOffset += details.focalPointDelta;
   }
 
   /// 以屏幕中心为缩放中心，通过动画的方式把画布缩放到[targetScale]
@@ -55,7 +56,7 @@ extension TransformFuction on WhiteBoardConfig {
     required AnimationController animationController,
     required Tween<double> scaleTween,
   }) {
-    scaleTween.begin = globalCanvasScale;
+    scaleTween.begin = whiteBoardConfig.globalCanvasScale;
     scaleTween.end = targetScale;
     animationController.reset();
     animationController.forward();
@@ -64,10 +65,10 @@ extension TransformFuction on WhiteBoardConfig {
   void updateLayerWidgetScale({
     required double scale,
   }) {
-    globalPreCanvasScale = globalCanvasScale;
-    globalCanvasScale = scale;
-    globalCanvasOffset += transformToCanvasPoint(
-      visibleAreaCenter,
+    whiteBoardConfig.globalPreCanvasScale = whiteBoardConfig.globalCanvasScale;
+    whiteBoardConfig.globalCanvasScale = scale;
+    whiteBoardConfig.globalCanvasOffset += transformToCanvasPoint(
+      whiteBoardConfig.visibleAreaCenter,
     );
   }
 
@@ -82,27 +83,33 @@ extension TransformFuction on WhiteBoardConfig {
   }) {
     if (type == ScaleLayerWidgetType.zoomOut) {
       // 中心缩小画布
-      if (double.parse(globalCanvasScale.toStringAsFixed(1)) <=
-          globalMinCanvasScale) {
-        globalPreCanvasScale = globalCanvasScale;
-        globalCanvasScale = globalMinCanvasScale;
+      if (double.parse(whiteBoardConfig.globalCanvasScale.toStringAsFixed(1)) <=
+          whiteBoardConfig.globalMinCanvasScale) {
+        whiteBoardConfig.globalPreCanvasScale =
+            whiteBoardConfig.globalCanvasScale;
+        whiteBoardConfig.globalCanvasScale =
+            whiteBoardConfig.globalMinCanvasScale;
       } else {
-        globalPreCanvasScale = globalCanvasScale;
-        globalCanvasScale -= stepScale;
+        whiteBoardConfig.globalPreCanvasScale =
+            whiteBoardConfig.globalCanvasScale;
+        whiteBoardConfig.globalCanvasScale -= stepScale;
       }
     } else if (type == ScaleLayerWidgetType.zoomIn) {
       // 中心放大画布
-      if (double.parse(globalCanvasScale.toStringAsFixed(1)) >=
-          globalMaxCanvasScale) {
-        globalPreCanvasScale = globalCanvasScale;
-        globalCanvasScale = globalMaxCanvasScale;
+      if (double.parse(whiteBoardConfig.globalCanvasScale.toStringAsFixed(1)) >=
+          whiteBoardConfig.globalMaxCanvasScale) {
+        whiteBoardConfig.globalPreCanvasScale =
+            whiteBoardConfig.globalCanvasScale;
+        whiteBoardConfig.globalCanvasScale =
+            whiteBoardConfig.globalMaxCanvasScale;
       } else {
-        globalPreCanvasScale = globalCanvasScale;
-        globalCanvasScale += stepScale;
+        whiteBoardConfig.globalPreCanvasScale =
+            whiteBoardConfig.globalCanvasScale;
+        whiteBoardConfig.globalCanvasScale += stepScale;
       }
     }
 
-    globalCanvasOffset += transformToCanvasPoint(
+    whiteBoardConfig.globalCanvasOffset += transformToCanvasPoint(
       center,
     );
   }

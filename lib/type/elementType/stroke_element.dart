@@ -67,7 +67,6 @@ class Stroke extends WhiteBoardElement {
 
   /// 判断笔画是否为空
   @override
-  // bool get isEmpty => path.getBounds().isEmpty;
   bool get isEmpty =>
       currentStrokePointList.isEmpty && path.getBounds().isEmpty;
 
@@ -103,9 +102,8 @@ class Stroke extends WhiteBoardElement {
 
   /// 移动画迹到目标位置
   @override
-  translateElement({required Offset offset, required MoveElementMode mode}) {
-    dragOffset += offset;
-    final matrix4 = Matrix4.identity()..translate(dragOffset.dx, dragOffset.dy);
+  translateElement(Offset offset) {
+    final matrix4 = Matrix4.identity()..translate(offset.dx, offset.dy);
     path = path.transform(matrix4.storage);
   }
 

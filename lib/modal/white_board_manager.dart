@@ -35,51 +35,7 @@ class WhiteBoardManager extends GetxController {
   /// 切换当前工具
   setCurrentToolType(ActionType type) {
     whiteBoardConfig.currentToolType = type;
-    whiteBoardConfig.onSwitchCurrentToolType();
-    update();
-  }
-}
-
-extension GestureLogic on WhiteBoardManager {
-  /// 手势按下触发逻辑
-  onPointerDown(PointerDownEvent event) {
-    whiteBoardConfig.onPointerDown(event);
-    update();
-  }
-
-  /// 手势平移触发逻辑
-  onPointerMove(PointerMoveEvent event) {
-    whiteBoardConfig.onPointerMove(event);
-    update();
-  }
-
-  /// 手势提起触发逻辑
-  onPointerUp(PointerUpEvent event) {
-    whiteBoardConfig.onPointerUp(event);
-    update();
-  }
-
-  /// 缩放开始触发逻辑
-  onScaleStart(ScaleStartDetails details) {
-    whiteBoardConfig.onScaleStart(details);
-    update();
-  }
-
-  /// 缩放中触发逻辑
-  onScaleUpdate(ScaleUpdateDetails details) {
-    whiteBoardConfig.onScaleUpdate(details);
-    update();
-  }
-
-  /// 缩放结束触发逻辑
-  onScaleEnd(ScaleEndDetails details) {
-    whiteBoardConfig.onScaleEnd(details);
-    update();
-  }
-
-  /// 双击触发逻辑
-  onDoubleTapDown(TapDownDetails details) {
-    whiteBoardConfig.onDoubleTapDown(details);
+    onSwitchCurrentToolType();
     update();
   }
 }
@@ -95,13 +51,6 @@ class WhiteBoardConfig
 
   /// 当前选用工具类型（默认为平移缩放）
   ActionType currentToolType = ActionType.transform;
-
-  /// 切换当前工具触发逻辑
-  onSwitchCurrentToolType() {
-    resetEraserConfig();
-    resetFreeDraw();
-    resetLassoConfig();
-  }
 
   /// 存储已经绘制完成的canvas元素列表
   List<WhiteBoardElement> canvasElementList = [];

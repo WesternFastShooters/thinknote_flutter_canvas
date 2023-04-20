@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_2/modal/menu/menu_function.dart';
 import '../white_board_manager.dart';
 
-extension MenuGesture on WhiteBoardConfig {
+extension MenuGesture on WhiteBoardManager {
   /// 手势按下触发逻辑
   onMenuPointerDown(PointerDownEvent event) {
     closeMenu();
@@ -10,10 +10,9 @@ extension MenuGesture on WhiteBoardConfig {
 
   /// 双击触发逻辑
   onMenuDoubleTapDown(TapDownDetails details) {
-    currentMenuPosition = details.localPosition;
+    whiteBoardConfig.currentMenuPosition = details.localPosition;
     if (menuItems.isNotEmpty) {
-        openMenu(
-            currentMenuPosition: currentMenuPosition);
-      }
+      openMenu(currentMenuPosition: whiteBoardConfig.currentMenuPosition);
+    }
   }
 }

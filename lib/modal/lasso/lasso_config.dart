@@ -25,7 +25,8 @@ class LassoConfig {
   /// 存储被套索选中的元素
   List<WhiteBoardElement> selectedElementList = [];
 
-
+  /// 是否处于拖拽状态
+  bool isDrag = false;
 
   /// 路径绘制样式
   Paint get paint => Paint()
@@ -38,7 +39,7 @@ class LassoConfig {
 
   /// 套索路径
   Path? get dashesLinePath {
-    if (lassoPathPointList.isEmpty) return null;
+    if (lassoPathPointList.isEmpty) return Path();
     final Path path = Path();
     lassoPathPointList.asMap().forEach((index, point) {
       if (index == 0) {

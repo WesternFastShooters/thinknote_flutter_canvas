@@ -1,15 +1,25 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter_application_2/modal/eraser/eraser_function.dart';
 import 'package:flutter_application_2/modal/eraser/eraser_gesture.dart';
+import 'package:flutter_application_2/modal/freedraw/freedraw_function.dart';
 import 'package:flutter_application_2/modal/freedraw/freedraw_gesture.dart';
+import 'package:flutter_application_2/modal/lasso/lasso_function.dart';
 import 'package:flutter_application_2/modal/lasso/lasso_gesture.dart';
 import 'package:flutter_application_2/modal/menu/menu_gesture.dart';
 import 'package:flutter_application_2/modal/transform/transform_gesture.dart';
 import 'package:flutter_application_2/modal/white_board_manager.dart';
 
-extension GestureLogic on WhiteBoardConfig {
+extension GestureLogic on WhiteBoardManager {
+  /// 切换当前工具触发逻辑
+  onSwitchCurrentToolType() {
+    resetEraserConfig();
+    resetFreeDraw();
+    resetLassoConfig();
+  }
+
   /// 手势按下触发逻辑
   onPointerDown(PointerDownEvent event) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.freeDraw:
         onFreeDrawPointerDown(event);
         break;
@@ -21,11 +31,12 @@ extension GestureLogic on WhiteBoardConfig {
         onMenuPointerDown(event);
         break;
     }
+    update();
   }
 
   /// 手势平移触发逻辑
   onPointerMove(PointerMoveEvent event) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.transform:
         onTransformPointerMove(event);
         break;
@@ -39,11 +50,12 @@ extension GestureLogic on WhiteBoardConfig {
         onLassoPointerMove(event);
         break;
     }
+    update();
   }
 
   /// 手势提起触发逻辑
   onPointerUp(PointerUpEvent event) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.freeDraw:
         onFreeDrawPointerUp(event);
         break;
@@ -54,42 +66,46 @@ extension GestureLogic on WhiteBoardConfig {
         onLassoPointerUp(event);
         break;
     }
+    update();
   }
 
   /// 缩放开始触发逻辑
   onScaleStart(ScaleStartDetails details) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.transform:
         onTransformScaleStart(details);
         break;
     }
+    update();
   }
 
   /// 缩放中触发逻辑
   onScaleUpdate(ScaleUpdateDetails details) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.transform:
         onTransformScaleUpdate(details);
         break;
     }
+    update();
   }
 
   /// 缩放结束触发逻辑
   onScaleEnd(ScaleEndDetails details) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.transform:
         onTransformScaleEnd(details);
         break;
     }
+    update();
   }
 
   /// 双击触发逻辑
   onDoubleTapDown(TapDownDetails details) {
-    switch (currentToolType) {
+    switch (whiteBoardConfig.currentToolType) {
       case ActionType.lasso:
         onMenuDoubleTapDown(details);
         break;
     }
+    update();
   }
-
 }

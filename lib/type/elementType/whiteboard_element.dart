@@ -34,5 +34,5 @@ abstract class WhiteBoardElement {
   WhiteBoardElement deepCopy();
 
   /// 移动元素
-  translateElement({required Offset offset, required MoveElementMode mode});
+  translateElement(Offset offset);
 }
