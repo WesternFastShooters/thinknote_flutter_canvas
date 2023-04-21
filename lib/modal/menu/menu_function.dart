@@ -61,10 +61,11 @@ extension MenuFuction on WhiteBoardManager {
         break;
       case MenuItemEnum.paste:
         if (whiteBoardConfig.lastSelectItem == MenuItemEnum.copy ||
-            whiteBoardConfig.lastSelectItem == MenuItemEnum.cut) {
+            whiteBoardConfig.lastSelectItem == MenuItemEnum.cut ||
+            whiteBoardConfig.lastSelectItem == MenuItemEnum.paste) {
           for (var item in whiteBoardConfig.copiedElementList) {
             item.translateElement(
-              (whiteBoardConfig.currentMenuPosition -
+              (transformToCanvasPoint(whiteBoardConfig.currentMenuPosition) -
                   whiteBoardConfig.copiedElementCenterPoint),
             );
           }

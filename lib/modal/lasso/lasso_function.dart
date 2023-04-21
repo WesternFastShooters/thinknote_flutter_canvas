@@ -46,7 +46,7 @@ extension LassoFunction on WhiteBoardManager {
       bounds = bounds.expandToInclude(path.getBounds());
     }
     center = bounds.center;
-    return center;
+    return  center;
   }
 
   Path getClosedShapePath(List<Offset> lassoPathPointLis) {
