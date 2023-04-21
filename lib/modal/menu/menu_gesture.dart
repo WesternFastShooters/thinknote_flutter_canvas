@@ -13,7 +13,7 @@ extension MenuGesture on WhiteBoardManager {
 
   /// 双击触发逻辑
   onMenuDoubleTapDown(TapDownDetails details) {
-    whiteBoardConfig.currentMenuPosition = details.globalPosition;
+    whiteBoardConfig.currentMenuPosition = details.localPosition;
     if (menuItems.isNotEmpty &&
         whiteBoardConfig.currentToolType == ActionType.lasso) {
       openMenu(currentMenuPosition: whiteBoardConfig.currentMenuPosition);

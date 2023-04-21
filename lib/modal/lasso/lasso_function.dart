@@ -39,14 +39,8 @@ extension LassoFunction on WhiteBoardManager {
   }
 
   /// 获取所框选图形集合的中心
-  Offset getSelectedElementCenter(List<Path> pathList) {
-    var center = Offset.zero;
-    Rect bounds = Rect.zero;
-    for (var path in pathList) {
-      bounds = bounds.expandToInclude(path.getBounds());
-    }
-    center = bounds.center;
-    return  center;
+  Offset getSelectedElementCenter() {
+    return whiteBoardConfig.closedShapePath.getBounds().center;
   }
 
   Path getClosedShapePath(List<Offset> lassoPathPointLis) {

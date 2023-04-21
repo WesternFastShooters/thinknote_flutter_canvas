@@ -37,23 +37,21 @@ extension MenuFuction on WhiteBoardManager {
     whiteBoardConfig.isShowMenu = false;
     switch (currentSelectItem) {
       case MenuItemEnum.copy:
-        whiteBoardConfig.copiedElementList = whiteBoardConfig
+        whiteBoardConfig.elementListBackUp = whiteBoardConfig
             .selectedElementList
             .map((e) => e.deepCopy())
             .toList();
-        whiteBoardConfig.copiedElementCenterPoint = getSelectedElementCenter(
-          whiteBoardConfig.copiedElementList.map((e) => e.path).toList(),
-        );
+        whiteBoardConfig.elementListBackUpCenterPoint =
+            getSelectedElementCenter();
         whiteBoardConfig.lastSelectItem = currentSelectItem;
         break;
       case MenuItemEnum.cut:
-        whiteBoardConfig.copiedElementList = whiteBoardConfig
+        whiteBoardConfig.elementListBackUp = whiteBoardConfig
             .selectedElementList
             .map((e) => e.deepCopy())
             .toList();
-        whiteBoardConfig.copiedElementCenterPoint = getSelectedElementCenter(
-          whiteBoardConfig.copiedElementList.map((e) => e.path).toList(),
-        );
+        whiteBoardConfig.elementListBackUpCenterPoint =
+            getSelectedElementCenter();
         whiteBoardConfig.canvasElementList.removeWhere((canvasElementItem) =>
             whiteBoardConfig.selectedElementList.any((selectedElementItem) =>
                 identical(canvasElementItem, selectedElementItem)));
@@ -63,15 +61,18 @@ extension MenuFuction on WhiteBoardManager {
         if (whiteBoardConfig.lastSelectItem == MenuItemEnum.copy ||
             whiteBoardConfig.lastSelectItem == MenuItemEnum.cut ||
             whiteBoardConfig.lastSelectItem == MenuItemEnum.paste) {
-          for (var item in whiteBoardConfig.copiedElementList) {
+          final tempElementList = whiteBoardConfig.elementListBackUp
+              .map((e) => e.deepCopy())
+              .toList();
+          for (var item in tempElementList) {
             item.translateElement(
               (transformToCanvasPoint(whiteBoardConfig.currentMenuPosition) -
-                  whiteBoardConfig.copiedElementCenterPoint),
+                  whiteBoardConfig.elementListBackUpCenterPoint),
             );
           }
           whiteBoardConfig.canvasElementList = [
             ...whiteBoardConfig.canvasElementList,
-            ...whiteBoardConfig.copiedElementList
+            ...tempElementList,
           ];
         }
         whiteBoardConfig.lastSelectItem = currentSelectItem;
@@ -89,7 +90,7 @@ extension MenuFuction on WhiteBoardManager {
 
   /// 获取菜单项
   List<MenuItemEnum> get menuItems {
-    final pasteItem = whiteBoardConfig.copiedElementList.isNotEmpty
+    final pasteItem = whiteBoardConfig.elementListBackUp.isNotEmpty
         ? [MenuItemEnum.paste]
         : [];
     final canOperate = isHitLassoCloseArea(transformToCanvasPoint(

@@ -42,10 +42,9 @@ class MenuConfig {
   /// 上一次复制或者粘贴的位置
   Offset lastMenuCopyOrCutPosition = Offset.zero;
 
-  /// 存储备份的元素
-  List<WhiteBoardElement> copiedElementList = [];
+  /// 存储选中的元素的备份
+  List<WhiteBoardElement> elementListBackUp = [];
 
-  /// 所复制的所有元素的中心点
-  Offset copiedElementCenterPoint = Offset.zero;
-
+  /// 存储选中的元素集合的中心点
+  Offset elementListBackUpCenterPoint = Offset.zero;
 }
