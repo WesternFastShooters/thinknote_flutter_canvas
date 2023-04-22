@@ -1,7 +1,6 @@
 import 'package:dash_painter/dash_painter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/modal/lasso/lasso_config.dart';
-import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'package:flutter_application_2/model/white_board_manager.dart';
 import 'package:flutter_application_2/type/elementType/stroke_element.dart';
 import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
 import 'package:get/get.dart';
@@ -16,10 +15,10 @@ class WhiteBoardLayer extends StatelessWidget {
         return Transform(
           transform: Matrix4.identity()
             ..translate(
-              whiteBoardManager.whiteBoardConfig.globalCanvasOffset.dx,
-              whiteBoardManager.whiteBoardConfig.globalCanvasOffset.dy,
+              whiteBoardManager.whiteBoardModel.globalCanvasOffset.dx,
+              whiteBoardManager.whiteBoardModel.globalCanvasOffset.dy,
             )
-            ..scale(whiteBoardManager.whiteBoardConfig.globalCanvasScale),
+            ..scale(whiteBoardManager.whiteBoardModel.globalCanvasScale),
           child: RepaintBoundary(
             child: CustomPaint(
               isComplex: true,
@@ -48,7 +47,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制所有画布元素
   drawCanvasElementList(Canvas canvas) {
-    for (var item in whiteBoardManager.whiteBoardConfig.canvasElementList) {
+    for (var item in whiteBoardManager.whiteBoardModel.canvasElementList) {
       switch (item.elementType) {
         case ElementType.stroke:
           if (item.isEmpty) continue;
@@ -62,7 +61,7 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制正在绘制的元素
   drawCurrentElement(Canvas canvas) {
-    switch (whiteBoardManager.whiteBoardConfig.currentToolType) {
+    switch (whiteBoardManager.whiteBoardModel.currentToolType) {
       case ActionType.freeDraw:
         drawCurrentPen(canvas);
         break;
@@ -77,17 +76,17 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
-    final path = whiteBoardManager.whiteBoardConfig.currentStroke.currentPath;
-    final paint = whiteBoardManager.whiteBoardConfig.currentStroke.paint;
+    final path = whiteBoardManager.whiteBoardModel.currentStroke.currentPath;
+    final paint = whiteBoardManager.whiteBoardModel.currentStroke.paint;
     canvas.drawPath(path, paint);
   }
 
   /// 绘制橡皮擦
   drawEraser(Canvas canvas) {
-    if (whiteBoardManager.whiteBoardConfig.currentEraserPosition != null) {
+    if (whiteBoardManager.whiteBoardModel.currentEraserPosition != null) {
       canvas.drawCircle(
-        (whiteBoardManager.whiteBoardConfig.currentEraserPosition as Offset),
-        whiteBoardManager.whiteBoardConfig.eraserRadius,
+        (whiteBoardManager.whiteBoardModel.currentEraserPosition as Offset),
+        whiteBoardManager.whiteBoardModel.eraserRadius,
         Paint()
           ..color = Colors.blue
           ..strokeWidth = 1
@@ -98,27 +97,8 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索
   drawLasso(Canvas canvas) {
-    switch (whiteBoardManager.whiteBoardConfig.lassoStep) {
-      case LassoStep.drawLine:
-        _drawLassoLine(canvas);
-        break;
-      case LassoStep.close:
-        _drawClosedShapePolygon(canvas);
-        break;
-    }
-  }
-
-  /// 绘制套索虚线
-  _drawLassoLine(Canvas canvas) {
-    final path = whiteBoardManager.whiteBoardConfig.dashesLinePath!;
-    final paint = whiteBoardManager.whiteBoardConfig.paint;
-    const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
-  }
-
-  /// 绘制套索闭合区域
-  _drawClosedShapePolygon(Canvas canvas) {
-    final path = whiteBoardManager.whiteBoardConfig.closedShapePath;
-    final paint = whiteBoardManager.whiteBoardConfig.paint;
-    const DashPainter(span: 4, step: 9).paint(canvas, path, paint);
+    final lasso = whiteBoardManager.whiteBoardModel.lasso;
+    final paint = whiteBoardManager.whiteBoardModel.paint;
+    const DashPainter(span: 4, step: 9).paint(canvas, lasso, paint);
   }
 }

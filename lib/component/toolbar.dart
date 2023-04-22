@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'package:flutter_application_2/model/white_board_manager.dart';
 import 'package:get/get.dart';
 
 /// 工具条Widget

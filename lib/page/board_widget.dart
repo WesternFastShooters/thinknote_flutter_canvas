@@ -3,7 +3,7 @@ import 'package:flutter_application_2/component/drop_down_menu.dart';
 import 'package:flutter_application_2/component/gesture_layer.dart';
 import 'package:flutter_application_2/component/toolbar.dart';
 import 'package:flutter_application_2/component/white_board_layer.dart';
-import 'package:flutter_application_2/modal/white_board_manager.dart';
+import 'package:flutter_application_2/model/white_board_manager.dart';
 import 'package:get/get.dart';
 
 class BoardWidget extends StatelessWidget {
@@ -12,15 +12,15 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final whiteBoardManager = Get.find<WhiteBoardManager>();
-    whiteBoardManager.whiteBoardConfig.visibleAreaSize =
+    whiteBoardManager.whiteBoardModel.visibleAreaSize =
         MediaQuery.of(context).size;
-    whiteBoardManager.whiteBoardConfig.visibleAreaCenter = Offset(
+    whiteBoardManager.whiteBoardModel.visibleAreaCenter = Offset(
       MediaQuery.of(context).size.width / 2,
       MediaQuery.of(context).size.height / 2,
     );
-    if (whiteBoardManager.whiteBoardConfig.globalCanvasOffset == Offset.zero) {
-      whiteBoardManager.whiteBoardConfig.globalCanvasOffset =
-          whiteBoardManager.whiteBoardConfig.visibleAreaCenter;
+    if (whiteBoardManager.whiteBoardModel.globalCanvasOffset == Offset.zero) {
+      whiteBoardManager.whiteBoardModel.globalCanvasOffset =
+          whiteBoardManager.whiteBoardModel.visibleAreaCenter;
     }
 
     return Scaffold(
