@@ -34,13 +34,10 @@ mixin MenuModel on LassoModel {
   /// 当前菜单展开位置
   Offset currentMenuPosition = Offset.zero;
 
-  /// 上一次所点击的菜单项
-  MenuItemEnum lastSelectItem = MenuItemEnum.none;
-
   /// 上一次复制或者粘贴的位置
   Offset lastMenuCopyOrCutPosition = Offset.zero;
 
-  /// 存储选中的元素的备份
+  /// 存储选中的元素
   List<WhiteBoardElement> elementListBackUp = [];
 
   /// 存储选中的元素集合的中心点
@@ -75,7 +72,7 @@ mixin MenuModel on LassoModel {
         elementListBackUpCenterPoint = selectedElementCenter;
         lassoBackUp = Path.from(lasso);
         resetLassoConfig();
-        lastSelectItem = currentSelectItem;
+
         break;
       case MenuItemEnum.cut:
         elementListBackUp =
@@ -86,12 +83,10 @@ mixin MenuModel on LassoModel {
                 identical(canvasElementItem, selectedElementItem)));
         lassoBackUp = Path.from(lasso);
         resetLassoConfig();
-        lastSelectItem = currentSelectItem;
+
         break;
       case MenuItemEnum.paste:
-        if (lastSelectItem == MenuItemEnum.copy ||
-            lastSelectItem == MenuItemEnum.cut ||
-            lastSelectItem == MenuItemEnum.paste) {
+        if (elementListBackUp.isNotEmpty) {
           lassoStep = LassoStep.close;
           final distance = transformToCanvasPoint(currentMenuPosition) -
               elementListBackUpCenterPoint;
@@ -105,14 +100,15 @@ mixin MenuModel on LassoModel {
             ...canvasElementList,
             ...tempElementList,
           ];
+          setSelectedElementList();
         }
-        lastSelectItem = currentSelectItem;
+
         break;
       case MenuItemEnum.delete:
         canvasElementList.removeWhere((canvasElementItem) =>
             selectedElementList.any((selectedElementItem) =>
                 identical(canvasElementItem, selectedElementItem)));
-        lastSelectItem = currentSelectItem;
+
         resetLassoConfig();
         break;
     }
@@ -120,7 +116,12 @@ mixin MenuModel on LassoModel {
 
   /// 菜单项列表
   List<MenuItemEnum> get menuItems {
-    final pasteItem = elementListBackUp.isNotEmpty ? [MenuItemEnum.paste] : [];
+    final pasteItem = elementListBackUp.isNotEmpty &&
+            !isHitLassoCloseArea(transformToCanvasPoint(
+              currentMenuPosition,
+            ))
+        ? [MenuItemEnum.paste]
+        : [];
     final canOperate = isHitLassoCloseArea(transformToCanvasPoint(
               currentMenuPosition,
             )) &&
@@ -134,7 +135,6 @@ mixin MenuModel on LassoModel {
   resetMenuConfig() {
     currentMenuPosition = Offset.zero;
     isShowMenu = false;
-    lastSelectItem = MenuItemEnum.none;
     lastMenuCopyOrCutPosition = Offset.zero;
   }
 }

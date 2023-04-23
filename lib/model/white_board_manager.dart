@@ -214,9 +214,4 @@ mixin WhiteBoardInfo {
   /// 存储已经绘制完成的canvas元素列表
   List<WhiteBoardElement> canvasElementList = [];
 
-//   /// 存储选中的元素集合
-//   List<WhiteBoardElement> selectedElementList = [];
-
-// /// 存储选中的元素的备份
-//   List<WhiteBoardElement> elementListBackUp = [];
 }

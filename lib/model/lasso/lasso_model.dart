@@ -21,7 +21,7 @@ mixin LassoModel on WhiteBoardInfo, WhiteBoardGeometry {
   bool isDrag = false;
 
   /// 平移套索闭合区域
-  translateClosedShape({required Path lasso,required Offset offset}) {
+  translateClosedShape({required Path lasso, required Offset offset}) {
     if (lassoPathPointList.isNotEmpty) {
       this.lasso = Path.from(lasso);
       lassoPathPointList.clear();
@@ -44,7 +44,6 @@ mixin LassoModel on WhiteBoardInfo, WhiteBoardGeometry {
   set lasso(Path path) {
     _lasso = path;
   }
-
   Path get lasso {
     switch (lassoStep) {
       case LassoStep.drawLine:
@@ -74,12 +73,25 @@ mixin LassoModel on WhiteBoardInfo, WhiteBoardGeometry {
         }
     }
   }
+  clearLasso() {
+    _lasso = Path();
+  }
+
 
   /// 存储选中的元素集合
-  List<WhiteBoardElement> get selectedElementList => canvasElementList
-      .where((element) =>
-          isIntersecting(originPath: lasso, targetPath: element.path))
-      .toList();
+  List<WhiteBoardElement> selectedElementList = [];
+
+  /// 更新选中的元素集合
+  setSelectedElementList() {
+    selectedElementList = canvasElementList
+        .where((element) =>
+            isIntersecting(originPath: lasso, targetPath: element.path))
+        .toList();
+  }
+
+  clearSelectedElementList() {
+    selectedElementList.clear();
+  }
 
   /// 获取所框选图形集合的中心
   Offset get selectedElementCenter =>
@@ -102,5 +114,7 @@ mixin LassoModel on WhiteBoardInfo, WhiteBoardGeometry {
   resetLassoConfig() {
     lassoStep = LassoStep.drawLine;
     lassoPathPointList.clear();
+    clearSelectedElementList();
+    clearLasso();
   }
 }

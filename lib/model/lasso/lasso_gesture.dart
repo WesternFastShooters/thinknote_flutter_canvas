@@ -48,6 +48,7 @@ extension LassoGesture on WhiteBoardManager {
     switch (whiteBoardModel.lassoStep) {
       case LassoStep.drawLine:
         whiteBoardModel.setLassoStep(LassoStep.close);
+        whiteBoardModel.setSelectedElementList();
         if (whiteBoardModel.selectedElementList.isEmpty) {
           whiteBoardModel.resetLassoConfig();
         }
