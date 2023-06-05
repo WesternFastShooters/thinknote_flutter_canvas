@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_application_2/model/graphics_canvas.dart';
 import 'package:get/get.dart';
 
 class GestureLayer extends StatelessWidget {
@@ -9,17 +9,17 @@ class GestureLayer extends StatelessWidget {
   Widget build(BuildContext context) {
     /// 指头编号
     int currentPointerId = -1;
-    return GetBuilder<WhiteBoardManager>(
-      builder: (whiteBoardManager) {
+    return GetBuilder<GraphicsCanvas>(
+      builder: (graphicsCanvas) {
         return SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onScaleStart: whiteBoardManager.onScaleStart,
-            onScaleUpdate: whiteBoardManager.onScaleUpdate,
-            onScaleEnd: whiteBoardManager.onScaleEnd,
-            onDoubleTapDown: whiteBoardManager.onDoubleTapDown,
+            onScaleStart: graphicsCanvas.onScaleStart,
+            onScaleUpdate: graphicsCanvas.onScaleUpdate,
+            onScaleEnd: graphicsCanvas.onScaleEnd,
+            onDoubleTapDown: graphicsCanvas.onDoubleTapDown,
             child: Listener(
               behavior: HitTestBehavior.opaque,
               onPointerDown: (event) {
@@ -27,20 +27,20 @@ class GestureLayer extends StatelessWidget {
                   return;
                 }
                 currentPointerId = event.pointer;
-                whiteBoardManager.onPointerDown(event);
+                graphicsCanvas.onPointerDown(event);
               },
               onPointerMove: (event) {
                 if (event.pointer != currentPointerId) {
                   return;
                 }
-                whiteBoardManager.onPointerMove(event);
+                graphicsCanvas.onPointerMove(event);
               },
               onPointerUp: (event) {
                 if (event.pointer != currentPointerId) {
                   return;
                 }
                 currentPointerId = -1;
-                whiteBoardManager.onPointerUp(event);
+                graphicsCanvas.onPointerUp(event);
               },
             ),
           ),

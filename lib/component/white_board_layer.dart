@@ -1,8 +1,7 @@
 import 'package:dash_painter/dash_painter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
-import 'package:flutter_application_2/type/elementType/stroke_element.dart';
-import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
+import 'package:flutter_application_2/model/graphics_canvas.dart';
+import 'package:flutter_application_2/model/store/canvas_store.dart';
 import 'package:get/get.dart';
 
 class WhiteBoardLayer extends StatelessWidget {
@@ -10,15 +9,15 @@ class WhiteBoardLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<WhiteBoardManager>(
-      builder: (whiteBoardManager) {
+    return GetBuilder<GraphicsCanvas>(
+      builder: (graphicsCanvas) {
         return Transform(
           transform: Matrix4.identity()
             ..translate(
-              whiteBoardManager.whiteBoardModel.globalCanvasOffset.dx,
-              whiteBoardManager.whiteBoardModel.globalCanvasOffset.dy,
+              graphicsCanvas.canvasOffset.dx,
+              graphicsCanvas.canvasOffset.dy,
             )
-            ..scale(whiteBoardManager.whiteBoardModel.globalCanvasScale),
+            ..scale(graphicsCanvas.canvasScale),
           child: RepaintBoundary(
             child: CustomPaint(
               isComplex: true,
@@ -32,7 +31,7 @@ class WhiteBoardLayer extends StatelessWidget {
 }
 
 class WhiteBoardPainter extends CustomPainter {
-  final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
+  final GraphicsCanvas graphicsCanvas = Get.find<GraphicsCanvas>();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -47,21 +46,16 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制所有画布元素
   drawCanvasElementList(Canvas canvas) {
-    for (var item in whiteBoardManager.whiteBoardModel.canvasElementList) {
-      switch (item.elementType) {
-        case ElementType.stroke:
-          if (item.isEmpty) continue;
-          canvas.drawPath(item.path, (item as Stroke).paint);
-          break;
-        case ElementType.geometricShape:
-          break;
-      }
+    for (var item in graphicsCanvas.strokeList) {
+      canvas.drawPath(item.path, item.paint);
     }
+    // for (var item in graphicsCanvas.shapeList) {
+    // }
   }
 
   /// 绘制正在绘制的元素
   drawCurrentElement(Canvas canvas) {
-    switch (whiteBoardManager.whiteBoardModel.currentToolType) {
+    switch (graphicsCanvas.currentToolType) {
       case ActionType.freeDraw:
         drawCurrentPen(canvas);
         break;
@@ -76,17 +70,17 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制当前画笔
   drawCurrentPen(Canvas canvas) {
-    final path = whiteBoardManager.whiteBoardModel.currentStroke.currentPath;
-    final paint = whiteBoardManager.whiteBoardModel.currentStroke.paint;
+    final path = graphicsCanvas.currentStrokePath;
+    final paint = graphicsCanvas.currentStrokePaint;
     canvas.drawPath(path, paint);
   }
 
   /// 绘制橡皮擦
   drawEraser(Canvas canvas) {
-    if (whiteBoardManager.whiteBoardModel.currentEraserPosition != null) {
+    if (graphicsCanvas.eraserPosition != null) {
       canvas.drawCircle(
-        (whiteBoardManager.whiteBoardModel.currentEraserPosition as Offset),
-        whiteBoardManager.whiteBoardModel.eraserRadius,
+        (graphicsCanvas.eraserPosition as Offset),
+        graphicsCanvas.eraserRadius,
         Paint()
           ..color = Colors.blue
           ..strokeWidth = 1
@@ -97,8 +91,8 @@ class WhiteBoardPainter extends CustomPainter {
 
   /// 绘制套索
   drawLasso(Canvas canvas) {
-    final lasso = whiteBoardManager.whiteBoardModel.lasso;
-    final paint = whiteBoardManager.whiteBoardModel.paint;
+    final lasso = graphicsCanvas.selectedArea.trackPath;
+    final paint = graphicsCanvas.lassoPaint;
     const DashPainter(span: 4, step: 9).paint(canvas, lasso, paint);
   }
 }

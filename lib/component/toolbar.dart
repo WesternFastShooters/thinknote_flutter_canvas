@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_application_2/model/graphics_canvas.dart';
+import 'package:flutter_application_2/model/store/canvas_store.dart';
 import 'package:get/get.dart';
 
 /// 工具条Widget
@@ -12,12 +13,13 @@ class ToolBar extends StatefulWidget {
 
 class _ToolBarWidgetState extends State<ToolBar>
     with SingleTickerProviderStateMixin {
-  final WhiteBoardManager whiteBoardManager = Get.find<WhiteBoardManager>();
+  final GraphicsCanvas graphicsCanvas = Get.find<GraphicsCanvas>();
+
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<WhiteBoardManager>(
-      builder: (whiteBoardManager) {
+    return GetBuilder<GraphicsCanvas>(
+      builder: (graphicsCanvas) {
         return Row(
           children: [
             _drawPencilWidget(),
@@ -35,7 +37,8 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.brush),
       onPressed: () {
-        whiteBoardManager.setCurrentToolType(ActionType.freeDraw);
+        graphicsCanvas.switchTool(ActionType.freeDraw);
+        
       },
     );
   }
@@ -45,7 +48,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.pan_tool),
       onPressed: () {
-        whiteBoardManager.setCurrentToolType(ActionType.transform);
+        graphicsCanvas.switchTool(ActionType.hand);
       },
     );
   }
@@ -55,7 +58,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.phonelink_erase),
       onPressed: () {
-        whiteBoardManager.setCurrentToolType(ActionType.eraser);
+        graphicsCanvas.switchTool(ActionType.eraser);
       },
     );
   }
@@ -65,7 +68,7 @@ class _ToolBarWidgetState extends State<ToolBar>
     return IconButton(
       icon: const Icon(Icons.crop_square),
       onPressed: () {
-        whiteBoardManager.setCurrentToolType(ActionType.lasso);
+        graphicsCanvas.switchTool(ActionType.lasso);
       },
     );
   }
