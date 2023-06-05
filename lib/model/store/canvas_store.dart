@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/gestures.dart';
 import 'package:flutter_application_2/model/element/shape.dart';
 import 'package:flutter_application_2/model/element/stroke.dart';
+import 'package:get/get.dart';
 
 enum ActionType {
   /// 自由绘画模式
@@ -49,10 +50,12 @@ mixin CanvasStore {
 extension StoreAction on CanvasStore {
   /// 暂存所选元素
   _casheSelectedElement() {
-    casheArea.casheStrokeList =
+    var templateStrokeList =
         selectedArea.selectedStrokeList.map((item) => item.copy()).toList();
+    var templateTrackPath = ui.Path.from(selectedArea.trackPath);
+    casheArea.casheStrokeList = templateStrokeList;
     // casheArea.casheShapeList = selectedArea.selectedShapeList;
-    casheArea.casheTrackPath = ui.Path.from(selectedArea.trackPath);
+    casheArea.casheTrackPath = templateTrackPath;
   }
 
   /// 复制所选元素
@@ -69,15 +72,15 @@ extension StoreAction on CanvasStore {
   /// 粘贴所选元素
   pasteSelectedElement(newPosition) {
     Offset distance = newPosition - casheArea.center;
-    strokeList.addAll(casheArea.casheStrokeList
-        .map((item) => item.copy()..translate(distance))
-        .toList());
-    // TODO: 未实现几何元素的复制
-    selectedArea.selectedStrokeList = casheArea.casheStrokeList
+    var replicaStrokeList = casheArea.casheStrokeList
         .map((item) => item.copy()..translate(distance))
         .toList();
+    var replicaTrackPath = ui.Path.from(casheArea.casheTrackPath);
+    strokeList.addAll(replicaStrokeList);
+    // TODO: 未实现几何元素的复制
+    selectedArea.selectedStrokeList = replicaStrokeList;
     final matrix4 = Matrix4.identity()..translate(distance.dx, distance.dy);
-    selectedArea.trackPath = casheArea.casheTrackPath.transform(matrix4.storage);
+    selectedArea.trackPath = replicaTrackPath.transform(matrix4.storage);
   }
 
   /// 删除所选元素

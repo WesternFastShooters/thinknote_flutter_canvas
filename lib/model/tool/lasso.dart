@@ -11,8 +11,6 @@ enum LassoStep {
   /// 闭合
   closeLine,
 
-  /// 隐藏
-  hidden,
 }
 
 mixin Lasso on CanvasStore {
@@ -63,8 +61,9 @@ mixin Lasso on CanvasStore {
 extension LassoAction on Lasso {
   resetLasso() {
     trackPointList.clear();
-    selectedArea.trackPath.reset();
     lassoStep = LassoStep.drawLine;
+    selectedArea.trackPath.reset();
+    selectedArea.selectedStrokeList.clear();
   }
 
   switchLassoStep(
@@ -79,12 +78,12 @@ extension LassoAction on Lasso {
 
   /// 检查是否命中套索区域内
   bool hitLassoCloseArea(Offset position) =>
-      lassoPath.contains(transformToCanvasOffset(position));
+      selectedArea.trackPath.contains(transformToCanvasOffset(position));
 
   /// 获取被框选的画迹
   List<Stroke> getSelectedStrokeList() => strokeList
       .where((stroke) => GeometryAlgorithm.isClosePathOverlay(
-          originPath: lassoPath, targetPath: stroke.path))
+          originPath: selectedArea.trackPath, targetPath: stroke.path))
       .toList();
 
   /// 移动套索及其所选元素

@@ -27,6 +27,7 @@ mixin Hand on CanvasStore {
 
   aroundCenterScale(scaleIncrement) {
     var stepScale = scaleIncrement.abs();
+    print('scaleIncrement: $scaleIncrement');
     if (scaleIncrement < 0) {
       // 中心缩小画布
       if (double.parse(canvasScale.toStringAsFixed(1)) <= minCanvasScale) {
@@ -34,7 +35,7 @@ mixin Hand on CanvasStore {
       } else {
         canvasScale -= stepScale;
       }
-    } else if (scaleIncrement < 0) {
+    } else if (scaleIncrement > 0) {
       // 中心放大画布
       if (double.parse(canvasScale.toStringAsFixed(1)) >= maxCanvasScale) {
         canvasScale = maxCanvasScale;

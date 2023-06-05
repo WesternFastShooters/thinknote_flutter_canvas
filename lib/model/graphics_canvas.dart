@@ -13,6 +13,7 @@ class GraphicsCanvas extends GetxController
     resetEraser();
     resetPen();
     resetLasso();
+    initMenu();
     currentToolType = type;
     update();
   }
@@ -21,15 +22,15 @@ class GraphicsCanvas extends GetxController
     switch (mode) {
       case MenuItemEnum.copy:
         copySelectedElement();
-        switchLassoStep(LassoStep.drawLine);
+        resetLasso();
         break;
       case MenuItemEnum.cut:
         cutSelectedElement();
-        switchLassoStep(LassoStep.drawLine);
+        resetLasso();
         break;
       case MenuItemEnum.delete:
         deleteSelectedElement();
-        switchLassoStep(LassoStep.drawLine);
+        resetLasso();
         break;
       case MenuItemEnum.paste:
         pasteSelectedElement(transformToCanvasOffset(triggerPosition));

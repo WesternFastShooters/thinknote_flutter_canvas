@@ -53,8 +53,6 @@ mixin Menu on Lasso, CanvasStore {
         initMenu();
         break;
       case ClickType.double:
-        isOpenMenu = true;
-        this.triggerPosition = triggerPosition;
         menuItems = [
           if (selectedArea.hasSelectedContent &&
               hitLassoCloseArea(triggerPosition))
@@ -67,6 +65,11 @@ mixin Menu on Lasso, CanvasStore {
             MenuItemEnum.delete,
           if (casheArea.hasCasheContent) MenuItemEnum.paste,
         ];
+        if (menuItems.isNotEmpty) {
+          isOpenMenu = true;
+          this.triggerPosition = triggerPosition;
+        }
+
         break;
     }
   }
