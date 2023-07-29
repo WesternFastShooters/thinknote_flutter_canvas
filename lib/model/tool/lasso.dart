@@ -10,7 +10,6 @@ enum LassoStep {
 
   /// 闭合
   closeLine,
-
 }
 
 mixin Lasso on CanvasStore {
@@ -20,32 +19,31 @@ mixin Lasso on CanvasStore {
   /// 套索的路径坐标点集合
   List<ui.Offset> trackPointList = [];
 
-  Path get lassoPath {
-    Path _path = Path();
-    switch (lassoStep) {
-      case LassoStep.drawLine:
-        trackPointList.asMap().forEach((index, point) {
-          if (index == 0) {
-            _path.moveTo(point.dx, point.dy);
-          } else {
-            _path.lineTo(point.dx, point.dy);
-          }
-        });
-        break;
-      case LassoStep.closeLine:
-        if (trackPointList.isNotEmpty && trackPointList.length > 2) {
-          trackPointList.asMap().forEach((index, point) {
-            if (index == 0) {
-              _path.moveTo(point.dx, point.dy);
-            } else {
-              _path.lineTo(point.dx, point.dy);
-            }
-          });
-          _path.close();
+  ui.Path getDrawLinePath() {
+    var path = ui.Path();
+    trackPointList.asMap().forEach((index, point) {
+      if (index == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    });
+    return path;
+  }
+
+  ui.Path getCloseLinePath() {
+    var path = ui.Path();
+    if (trackPointList.isNotEmpty && trackPointList.length > 2) {
+      trackPointList.asMap().forEach((index, point) {
+        if (index == 0) {
+          path.moveTo(point.dx, point.dy);
+        } else {
+          path.lineTo(point.dx, point.dy);
         }
-        break;
+      });
+      path.close();
     }
-    return _path;
+    return path;
   }
 
   /// 路径绘制样式
@@ -103,7 +101,7 @@ extension LassoGesture on Lasso {
 
   onDrawLineMove(PointerMoveEvent details) {
     addTrackPoint(transformToCanvasOffset(details.localPosition));
-    selectedArea.trackPath = Path.from(lassoPath);
+    selectedArea.trackPath = Path.from(getDrawLinePath());
   }
 
   onDrawLineUp(PointerUpEvent details) {
@@ -114,7 +112,7 @@ extension LassoGesture on Lasso {
       return;
     }
     selectedArea.selectedStrokeList = selectedStrokeList;
-    selectedArea.trackPath = Path.from(lassoPath);
+    selectedArea.trackPath = Path.from(getCloseLinePath());
   }
 
   onCloseLineDown(PointerDownEvent details) {

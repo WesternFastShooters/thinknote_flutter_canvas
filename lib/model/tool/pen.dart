@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/gestures.dart';
 import 'package:flutter_application_2/constants/default_pen_option.dart';
+import 'package:flutter_application_2/model/algorithm/shape_recognition.dart';
 import 'package:flutter_application_2/model/element/stroke.dart';
 import 'package:flutter_application_2/model/store/canvas_store.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
@@ -89,6 +90,7 @@ extension PenGesture on Pen {
       path: currentStrokePath,
       paint: currentStrokePaint,
     ));
+    ShapeRecognition.recognize(currentStrokePath);
     resetPen();
   }
 }
