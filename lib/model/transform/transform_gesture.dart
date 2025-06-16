@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 
 extension TransformGesture on WhiteBoardManager {
   /// 平移时移动执行回调

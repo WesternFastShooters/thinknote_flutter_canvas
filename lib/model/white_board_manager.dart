@@ -1,16 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter_application_2/model/eraser/eraser_gesture.dart';
-import 'package:flutter_application_2/model/eraser/eraser_model.dart';
-import 'package:flutter_application_2/model/freedraw/freedraw_gesture.dart';
-import 'package:flutter_application_2/model/freedraw/freedraw_model.dart';
-import 'package:flutter_application_2/model/lasso/lasso_gesture.dart';
-import 'package:flutter_application_2/model/lasso/lasso_model.dart';
-import 'package:flutter_application_2/model/menu/menu_gesture.dart';
-import 'package:flutter_application_2/model/menu/menu_model.dart';
-import 'package:flutter_application_2/model/transform/transform_gesture.dart';
-import 'package:flutter_application_2/model/transform/transform_model.dart';
+import 'package:flutter_excalidraw/model/eraser/eraser_gesture.dart';
+import 'package:flutter_excalidraw/model/eraser/eraser_model.dart';
+import 'package:flutter_excalidraw/model/freedraw/freedraw_gesture.dart';
+import 'package:flutter_excalidraw/model/freedraw/freedraw_model.dart';
+import 'package:flutter_excalidraw/model/lasso/lasso_gesture.dart';
+import 'package:flutter_excalidraw/model/lasso/lasso_model.dart';
+import 'package:flutter_excalidraw/model/menu/menu_gesture.dart';
+import 'package:flutter_excalidraw/model/menu/menu_model.dart';
+import 'package:flutter_excalidraw/model/transform/transform_gesture.dart';
+import 'package:flutter_excalidraw/model/transform/transform_model.dart';
 import 'package:get/get.dart';
 
 import '../type/elementType/whiteboard_element.dart';

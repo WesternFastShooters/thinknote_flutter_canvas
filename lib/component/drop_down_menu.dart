@@ -2,8 +2,8 @@
 // 菜单项有复制、粘贴、剪切、删除
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/model/menu/menu_model.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/model/menu/menu_model.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 import 'package:get/get.dart';
 
 class DropDownMenu extends StatelessWidget {

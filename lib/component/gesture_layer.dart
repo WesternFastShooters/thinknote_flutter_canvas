@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 import 'package:get/get.dart';
 
 class GestureLayer extends StatelessWidget {

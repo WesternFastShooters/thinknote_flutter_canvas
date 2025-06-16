@@ -1,6 +1,6 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 
 enum ScaleLayerWidgetType {
   /// 中心缩小画布

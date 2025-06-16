@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 
 mixin EraserModel on WhiteBoardGeometry, WhiteBoardInfo {
   /// 当前橡皮擦的位置

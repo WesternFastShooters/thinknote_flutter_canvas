@@ -1,8 +1,8 @@
 import 'package:dash_painter/dash_painter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
-import 'package:flutter_application_2/type/elementType/stroke_element.dart';
-import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/type/elementType/stroke_element.dart';
+import 'package:flutter_excalidraw/type/elementType/whiteboard_element.dart';
 import 'package:get/get.dart';
 
 class WhiteBoardLayer extends StatelessWidget {

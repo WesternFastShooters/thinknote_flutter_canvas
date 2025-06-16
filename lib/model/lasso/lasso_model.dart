@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 import '../../type/elementType/whiteboard_element.dart';
 
 enum LassoStep {

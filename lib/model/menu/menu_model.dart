@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:flutter_application_2/model/lasso/lasso_model.dart';
-import 'package:flutter_application_2/type/elementType/whiteboard_element.dart';
+import 'package:flutter_excalidraw/model/lasso/lasso_model.dart';
+import 'package:flutter_excalidraw/type/elementType/whiteboard_element.dart';
 
 enum MenuItemEnum {
   copy,

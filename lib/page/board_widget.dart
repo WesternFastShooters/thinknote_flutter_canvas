@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/component/drop_down_menu.dart';
-import 'package:flutter_application_2/component/gesture_layer.dart';
-import 'package:flutter_application_2/component/toolbar.dart';
-import 'package:flutter_application_2/component/white_board_layer.dart';
-import 'package:flutter_application_2/model/white_board_manager.dart';
+import 'package:flutter_excalidraw/component/drop_down_menu.dart';
+import 'package:flutter_excalidraw/component/gesture_layer.dart';
+import 'package:flutter_excalidraw/component/toolbar.dart';
+import 'package:flutter_excalidraw/component/white_board_layer.dart';
+import 'package:flutter_excalidraw/model/white_board_manager.dart';
 import 'package:get/get.dart';
 
 class BoardWidget extends StatelessWidget {

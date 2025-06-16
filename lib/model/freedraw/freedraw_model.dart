@@ -1,4 +1,4 @@
-import 'package:flutter_application_2/type/elementType/stroke_element.dart';
+import 'package:flutter_excalidraw/type/elementType/stroke_element.dart';
 
 mixin FreedrawModel {
   /// 当前笔画配置

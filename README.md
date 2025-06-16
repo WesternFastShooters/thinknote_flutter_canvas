@@ -1,3 +1,3 @@
-# flutter_application_2
+# flutter_excalidraw
 
 A new Flutter project.
